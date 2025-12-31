@@ -121,10 +121,10 @@ function renderTemplates(templates) {
     
     templates.forEach(t => {
         const div = document.createElement('div');
-        div.className = 'p-3 hover:bg-gray-700 cursor-pointer border-b border-gray-700/50 last:border-0 transition-colors';
+        div.className = 'p-2 hover:bg-gray-700 cursor-pointer border-b border-gray-700/50 last:border-0 transition-colors flex flex-col gap-0.5';
         div.innerHTML = `
-            <div class="text-sm text-white font-medium mb-1">${t.title}</div>
-            <div class="text-xs text-gray-500 font-mono bg-gray-900 p-1.5 rounded truncate">${t.command}</div>
+            <div class="text-[10px] text-white font-bold uppercase tracking-wide">${t.templatename}</div>
+            <div class="text-[9px] text-gray-500 font-mono truncate">${t.templatepath}</div>
         `;
         div.onclick = () => {
             selectTemplate(t);
@@ -133,13 +133,13 @@ function renderTemplates(templates) {
     });
     
     if (templates.length === 0) {
-         list.innerHTML = '<div class="p-4 text-center text-gray-500 text-xs">No templates found</div>';
+         list.innerHTML = '<div class="p-2 text-center text-gray-500 text-[10px]">No templates found</div>';
     }
 }
 
 function selectTemplate(template) {
-    // Fill init command
-    document.getElementById('repo-init').value = template.command;
+    // Fill init command with text: "TEMPLATE: <path>" to indicate it's using a template
+    document.getElementById('repo-init').value = template.templatepath;
     
     // Close menu
     document.getElementById('template-menu').classList.add('hidden');

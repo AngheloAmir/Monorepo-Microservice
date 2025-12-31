@@ -1,8 +1,8 @@
-const repotemplate =[
+const repotemplate = [
     {
-        title:   "Frontend React with typescript, TailwindCSS, and Shadcn/UI",
-        command: "npm create react-app ."
+        templatename: "React TS Tailwind Radix",
+        templatepath: "react_ts_tailwind_radix"
     }
-]
+];
 
 module.exports = repotemplate;
