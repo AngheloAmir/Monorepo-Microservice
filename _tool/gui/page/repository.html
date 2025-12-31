@@ -1,0 +1,70 @@
+<div class="h-full flex flex-col">
+    <!-- Page Header -->
+    <div class="px-8 py-6 border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm z-10 sticky top-0 md:static">
+        <h1 class="text-2xl font-bold text-white flex items-center gap-3">
+            <i class="fas fa-code-branch text-blue-500"></i>
+            Repositories
+        </h1>
+        <p class="text-gray-400 text-sm mt-1">Manage all microservices and applications within the monorepo.</p>
+    </div>
+
+    <!-- Content Scrollable -->
+    <div class="flex-1 overflow-y-auto p-8 space-y-12">
+        
+        <!-- Backend Section -->
+        <section id="section-backend" class="space-y-4 hidden">
+            <h2 class="text-lg font-semibold text-gray-300 flex items-center gap-2 border-l-4 border-blue-500 pl-3">
+                Backend Services
+                <span class="text-xs font-normal text-gray-500 ml-auto bg-gray-800 px-2 py-0.5 rounded-full" id="count-backend">0</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="container-backend"></div>
+        </section>
+
+        <!-- Database Section -->
+        <section id="section-database" class="space-y-4 hidden">
+            <h2 class="text-lg font-semibold text-gray-300 flex items-center gap-2 border-l-4 border-purple-500 pl-3">
+                Database
+                <span class="text-xs font-normal text-gray-500 ml-auto bg-gray-800 px-2 py-0.5 rounded-full" id="count-database">0</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="container-database"></div>
+        </section>
+
+        <!-- Service Section -->
+        <section id="section-service" class="space-y-4 hidden">
+             <h2 class="text-lg font-semibold text-gray-300 flex items-center gap-2 border-l-4 border-yellow-500 pl-3">
+                Microservices
+                <span class="text-xs font-normal text-gray-500 ml-auto bg-gray-800 px-2 py-0.5 rounded-full" id="count-service">0</span>
+            </h2>
+             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="container-service"></div>
+        </section>
+
+        <!-- Frontend Section -->
+        <section id="section-frontend" class="space-y-4 hidden">
+             <h2 class="text-lg font-semibold text-gray-300 flex items-center gap-2 border-l-4 border-pink-500 pl-3">
+                Frontend Applications
+                <span class="text-xs font-normal text-gray-500 ml-auto bg-gray-800 px-2 py-0.5 rounded-full" id="count-frontend">0</span>
+            </h2>
+             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="container-frontend"></div>
+        </section>
+        
+        <!-- Empty State (if no data) -->
+        <div id="empty-state" class="hidden flex flex-col items-center justify-center py-20 text-gray-600">
+             <i class="fas fa-ghost text-6xl mb-4 opacity-50"></i>
+             <p class="text-lg">No repositories found.</p>
+        </div>
+
+    </div>
+    
+    <!-- Floating Action Button -->
+    <button class="absolute bottom-8 right-8 w-14 h-14 bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-lg hover:shadow-blue-600/40 flex items-center justify-center transition-all duration-300 hover:scale-110 group z-50">
+        <i class="fas fa-plus text-xl transition-transform duration-300 group-hover:rotate-90"></i>
+        <!-- Tooltip -->
+         <div class="absolute right-full mr-4 px-3 py-1.5 bg-gray-900 text-white text-sm font-medium rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-xl border border-gray-700 whitespace-nowrap">
+            Add Repository
+        </div>
+    </button>
+</div>
+
+<!-- Load Scripts for this page -->
+<script src="/gui/script/repositorycard.js"></script>
+<script src="/gui/script/repository.js"></script>

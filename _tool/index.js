@@ -54,6 +54,15 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (url === '/api/repository') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    // Reload the module to ensure fresh data if it changes (optional, good for dev tools)
+    delete require.cache[require.resolve('./tooldata/repository.js')];
+    const repoData = require('./tooldata/repository.js');
+    res.end(JSON.stringify(repoData));
+    return;
+  }
+
   if (url.startsWith('/gui/')) {
     const relativePath = url.slice(5);
     // basic directory traversal prevention

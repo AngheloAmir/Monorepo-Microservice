@@ -1,7 +1,7 @@
 window.Navigation = {
     items: [
         { id: 'home', label: 'Home', icon: 'fa-home', component: 'home' },
-        { id: 'repo', label: 'Repository', icon: 'fa-code-branch', component: 'repo' },
+        { id: 'repository', label: 'Repository', icon: 'fa-code-branch', component: 'repository' },
         { id: 'cicd', label: 'CI/CD Tool', icon: 'fa-rocket', component: 'cicd' },
         { id: 'crud', label: 'CRUD Tester', icon: 'fa-database', component: 'crud' },
         { id: 'stream', label: 'Stream Tester', icon: 'fa-stream', component: 'stream' },

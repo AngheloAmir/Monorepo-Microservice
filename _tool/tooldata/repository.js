@@ -1,7 +1,12 @@
-const repository = [
-    {
+const repository = {
+    backend: [
+    ],
+
+    frontend: [
+        {
         name:        "temp repo",
         description: "this is a temp repo for testing",
+        icon:        "fa fa-html5",
         type:        "frontend",
         path:        "../frontend/temp",
         branch:      "master",
@@ -11,5 +16,17 @@ const repository = [
         stopcmd:     "npm run stop",
         buildcmd:    "npm run build",
         init:        "npm create react-app ."
-    }
-]
+        }
+    ],
+
+    database: [
+
+    ],
+
+    service: [
+
+    ],
+    
+}
+
+module.exports = repository;
