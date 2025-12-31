@@ -77,29 +77,12 @@ window.Navigation = {
         this.activeId = id;
         this.render(); // Re-render sidebar to update active state look
         
-        const contentContainer = document.getElementById('app-content');
-        if (!contentContainer) return;
-        
-        // Find component
-        const allItems = [...this.items, this.settingsItem];
-        const item = allItems.find(i => i.id === id);
-        
-        contentContainer.innerHTML = '';
-        
-        if (item && window.Pages[item.component]) {
-             contentContainer.innerHTML = window.Pages[item.component]();
+        if (window.PageLoader) {
+            // Map 'repo' to 'repository' if needed, or stick to id as filename
+            // For now assuming id matches filename
+            window.PageLoader.load(id); 
         } else {
-             contentContainer.innerHTML = `
-                <div class="flex flex-col items-center justify-center h-full text-gray-500 animate-fade-in pb-20">
-                    <div class="w-24 h-24 bg-gray-800 rounded-full flex items-center justify-center mb-6 shadow-inner">
-                        <i class="fas fa-hammer text-4xl text-gray-600"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-gray-300 mb-2">Work in Progress</h2>
-                    <p class="text-gray-500 text-center max-w-sm">
-                        The <span class="text-blue-400 font-mono">${item ? item.label : id}</span> module is currently under construction.
-                    </p>
-                </div>
-             `;
+            console.error('PageLoader not found');
         }
     }
 };
