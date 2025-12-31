@@ -61,7 +61,7 @@
 })();
 
 // --- Modal Logic ---
-let selectedType = 'service';
+var selectedType = 'service';
 
 window.openAddModal = function() {
     document.getElementById('add-repo-modal').classList.remove('hidden');
@@ -155,7 +155,7 @@ window.createRepository = function() {
         startcmd: document.getElementById('repo-start').value,
         stopcmd: document.getElementById('repo-stop').value,
         buildcmd: document.getElementById('repo-build').value,
-        init: document.getElementById('repo-init').value,
+        template: document.getElementById('repo-init').value, // Renamed from init
     };
     
     console.log('Creating Repository:', data);

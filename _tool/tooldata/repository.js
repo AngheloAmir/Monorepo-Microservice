@@ -11,7 +11,7 @@
         startcmd:    "npm run dev",
         stopcmd:     "npm run stop",
         buildcmd:    "npm run build",
-        init:        "npm create react-app ."
+        template:    ""
         },
  */
 
@@ -31,7 +31,7 @@ const repository = {
             startcmd:    "npm run dev",
             stopcmd:     "npm run stop",
             buildcmd:    "npm run build",
-            init:        "npm create react-app ."
+            template:    ""
         }
     ],
 

@@ -1,6 +1,5 @@
 window.PageLoader = {
-    cache: {},
-
+    cache: {}, // Keep the cache object structure if other things need it, but we won't use it for checking
     load: async function(pageId) {
         const contentContainer = document.getElementById('app-content');
         if (!contentContainer) return;
@@ -13,12 +12,8 @@ window.PageLoader = {
         `;
 
         try {
-            // Check cache first
-            if (this.cache[pageId]) {
-                contentContainer.innerHTML = this.cache[pageId];
-                this.executeScripts(contentContainer);
-                return;
-            }
+            // Bypass cache to always fetch fresh content for reloading data scripts
+            // if (this.cache[pageId]) { ... }
 
             // Fetch the page
             const response = await fetch(`/gui/page/${pageId}.html`);
