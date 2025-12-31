@@ -1,9 +1,110 @@
-<html>
-    <head>
-        <title>Monorepo Microservice</title>
-    </head>
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monorepo Microservice Tool</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gray: {
+                            900: '#111827',
+                            800: '#1f2937',
+                            700: '#374151',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563; 
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans h-screen overflow-hidden flex flex-col selection:bg-blue-500/30 selection:text-blue-200">
 
-    <body>
-        <h1>Monorepo Microservice</h1>
-    </body>
+    <!-- Header -->
+    <header class="h-16 flex-none bg-gray-900/80 backdrop-blur-md border-b border-gray-800 flex items-center px-6 justify-between z-20">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+                <i class="fas fa-boxes text-white text-lg"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg tracking-wide text-white">Monorepo Tool</h1>
+                <div class="text-[10px] font-mono text-gray-500 uppercase tracking-wider leading-none">Microservice Manager</div>
+            </div>
+        </div>
+        
+        <!-- Right side tools (placeholder) -->
+        <div class="flex items-center gap-3">
+             <div class="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full text-xs font-mono text-gray-400">
+                <span class="w-2 h-2 bg-green-500 rounded-full inline-block mr-2 animate-pulse"></span>
+                v1.0.0
+            </div>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <nav id="main-nav" class="w-20 lg:w-20 flex-none flex flex-col items-center py-4 bg-gray-900 border-r border-gray-800 z-10">
+            <!-- Navigation items injected by JS -->
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 relative overflow-hidden bg-gray-900">
+            <!-- Background Decoration -->
+            <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-3xl"></div>
+            </div>
+
+            <!-- Content Container -->
+            <div id="app-content" class="relative z-10 w-full h-full overflow-y-auto">
+               <!-- Page content injected here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/gui/page/home.js"></script>
+    <script src="/gui/script/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.Navigation) {
+                window.Navigation.init();
+            }
+        });
+    </script>
+</body>
 </html>
