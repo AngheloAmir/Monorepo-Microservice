@@ -1,0 +1,17 @@
+{
+  "name": "monorepo-tool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "toolServer.js",
+  "scripts": {
+    "boot": "node boot.js",
+    "dev":  "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
