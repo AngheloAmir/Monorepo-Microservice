@@ -63,6 +63,14 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (url === '/api/repotemplate') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    delete require.cache[require.resolve('./tooldata/repotemplate.js')];
+    const data = require('./tooldata/repotemplate.js');
+    res.end(JSON.stringify(data));
+    return;
+  }
+
   if (url.startsWith('/gui/')) {
     const relativePath = url.slice(5);
     // basic directory traversal prevention
