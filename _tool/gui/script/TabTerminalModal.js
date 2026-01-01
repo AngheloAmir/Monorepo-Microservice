@@ -4,18 +4,19 @@ window.TabTerminal = {
     activeId: null,
 
     init: async function(targetContainer) {
-        if (document.getElementById('tab-terminal-container')) {
-            this.container = document.getElementById('tab-terminal-container');
-            return;
-        }
-        
         if (!targetContainer) {
              console.error('TabTerminal: No target container for init');
              return;
         }
 
-        // Reset state for new view
-        this.items = {};
+        // Use existing container if available (Persistence)
+        if (this.container) {
+            targetContainer.appendChild(this.container);
+            return;
+        }
+        
+        // Only reset if truly starting fresh (which shouldn't happen often with single page nav)
+        this.items = this.items || {};
         this.activeId = null;
 
         try {
@@ -27,7 +28,7 @@ window.TabTerminal = {
                 
                 // Unwrap
                 const container = div.querySelector('#tab-terminal-container');
-                targetContainer.appendChild(container);
+                targetContainer.appendChild(container); // Mount to new parent
                 div.remove();
 
                 this.container = container;
@@ -35,6 +36,10 @@ window.TabTerminal = {
         } catch (e) {
             console.error('Failed to init tab terminal', e);
         }
+    },
+
+    isRunning: function(id) {
+        return !!this.items[id];
     },
 
     toggleMinimize: function() {
@@ -187,6 +192,33 @@ window.TabTerminal = {
         } else {
             this.activeId = null;
             document.getElementById('terminal-empty-state').classList.remove('hidden');
+        }
+
+        // Try to update card state if it exists on page
+        // We need to find the ID associated with this name. 
+        // Reverse lookup or just assume we can find the button if we are on the repo page.
+        // But wait, the updateCardState requires an `id` (cache index), not name.
+        // We stored `repoData` in `this.items[id].data`.
+        // Does `repoData` have the cache `id`?
+        // In `repositorycard.js`, we replaced {id} with the cache id.
+        // `repoData` passed to `createTab` is the raw object.
+        // We should probably pass the cache ID to createTab too.
+        
+        // However, `window.repoCache` is a dictionary where values are `data`.
+        // We can search for the key where value.name === id (terminal id which is repo name).
+        
+        let cacheId = null;
+        if (window.repoCache) {
+            for (const key in window.repoCache) {
+                 if (window.repoCache[key].name === id) {
+                     cacheId = key;
+                     break;
+                 }
+            }
+        }
+        
+        if (cacheId && window.updateCardState) {
+            window.updateCardState(cacheId, false);
         }
     },
 
