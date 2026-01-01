@@ -1,5 +1,6 @@
 const { spawn } = require('child_process');
-const path = require('path');
+const path  = require('path');
+const fs    = require('fs');
 
 // Store active processes: Map<string, ChildProcess>
 const activeProcesses = new Map();
@@ -46,9 +47,8 @@ function startDevCommand(res, { directory, basecmd, cmd, id }) {
         return;
     }
 
-    const fs = require('fs');
-
-    const rootDir = path.resolve(__dirname, '../../');
+    
+    const rootDir   = path.resolve(__dirname, '../../');
     const targetDir = path.join(rootDir, directory);
 
     if (!fs.existsSync(targetDir)) {
@@ -77,15 +77,8 @@ function startDevCommand(res, { directory, basecmd, cmd, id }) {
         'Transfer-Encoding': 'chunked',
         'X-Content-Type-Options': 'nosniff' 
     });
-
-    console.log(`[RunCmdDev] Spawning [${id}] ${basecmd} ${cmd} in ${targetDir}`);
-
-    const env = { 
-        ...process.env, 
-        TERM: 'xterm-256color', // Support color
-        FORCE_COLOR: '1'
-    };
     
+    const env  = {  ...process.env, TERM: 'xterm-256color',  FORCE_COLOR: '1' };
     const args = Array.isArray(cmd) ? cmd : cmd.split(' ');
 
     const child = spawn(basecmd, args, {
@@ -93,7 +86,7 @@ function startDevCommand(res, { directory, basecmd, cmd, id }) {
         env: env,
         stdio: ['ignore', 'pipe', 'pipe'], 
         shell: true,
-        detached: false // Keep attached to manage easier, or true if we want it to survive server restart (but here we want control)
+        detached: false 
     });
 
     activeProcesses.set(id, child);
@@ -103,22 +96,19 @@ function startDevCommand(res, { directory, basecmd, cmd, id }) {
         if (!child.killed && !res.writableEnded && !res.destroyed) {
             res.write('::HEARTBEAT::\n');
         }
-    }, 5000);
+    }, 2000);
 
-    const cleanup = () => {
-        clearInterval(heartbeat);
-        // See restart/kill logic discussion
-    };
-
-    const req = res.req;
-    req.on('close', () => {
-        // Did the client disconnect?
-        if (activeProcesses.get(id) === child) {
-            console.log(`[RunCmdDev] Client disconnected for ${id}, killing process.`);
-            killProcess(id); 
-            cleanup();
-        }
-    });
+    //This is comment because browser will often close the stream
+    //prematurely. Socket is that best solution but not use that
+    // const req = res.req;
+    // req.on('close', () => {
+    //     console.log('requested to close' + id )
+    //     if (activeProcesses.get(id) === child) {
+    //         console.log(`[RunCmdDev] Client disconnected for ${id}, killing process.`);
+    //         killProcess(id); 
+    //          clearInterval(heartbeat);
+    //     }
+    // });
 
     child.stdout.on('data', (data) => {
         if (!res.writableEnded && !res.destroyed) res.write(data);
@@ -131,7 +121,7 @@ function startDevCommand(res, { directory, basecmd, cmd, id }) {
     child.on('close', (code) => {
         clearInterval(heartbeat);
         if (!res.writableEnded && !res.destroyed) {
-            res.write(`\n::EXIT::${code}\n`);
+            res.write(`\n Process Child was closed with code: ${code}\n`);
             res.end();
         }
         
@@ -155,23 +145,27 @@ function startDevCommand(res, { directory, basecmd, cmd, id }) {
 }
 
 async function stopDevCommand(res, { id, stopcmd, directory }) {
-    console.log(`[RunCmdDev] Stopping ${id}...`);
+    res.writeHead(200, {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Transfer-Encoding': 'chunked',
+        'X-Content-Type-Options': 'nosniff' 
+    });
     
     const child = activeProcesses.get(id);
-    let killed = false;
+    let killed  = false;
 
     if (child) {
-        killProcess(id); // This marks it for death, but it might take time
+        killProcess(id); 
         killed = true;
+        res.write('\n> Process was remove from the server\n')
     }
 
     // If there is a specific stop command (like 'npm run stop'), execute it too
     // This is useful for docker compose down etc.
     if (stopcmd && directory) {
-        const rootDir = path.resolve(__dirname, '../../');
+        const rootDir   = path.resolve(__dirname, '../../');
         const targetDir = path.join(rootDir, directory);
-        console.log(`[RunCmdDev] Executing stop command: ${stopcmd}`);
-        
+       
         const fs = require('fs');
         if (fs.existsSync(targetDir)) {
              try {
@@ -181,6 +175,8 @@ async function stopDevCommand(res, { id, stopcmd, directory }) {
                         shell: true,
                         stdio: 'ignore'
                     });
+
+                    res.write('\n> Stop command was executed\n')
                     
                     // Force timeout of 10s for stop command
                     const timeout = setTimeout(() => {
@@ -193,20 +189,21 @@ async function stopDevCommand(res, { id, stopcmd, directory }) {
                 });
              } catch(e) {
                  console.error('Stop command failed', e);
+                 res.write('Stop command failed')
              }
         } else {
             console.log(`[RunCmdDev] Directory not found for stop command: ${targetDir}, skipping.`);
+            res.write('Directory not found for stop command')
         }
     }
 
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ success: true, killed }));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    res.end();
 }
 
 function killProcess(id) {
     const child = activeProcesses.get(id);
     if (child) {
-        // process.kill(-child.pid) for process groups if detached
         child.kill(); 
         activeProcesses.delete(id);
     }

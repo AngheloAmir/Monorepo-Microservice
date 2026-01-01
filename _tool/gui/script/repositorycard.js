@@ -4,85 +4,41 @@ class RepositoryCard {
     }
 
     render(data, index) {
-        let html = this.template;
-        const id = data.id !== undefined ? data.id : index;
+        let html   = this.template;
 
-        // Inject encoded data for the Start Dev button
-        // We use a safe way to store the object
-        const json = JSON.stringify(data).replace(/"/g, '&quot;');
-        html = html.replace('Start Dev', 'Start Dev'); // Placeholder check? No, just replace attribute in button
-        
-        // Simpler approach: Add an onclick handler call directly if we can serialize properly, 
-        // or better, find the button by some marker and replace the attribute. 'class="... Start Dev"' is hard to regex reliably.
-        
-        // Let's replace the whole button string if possible or use a specific placeholder in template?
-        // The user didn't modify template to add a placeholder for actions.
-        // We will do a regex replacement for the button tag to add onclick.
-        
-        // Alternatively, add a temporary placeholder {action_start} in the template in next step? 
-        // Or modify the regex here to inject `onclick`
-        
-        const startAction = `onclick="window.TabTerminal.createTab(${json.replace(/"/g, "'")})"`;
-        // Warning: quoting hell. 
-        // Better: use window.startDevRepo = function(index) { ... get data from global list ... } ?
-        // But we don't store global list index easily here.
-        
-        // Best: Add ID to button and attach event listener? No, string replacement is current patterns.
-        // Let's try replacing the button tag start.
-        
-        // Target: <button class="... flex items-center justify-center gap-2">
-        // It has text "Start Dev" inside.
-        
-        // Let's modify the HTML replacement to simpler method:
-        // We will replacing the text "Start Dev" button's onclick.
-        // But the button currently has NO onclick in the template.
-        
-        // We will replace `<button class="flex-1` with `<button onclick='window.startDevRepo(${JSON.stringify(data)})' class="flex-1`
-        // Wait, JSON.stringify in HTML attribute is risky.
-        
-        // Strategy: Store data in a global cache by ID, pass ID to onclick.
-        window.repoCache = window.repoCache || {};
-        window.repoCache[id] = data;
-        
-        // Determine state
-        const isRunning = window.TabTerminal && window.TabTerminal.isRunning && window.TabTerminal.isRunning(data.name);
+        /** The ID of the process, it will unique by using type + name */
+        const processID             = data.type + '-' + data.name;
+        window.repoCache            = window.repoCache || {};
+        window.repoCache[processID] = data;
+        const isRunning             = 
+                window.TabTerminal && 
+                window.TabTerminal.isRunning && 
+                window.TabTerminal.isRunning(processID);
         
         let btnHtml = '';
         if (isRunning) {
-             btnHtml = `<button id="btn-action-${id}" onclick="window.stopDevRepo('${id}')" class="flex-1 py-2 px-3 rounded-lg bg-red-600 text-white hover:bg-red-500 transition-colors shadow-lg shadow-red-600/20 text-sm font-medium flex items-center justify-center gap-2">
+             btnHtml = `<button id="btn-action-${processID}" onclick="window.stopDevRepo('${processID}')" class="flex-1 py-2 px-3 rounded-lg bg-red-600 text-white hover:bg-red-500 transition-colors shadow-lg shadow-red-600/20 text-sm font-medium flex items-center justify-center gap-2">
                 <i class="fas fa-stop text-xs"></i> Stop
             </button>`;
         } else {
-             btnHtml = `<button id="btn-action-${id}" onclick="window.startDevRepo('${id}')" class="flex-1 py-2 px-3 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20 text-sm font-medium flex items-center justify-center gap-2">
+             btnHtml = `<button id="btn-action-${processID}" onclick="window.startDevRepo('${processID}')" class="flex-1 py-2 px-3 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20 text-sm font-medium flex items-center justify-center gap-2">
                 <i class="fas fa-play text-xs"></i> Start Dev
             </button>`;
         }
 
-        // We replace the entire button if possible, but the template has strict class structure.
-        // The previous replace logic was partial. Let's do a cleaner replacement of the whole button block if possible or just the tag.
-        
-        // Template has: <button class="flex-1 ..."> ... </button>
-        // We will try to replace the whole opening tag and inner content until closing tag, but that's hard with regex on arbitrary html.
-        // Simpler: The template provided earlier has a specific structure.
-        // Let's replace the whole default button string with our generated one.
-        // We need to identify the replace target uniquely.
-        
-        // Use a temporary identifier in template would be best, but we are editing JS.
-        // We will replace the partial string again but this time we injection the full ID to manipulate it later.
-        
+
         if (html.includes('Start Dev')) {
-             // ... button replacement logic ...
-             const btnStartMarker = '<button class="flex-1';
-             const btnEndMarker = '</button>';
-             
-             const idx1 = html.indexOf(btnStartMarker);
-             if (idx1 !== -1) {
-                 const idx2 = html.indexOf(btnEndMarker, idx1);
-                 if (idx2 !== -1) {
-                     const originalBtn = html.substring(idx1, idx2 + btnEndMarker.length);
-                     html = html.replace(originalBtn, btnHtml);
-                 }
-             }
+            const btnStartMarker = '<button class="flex-1';
+            const btnEndMarker   = '</button>';
+            
+            const idx1 = html.indexOf(btnStartMarker);
+            if (idx1 !== -1) {
+                const idx2 = html.indexOf(btnEndMarker, idx1);
+                if (idx2 !== -1) {
+                    const originalBtn = html.substring(idx1, idx2 + btnEndMarker.length);
+                    html = html.replace(originalBtn, btnHtml);
+                }
+            }
         }
 
         // Handle Open App Button visibility
@@ -98,7 +54,7 @@ class RepositoryCard {
         html = html.replace(/{description}/g, data.description || 'No description');
         html = html.replace(/{icon}/g, data.icon || 'fas fa-cube'); // default icon
         html = html.replace(/{type}/g, data.type || 'service');
-        html = html.replace(/{id}/g, id);
+        html = html.replace(/{id}/g, processID);
         html = html.replace(/{branch}/g, data.branch || 'main'); // Default branch if not provided
         
         // Command replacements
@@ -160,7 +116,7 @@ window.closeSettingsModal = function() {
 };
 
 window.updateCardState = function(id, isRunning) {
-    const btn = document.getElementById(`btn-action-${id}`);
+    const btn     = document.getElementById(`btn-action-${id}`);
     const openBtn = document.getElementById(`btn-open-url-${id}`);
 
     if (btn) {
@@ -191,8 +147,9 @@ window.updateCardState = function(id, isRunning) {
 
 window.startDevRepo = function(id) {
     const data = window.repoCache[id];
+
     if (data && window.TabTerminal) {
-        window.TabTerminal.createTab(data);
+        window.TabTerminal.createTab(id, data);
         window.updateCardState(id, true);
     } else {
         console.error('Data or TabTerminal not found', id, data);
@@ -202,12 +159,30 @@ window.startDevRepo = function(id) {
 window.stopDevRepo = function(id) {
     const data = window.repoCache[id];
     if (data && window.TabTerminal) {
-        window.TabTerminal.closeTab(data.name, data.stopcmd, data.path);
+
+    //before closing we need to disable the button to prevent spamming
+        window.disableBtnRepo(id);
+
+        window.TabTerminal.closeTab(id, data.name, data.stopcmd, data.path);
         // State update handled by UI triggers or manual?
         // Close tab logic removes the tab. We need to update button back.
-        window.updateCardState(id, false);
+        //window.updateCardState(id, false);
     }
 };
+
+window.enableBtnRepo = function(id) {
+    const btn = document.getElementById(`btn-action-${id}`);
+    btn.disabled = false;
+    btn.style.cursor = "pointer";
+    btn.style.opacity = "1";
+}
+
+window.disableBtnRepo = function(id) {
+    const btn = document.getElementById(`btn-action-${id}`);
+    btn.disabled = true;
+    btn.style.cursor = "not-allowed";
+    btn.style.opacity = "0.6";
+}
 
 window.saveRepo = async function() {
     const id = window.activeSettingsId;

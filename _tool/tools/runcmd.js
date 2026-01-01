@@ -76,14 +76,6 @@ function executeCommand(res, { directory, basecmd, cmd }) {
         res.write('::HEARTBEAT::\n');
     }, 2000);
 
-    const cleanup = () => {
-        clearInterval(heartbeat);
-        try { child.kill(); } catch(e) {}
-    };
-
-    req = res.req; // Get the request object from response
-    req.on('close', cleanup); // Client disconnected
-
     child.stdout.on('data', (data) => {
         res.write(data);
     });
@@ -94,7 +86,7 @@ function executeCommand(res, { directory, basecmd, cmd }) {
 
     child.on('close', (code) => {
         clearInterval(heartbeat);
-        res.write(`\n::EXIT::${code}\n`);
+        res.write(`\n Process Child was closed with code: ${code}\n`);
         res.end();
     });
 
