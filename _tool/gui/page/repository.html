@@ -1,20 +1,23 @@
 <div class="absolute inset-0 flex flex-col overflow-hidden bg-gray-900">
-    <div class=" relative flex-1 overflow-y-auto relative scrollbar-thin scrollbar-thumb-gray-700">
+    <div class=" relative flex-1 relative  overflow-hidden">
     <!-- Page Header -->
-    <div class="px-4 py-2 border-b border-gray-800 bg-gray-900/95 backdrop-blur-md z-40 shadow-sm">
+    <!--
+    <div class=" relative flex-1 overflow-y-auto relative scrollbar-thin scrollbar-thumb-gray-700 overflow-hidden">
+     <div class="px-4 py-2 border-b border-gray-800 bg-gray-900/95 backdrop-blur-md z-40 shadow-sm">
         <h1 class="text-2xl font-bold text-white flex items-center gap-3">
             <i class="fas fa-code-branch text-blue-500"></i>
             Repositories
         </h1>
         <p class="text-gray-400 text-sm mt-1">Manage all microservices and applications within the monorepo.</p>
     </div>
+    -->
 
     <!-- Content Sections (Columnar Layout) -->
-    <div class="flex-1 overflow-hidden p-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 h-full">
+    <div class="flex-1 overflow-hidden p-2 h-[calc(100vh - 72px - 82px - 200px )]">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 h-full">
             
             <!-- Backend Column -->
-            <section id="section-backend" class="flex flex-col bg-gray-800/30 border border-gray-700/50 rounded-xl overflow-hidden h-full">
+            <section id="section-backend" class="h-[530px] flex flex-col bg-gray-800/30 border border-gray-700/50 rounded-xl overflow-hidden">
                 <!-- Column Header -->
                 <div class="p-3 border-b border-gray-700/50 bg-gray-800/80 backdrop-blur-sm flex justify-between items-center shrink-0">
                     <h2 class="font-bold text-gray-200 text-sm uppercase tracking-wider flex items-center gap-2">
@@ -28,7 +31,7 @@
             </section>
             
             <!-- Database Column -->
-            <section id="section-database" class="flex flex-col bg-gray-800/30 border border-gray-700/50 rounded-xl overflow-hidden h-full">
+            <section id="section-database" class="h-[530px] flex flex-col bg-gray-800/30 border border-gray-700/50 rounded-xl overflow-hidden">
                 <div class="p-3 border-b border-gray-700/50 bg-gray-800/80 backdrop-blur-sm flex justify-between items-center shrink-0">
                      <h2 class="font-bold text-gray-200 text-sm uppercase tracking-wider flex items-center gap-2">
                         <div class="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]"></div>
@@ -40,7 +43,7 @@
             </section>
 
              <!-- Frontend Column -->
-            <section id="section-frontend" class="flex flex-col bg-gray-800/30 border border-gray-700/50 rounded-xl overflow-hidden h-full">
+            <section id="section-frontend" class="h-[530px] flex flex-col bg-gray-800/30 border border-gray-700/50 rounded-xl overflow-hidden">
                  <div class="p-3 border-b border-gray-700/50 bg-gray-800/80 backdrop-blur-sm flex justify-between items-center shrink-0">
                     <h2 class="font-bold text-gray-200 text-sm uppercase tracking-wider flex items-center gap-2">
                         <div class="w-2 h-2 rounded-full bg-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.5)]"></div>
@@ -52,7 +55,7 @@
             </section>
             
              <!-- Service Column -->
-            <section id="section-service" class="flex flex-col bg-gray-800/30 border border-gray-700/50 rounded-xl overflow-hidden h-full">
+            <section id="section-service" class="h-[530px] flex flex-col bg-gray-800/30 border border-gray-700/50 rounded-xl overflow-hidden">
                   <div class="p-3 border-b border-gray-700/50 bg-gray-800/80 backdrop-blur-sm flex justify-between items-center shrink-0">
                      <h2 class="font-bold text-gray-200 text-sm uppercase tracking-wider flex items-center gap-2">
                         <div class="w-2 h-2 rounded-full bg-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.5)]"></div>

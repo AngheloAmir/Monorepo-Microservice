@@ -47,7 +47,6 @@ function startDevCommand(res, { directory, basecmd, cmd, id }) {
         return;
     }
 
-    
     const rootDir   = path.resolve(__dirname, '../../');
     const targetDir = path.join(rootDir, directory);
 
@@ -56,7 +55,7 @@ function startDevCommand(res, { directory, basecmd, cmd, id }) {
         res.write(`Error: Directory not found: ${directory}\n`);
         res.end();
         return;
-    }
+    } 
 
     // Safety check: specific to npm/yarn/pnpm commands
     // They tend to traverse up directories if package.json is missing.
