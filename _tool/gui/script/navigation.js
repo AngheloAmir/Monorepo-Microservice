@@ -9,10 +9,11 @@ window.Navigation = {
     
     settingsItem: { id: 'settings', label: 'Setting', icon: 'fa-cog', component: 'settings' },
     
-    activeId: 'home',
+    activeId: null, // Start null so first navigation always triggers load
     
     init: function() {
         this.render();
+        // Load whatever defaults or maybe check URL hash in future?
         this.navigateTo('home');
     },
 
@@ -74,12 +75,20 @@ window.Navigation = {
     },
     
     navigateTo: function(id) {
+        if (this.activeId === id) {
+             // Already on this page
+             if (id === 'repository' && window.loadRepositoryData) {
+                 // Initial load might trigger this if we didn't handle null activeId correctly,
+                 // but since we set activeId=null, this block only runs on manual clicks.
+                 window.loadRepositoryData();
+             }
+             return;
+        }
+
         this.activeId = id;
         this.render(); // Re-render sidebar to update active state look
         
         if (window.PageLoader) {
-            // Map 'repo' to 'repository' if needed, or stick to id as filename
-            // For now assuming id matches filename
             window.PageLoader.load(id); 
         } else {
             console.error('PageLoader not found');

@@ -3,6 +3,7 @@ const path     = require('path');
 const PORT     = process.env.PORT || 3200;
 const { serveFile, serveGUIFile } = require('./tools/serveGUIFile');
 const { serveRepositoryData }     = require('./tools/apiRespository');
+const { generateTemplate }        = require('./tools/templateGenerator');
 
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -23,6 +24,25 @@ const server = http.createServer((req, res) => {
       return serveRepositoryData(res, req, 'repository.js');
     case '/api/repotemplate':
       return serveRepositoryData(res, req, 'repotemplate.js');
+    case '/api/create-repository':
+        if (req.method === 'POST') {
+            let body = '';
+            req.on('data', chunk => body += chunk);
+            req.on('end', async () => {
+                try {
+                    const data = JSON.parse(body);
+                    const result = await generateTemplate(data);
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify(result));
+                } catch (e) {
+                    console.error('Error creating repository:', e);
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: false, error: e.message }));
+                }
+            });
+            return;
+        }
+        break;
 
     default:
       if (req.url.startsWith('/gui/')) {
