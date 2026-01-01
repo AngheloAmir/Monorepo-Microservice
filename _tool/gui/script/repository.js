@@ -66,9 +66,10 @@
                     });
                     container.innerHTML = html;
                 } else if (container) {
-                     // Explicitly handle empty sections if valid container exists
-                     // sectionEl.classList.add('hidden'); // Optional: hide if empty?
-                     // container.innerHTML = '';
+                     // Explicitly handle empty sections
+                     sectionEl.classList.add('hidden'); 
+                     container.innerHTML = '';
+                     countEl.textContent = '0';
                 }
             });
 

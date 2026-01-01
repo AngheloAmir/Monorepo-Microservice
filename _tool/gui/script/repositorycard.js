@@ -71,42 +71,25 @@ class RepositoryCard {
         // We will replace the partial string again but this time we injection the full ID to manipulate it later.
         
         if (html.includes('Start Dev')) {
-             // We construct a specific regex to find the button containing "Start Dev"
-             // Assuming the template corresponds to Step 80 content
-             // <button class="flex-1 ..."> ... Start Dev ... </button>
-             
-             // Let's replace the innerHTML of `repositorycard.html` where the button is defined in Step 80?
-             // No, we are in JS.
-             
-             // Hacky but effective: replace the whole expected button class string start
-             // Or better, just inject the ID logic again but handle text change.
-             
-             // Since we have full control over `btnHtml`, let's try to swap the standard button.
-             // Standard button signature from template:
-             // <button class="flex-1 py-2 px-3 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20 text-sm font-medium flex items-center justify-center gap-2">
-             //    <i class="fas fa-play text-xs"></i> Start Dev
-             // </button>
-             
-             // We can replace "Start Dev" text and "bg-blue-600" classes conditionally?
-             // Too messy.
-             
-             // Let's use the replacement to inject the ID and Onclick, then use DOM manipulation after render? No, render returns string.
-             
-             // Let's just generate the button HTML and replace the hardcoded button string in the template.
-             // We need to match the start of the button tag.
+             // ... button replacement logic ...
              const btnStartMarker = '<button class="flex-1';
              const btnEndMarker = '</button>';
              
-             // Locate start
              const idx1 = html.indexOf(btnStartMarker);
              if (idx1 !== -1) {
                  const idx2 = html.indexOf(btnEndMarker, idx1);
                  if (idx2 !== -1) {
                      const originalBtn = html.substring(idx1, idx2 + btnEndMarker.length);
-                     // Replace it entirely
                      html = html.replace(originalBtn, btnHtml);
                  }
              }
+        }
+
+        // Handle Open App Button visibility
+        // Defaults to 'hidden'. If running, switch to 'flex'.
+        // We match strictly the start of the class string we injected in HTML
+        if (isRunning) {
+            html = html.replace('class="hidden px-2', 'class="flex px-2');
         }
 
         // Replace basic placeholders
@@ -178,16 +161,31 @@ window.closeSettingsModal = function() {
 
 window.updateCardState = function(id, isRunning) {
     const btn = document.getElementById(`btn-action-${id}`);
-    if (!btn) return;
-    
-    if (isRunning) {
-        btn.innerHTML = '<i class="fas fa-stop text-xs"></i> Stop';
-        btn.className = "flex-1 py-2 px-3 rounded-lg bg-red-600 text-white hover:bg-red-500 transition-colors shadow-lg shadow-red-600/20 text-sm font-medium flex items-center justify-center gap-2";
-        btn.setAttribute('onclick', `window.stopDevRepo('${id}')`);
-    } else {
-        btn.innerHTML = '<i class="fas fa-play text-xs"></i> Start Dev';
-        btn.className = "flex-1 py-2 px-3 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20 text-sm font-medium flex items-center justify-center gap-2";
-        btn.setAttribute('onclick', `window.startDevRepo('${id}')`);
+    const openBtn = document.getElementById(`btn-open-url-${id}`);
+
+    if (btn) {
+        if (isRunning) {
+            btn.innerHTML = '<i class="fas fa-stop text-xs"></i> Stop';
+            btn.className = "flex-1 py-2 px-3 rounded-lg bg-red-600 text-white hover:bg-red-500 transition-colors shadow-lg shadow-red-600/20 text-sm font-medium flex items-center justify-center gap-2";
+            btn.setAttribute('onclick', `window.stopDevRepo('${id}')`);
+            
+            // Show Open Button
+            if(openBtn) {
+                openBtn.classList.remove('hidden');
+                openBtn.classList.add('flex');
+            }
+
+        } else {
+            btn.innerHTML = '<i class="fas fa-play text-xs"></i> Start Dev';
+            btn.className = "flex-1 py-2 px-3 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20 text-sm font-medium flex items-center justify-center gap-2";
+            btn.setAttribute('onclick', `window.startDevRepo('${id}')`);
+            
+            // Hide Open Button
+             if(openBtn) {
+                openBtn.classList.add('hidden');
+                openBtn.classList.remove('flex');
+            }
+        }
     }
 };
 
