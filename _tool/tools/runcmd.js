@@ -25,6 +25,16 @@ function executeCommand(res, { directory, basecmd, cmd }) {
 
     const rootDir = path.resolve(__dirname, '../../');
     const targetDir = path.join(rootDir, directory);
+    const fs = require('fs'); // Ensure fs is available
+
+    if (['npm', 'yarn', 'pnpm'].includes(basecmd)) {
+        const pkgJwt = path.join(targetDir, 'package.json');
+        if (!fs.existsSync(pkgJwt)) {
+             res.writeHead(400, { 'Content-Type': 'text/plain' });
+             res.end(`Error: package.json not found in ${directory}. Aborting.`);
+             return;
+        }
+    }
 
     // Prepare headers for streaming
     res.writeHead(200, {

@@ -58,6 +58,19 @@ function startDevCommand(res, { directory, basecmd, cmd, id }) {
         return;
     }
 
+    // Safety check: specific to npm/yarn/pnpm commands
+    // They tend to traverse up directories if package.json is missing.
+    // We want to strictly enforce them to run only if package.json exists in targetDir.
+    if (['npm', 'yarn', 'pnpm'].includes(basecmd)) {
+        const pkgJwt = path.join(targetDir, 'package.json');
+        if (!fs.existsSync(pkgJwt)) {
+             res.writeHead(400, { 'Content-Type': 'text/plain' });
+             res.write(`Error: package.json not found in ${directory}.\n`);
+             res.end();
+             return;
+        }
+    }
+
     // Prepare headers for streaming
     res.writeHead(200, {
         'Content-Type': 'text/plain; charset=utf-8',
