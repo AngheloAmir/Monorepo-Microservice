@@ -88,13 +88,16 @@ async function registerRepository(data) {
         icon:        data.icon || '',
         type:        data.type,
         path:        `/${data.type}/${data.name}`,
-        branch:      "master",
         devurl:      data.devurl || '',
         produrl:     "",
         startcmd:    data.startcmd || '',
         stopcmd:     data.stopcmd || '',
         buildcmd:    data.buildcmd || '',
-        template:    data.template || ''
+        lintcmd:     data.lintcmd || '',
+        template:    data.template || '',
+        giturl:      data.giturl || '',
+        gitorigin:   data.gitorigin || 'origin',
+        gitbranch:   data.gitbranch || 'master'
     };
 
     if (repoData[data.type]) {

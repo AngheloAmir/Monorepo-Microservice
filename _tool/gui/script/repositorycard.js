@@ -7,9 +7,14 @@ class RepositoryCard {
         let html   = this.template;
 
         /** The ID of the process, it will unique by using type + name */
+        /** The ID of the process, it will unique by using type + name */
         const processID             = data.type + '-' + data.name;
+        
+        // Use the index-based ID (e.g. 'service-0') for cache and DOM IDs to match backend expectation
+        const uniqueID = index; 
         window.repoCache            = window.repoCache || {};
-        window.repoCache[processID] = data;
+        window.repoCache[uniqueID]  = data;
+        
         const isRunning             = 
                 window.TabTerminal && 
                 window.TabTerminal.isRunning && 
@@ -17,11 +22,11 @@ class RepositoryCard {
         
         let btnHtml = '';
         if (isRunning) {
-             btnHtml = `<button id="btn-action-${processID}" onclick="window.stopDevRepo('${processID}')" class="flex-1 py-2 px-3 rounded-lg bg-red-600 text-white hover:bg-red-500 transition-colors shadow-lg shadow-red-600/20 text-sm font-medium flex items-center justify-center gap-2">
+             btnHtml = `<button id="btn-action-${uniqueID}" onclick="window.stopDevRepo('${uniqueID}')" class="flex-1 py-2 px-3 rounded-lg bg-red-600 text-white hover:bg-red-500 transition-colors shadow-lg shadow-red-600/20 text-sm font-medium flex items-center justify-center gap-2">
                 <i class="fas fa-stop text-xs"></i> Stop
             </button>`;
         } else {
-             btnHtml = `<button id="btn-action-${processID}" onclick="window.startDevRepo('${processID}')" class="flex-1 py-2 px-3 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20 text-sm font-medium flex items-center justify-center gap-2">
+             btnHtml = `<button id="btn-action-${uniqueID}" onclick="window.startDevRepo('${uniqueID}')" class="flex-1 py-2 px-3 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20 text-sm font-medium flex items-center justify-center gap-2">
                 <i class="fas fa-play text-xs"></i> Start Dev
             </button>`;
         }
@@ -42,20 +47,20 @@ class RepositoryCard {
         }
 
         // Handle Open App Button visibility
-        // Defaults to 'hidden'. If running, switch to 'flex'.
-        // We match strictly the start of the class string we injected in HTML
         if (isRunning) {
             html = html.replace('class="hidden px-2', 'class="flex px-2');
         }
 
         // Replace basic placeholders
-        // Text replacement handles both attribute injection and content injection
         html = html.replace(/{name}/g, data.name || 'Untitled');
         html = html.replace(/{description}/g, data.description || 'No description');
-        html = html.replace(/{icon}/g, data.icon || 'fas fa-cube'); // default icon
+        html = html.replace(/{icon}/g, data.icon || 'fas fa-cube');
         html = html.replace(/{type}/g, data.type || 'service');
-        html = html.replace(/{id}/g, processID);
-        html = html.replace(/{branch}/g, data.branch || 'main'); // Default branch if not provided
+        
+        // IMPORTANT: {id} must match the backend format (section-index)
+        html = html.replace(/{id}/g, uniqueID);
+        
+        html = html.replace(/{gitbranch}/g, data.gitbranch || 'master'); 
         
         // Command replacements
         html = html.replace(/{devurl}/g, data.devurl || '#');
@@ -63,6 +68,7 @@ class RepositoryCard {
         html = html.replace(/{startcmd}/g, data.startcmd || 'npm run dev');
         html = html.replace(/{stopcmd}/g, data.stopcmd || 'npm run stop');
         html = html.replace(/{buildcmd}/g, data.buildcmd || 'npm run build');
+        html = html.replace(/{lintcmd}/g, data.lintcmd || 'npm run lint');
         html = html.replace(/{template}/g, data.template || 'None');
         
         return html;
@@ -105,6 +111,12 @@ window.openSettingsModal = function(id) {
     document.getElementById('modal-input-start').value = data.startcmd || '';
     document.getElementById('modal-input-stop').value = data.stopcmd || '';
     document.getElementById('modal-input-build').value = data.buildcmd || '';
+    document.getElementById('modal-input-lint').value = data.lintcmd || 'npm run lint';
+
+    // Git Config
+    document.getElementById('modal-input-giturl').value = data.giturl || '';
+    document.getElementById('modal-input-gitorigin').value = data.gitorigin || 'origin';
+    document.getElementById('modal-input-gitbranch').value = data.gitbranch || 'master';
    
     // Show modal
     modal.classList.remove('hidden');
@@ -137,7 +149,7 @@ window.updateCardState = function(id, isRunning) {
             btn.setAttribute('onclick', `window.startDevRepo('${id}')`);
             
             // Hide Open Button
-             if(openBtn) {
+            if(openBtn) {
                 openBtn.classList.add('hidden');
                 openBtn.classList.remove('flex');
             }
@@ -196,6 +208,10 @@ window.saveRepo = async function() {
         startcmd: document.getElementById('modal-input-start').value,
         stopcmd: document.getElementById('modal-input-stop').value,
         buildcmd: document.getElementById('modal-input-build').value,
+        lintcmd: document.getElementById('modal-input-lint').value,
+        giturl: document.getElementById('modal-input-giturl').value,
+        gitorigin: document.getElementById('modal-input-gitorigin').value,
+        gitbranch: document.getElementById('modal-input-gitbranch').value,
     };
     
     try {

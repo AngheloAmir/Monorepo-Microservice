@@ -78,115 +78,146 @@
     </div>
     
     <!-- Add Repository Modal -->
-    <div id="add-repo-modal" class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
-        <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[90vh] animate-fade-in relative">
+    <div id="add-repo-modal" class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4" onclick="if(event.target === this) closeAddModal()">
+        <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh] animate-fade-in relative">
             
             <!-- Modal Header -->
-            <div class="px-4 py-2 border-b border-gray-700 flex justify-between items-center bg-gray-800/50 rounded-t-2xl">
-                <h3 class="text-lg font-bold text-white">Create New Repository</h3>
+            <div class="px-6 py-4 border-b border-gray-700 flex justify-between items-center bg-gray-800/50 rounded-t-2xl">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fas fa-plus-circle text-blue-500"></i> Create New Repository
+                </h3>
                 <button onclick="closeAddModal()" class="text-gray-400 hover:text-white transition-colors">
                     <i class="fas fa-times text-lg"></i>
                 </button>
             </div>
 
-            <!-- Modal Body (Redesigned) -->
-            <div class="p-5 space-y-4">
+            <!-- Modal Body -->
+            <div class="px-6 py-2 space-y-4 overflow-y-auto">
                 
-                <!-- Row 1: Name & Icon -->
-                <div class="flex gap-4">
-                    <div class="flex-[3] space-y-1">
-                        <label class="text-[16px] uppercase font-bold text-gray-500 tracking-wider">Name</label>
-                        <input type="text" id="repo-name" value="my-service" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" >
+                <!-- Identity: Icon & Name -->
+                <div class="grid grid-cols-4 gap-4">
+                     <!-- Icon -->
+                    <div class="col-span-1 space-y-1">
+                        <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Icon</label>
+                        <div class="relative">
+                            <input type="text" id="repo-icon" value="fas fa-cube" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:border-blue-500 outline-none pl-9" oninput="document.getElementById('add-icon-preview').className = this.value">
+                                <div class="absolute left-3 top-1/2 -translate-y-1/2 w-4 flex justify-center text-gray-500">
+                                <i id="add-icon-preview" class="fas fa-cube"></i>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex-1 space-y-1">
-                        <label class="text-[16px] uppercase font-bold text-gray-500 tracking-wider">Icon</label>
-                        <input type="text" id="repo-icon" value="fas fa-cube" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                    <!-- Name -->
+                     <div class="col-span-3 space-y-1">
+                        <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Name</label>
+                        <input type="text" id="repo-name" value="my-service" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:border-blue-500 outline-none font-bold tracking-wide">
                     </div>
                 </div>
 
-                <!-- Row 2: Description -->
-                <div class="space-y-1">
-                    <label class="text-[16px] uppercase font-bold text-gray-500 tracking-wider">Description</label>
-                    <textarea id="repo-desc" rows="1" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors resize-none" placeholder="Brief description..."></textarea>
-                </div>
-
-                <!-- Row 3: Type Chooser -->
+                <!-- Description -->
                  <div class="space-y-1">
-                    <label class="text-[16px] uppercase font-bold text-gray-500 tracking-wider">Type</label>
-                    <div class="grid grid-cols-4 gap-3">
-                        <button type="button" onclick="selectType('backend')" class="type-btn group flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg border border-gray-700 bg-gray-900/50 hover:bg-gray-800 transition-all" data-type="backend">
-                            <i class="fas fa-server text-blue-400 text-md"></i>
-                            <span class="text-[16px] font-medium text-gray-400 group-hover:text-white">Backend</span>
+                    <textarea id="repo-desc" rows="2" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 focus:border-blue-500 outline-none resize-none" placeholder="Brief description..."></textarea>
+                </div>
+
+                <!-- Type Selection -->
+                 <div class="space-y-1">
+                    <div class="grid grid-cols-4 gap-2">
+                        <button type="button" onclick="selectType('backend')" class="type-btn group flex flex-col items-center justify-center gap-1 p-2 rounded-lg border border-gray-700 bg-gray-900/50 hover:bg-gray-800 transition-all" data-type="backend">
+                            <i class="fas fa-server text-blue-400 text-sm"></i>
+                            <span class="text-[10px] font-bold text-gray-400 group-hover:text-white uppercase">Backend</span>
                         </button>
-                        <button type="button" onclick="selectType('frontend')" class="type-btn group flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg border border-gray-700 bg-gray-900/50 hover:bg-gray-800 transition-all" data-type="frontend">
-                            <i class="fas fa-desktop text-pink-400 text-md"></i>
-                            <span class="text-[16px] font-medium text-gray-400 group-hover:text-white">Frontend</span>
+                        <button type="button" onclick="selectType('database')" class="type-btn group flex flex-col items-center justify-center gap-1 p-2 rounded-lg border border-gray-700 bg-gray-900/50 hover:bg-gray-800 transition-all" data-type="database">
+                            <i class="fas fa-database text-purple-400 text-sm"></i>
+                             <span class="text-[10px] font-bold text-gray-400 group-hover:text-white uppercase">Database</span>
                         </button>
-                         <button type="button" onclick="selectType('database')" class="type-btn group flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg border border-gray-700 bg-gray-900/50 hover:bg-gray-800 transition-all" data-type="database">
-                            <i class="fas fa-database text-purple-400 text-md"></i>
-                            <span class="text-[16px] font-medium text-gray-400 group-hover:text-white">Database</span>
+                         <button type="button" onclick="selectType('frontend')" class="type-btn group flex flex-col items-center justify-center gap-1 p-2 rounded-lg border border-gray-700 bg-gray-900/50 hover:bg-gray-800 transition-all" data-type="frontend">
+                            <i class="fas fa-desktop text-pink-400 text-sm"></i>
+                             <span class="text-[10px] font-bold text-gray-400 group-hover:text-white uppercase">Frontend</span>
                         </button>
-                         <button type="button" onclick="selectType('service')" class="type-btn active group flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg border border-blue-500 bg-blue-500/10 transition-all" data-type="service">
-                            <i class="fas fa-microchip text-yellow-400 text-md"></i>
-                            <span class="text-[16px] font-medium text-blue-100">Service</span>
+                         <button type="button" onclick="selectType('service')" class="type-btn active group flex flex-col items-center justify-center gap-1 p-2 rounded-lg border border-blue-500 bg-blue-500/10 transition-all" data-type="service">
+                            <i class="fas fa-microchip text-yellow-400 text-sm"></i>
+                            <span class="text-[10px] font-bold text-blue-100 uppercase">Service</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Row 4: URLs and Commands -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                         <label class="text-[16px] uppercase font-bold text-gray-500 tracking-wider">Dev URL</label>
-                        <input type="text" id="repo-devurl" value="http://localhost:3000" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-blue-300">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[16px] uppercase font-bold text-green-600/70 tracking-wider">Start Cmd</label>
-                        <input type="text" id="repo-start" value="npm run dev" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-gray-300">
-                    </div>
-                     <div class="space-y-1">
-                        <label class="text-[16px] uppercase font-bold text-red-500/70 tracking-wider">Stop Cmd</label>
-                        <input type="text" id="repo-stop" value="npm run stop" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-gray-300">
-                    </div>
-                     <div class="space-y-1">
-                         <label class="text-[16px] uppercase font-bold text-yellow-500/70 tracking-wider">Build Cmd</label>
-                        <input type="text" id="repo-build" value="npm run build" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-gray-300">
+                <!-- URLs -->
+                <div class="space-y-1">
+                    <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">URLs</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="repo-devurl" value="http://localhost:3000" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-blue-300 focus:border-blue-500 outline-none">
+                         <input type="text" id="repo-produrl" placeholder="Prod URL (Optional)" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-blue-300 focus:border-blue-500 outline-none">
                     </div>
                 </div>
 
-                <!-- Row 5: Init & Template -->
-                 <div class="space-y-1 relative">
-                     <label class="text-[16px] uppercase font-bold text-purple-500/70 tracking-wider">Template (leave it blank it it will create a only a folder)</label>
-                     <div class="flex gap-2">
-                        <input type="text" id="repo-init" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-gray-300" placeholder="">
-                        <button onclick="toggleTemplateMenu()" class="px-4 bg-gray-700 hover:bg-gray-600 text-white rounded-lg border border-gray-600 text-xs font-bold uppercase tracking-wider transition-colors whitespace-nowrap">
-                            Template
+                 <!-- Git Config -->
+                 <div class="space-y-1">
+                        <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Git Config</label>
+                        <div class="grid grid-cols-1 gap-2">
+                             <input type="text" id="repo-giturl" placeholder="Git Remote URL" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
+                             <div class="grid grid-cols-2 gap-2">
+                                  <input type="text" id="repo-gitorigin" value="origin" placeholder="Origin" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
+                                  <input type="text" id="repo-gitbranch" value="master" placeholder="Branch" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
+                             </div>
+                        </div>
+                </div>
+
+                <!-- Template & Commands -->
+                <div class="space-y-1 relative">
+                     <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Template & Commands</label>
+                     
+                     <!-- Template Input -->
+                     <div class="flex gap-2 mb-2">
+                        <input type="text" id="repo-init" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-purple-300 focus:border-purple-500 outline-none" placeholder="Template Name">
+                        <button onclick="toggleTemplateMenu()" class="px-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg border border-gray-600 text-xs font-bold uppercase tracking-wider transition-colors whitespace-nowrap">
+                            Select
                         </button>
                      </div>
-                     <!-- Template Dropdown -->
-                     <div id="template-menu" class="hidden absolute bottom-full right-0 mb-2 w-full max-w-sm bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-50 overflow-hidden">
+                     <!-- Template Menu Dropdown remains same ID -->
+                     <div id="template-menu" class="hidden absolute top-8 right-0 w-full max-w-xs bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-50 overflow-hidden">
                          <div class="p-2 border-b border-gray-700 bg-gray-900/50 flex justify-between items-center">
-                             <span class="text-[16px] font-bold text-gray-400 ml-2">SELECT A TEMPLATE</span>
+                             <span class="text-xs font-bold text-gray-400 ml-2">SELECT A TEMPLATE</span>
                              <button onclick="toggleTemplateMenu()" class="text-gray-500 hover:text-white px-2"><i class="fas fa-times text-xs"></i></button>
                          </div>
                          <div id="template-list" class="max-h-40 overflow-y-auto p-1">
-                             <div class="p-3 text-center text-gray-500 text-[16px]">Loading...</div>
+                             <div class="p-3 text-center text-gray-500 text-xs">Loading...</div>
                          </div>
                      </div>
+
+                     <!-- Commands List -->
+                     <div class="grid grid-cols-1 gap-2">
+                            <div class="flex gap-2 items-center">
+                                    <span class="w-16 text-xs font-mono text-gray-500 text-right">Start</span>
+                                    <input type="text" id="repo-start" value="npm run dev" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-green-400 focus:border-green-500 outline-none">
+                            </div>
+                            <div class="flex gap-2 items-center">
+                                    <span class="w-16 text-xs font-mono text-gray-500 text-right">Stop</span>
+                                    <input type="text" id="repo-stop" value="npm run stop" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-red-400 focus:border-red-500 outline-none">
+                            </div>
+                            <div class="flex gap-2 items-center">
+                                    <span class="w-16 text-xs font-mono text-gray-500 text-right">Build</span>
+                                    <input type="text" id="repo-build" value="npm run build" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-yellow-400 focus:border-yellow-500 outline-none">
+                            </div>
+                            <div class="flex gap-2 items-center">
+                                    <span class="w-16 text-xs font-mono text-gray-500 text-right">Lint</span>
+                                    <input type="text" id="repo-lint" value="npm run lint" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-pink-400 focus:border-pink-500 outline-none">
+                            </div>
+                    </div>
+
                 </div>
 
             </div>
 
              <!-- Modal Footer -->
             <div class="px-6 py-4 border-t border-gray-700 bg-gray-800/50 rounded-b-2xl flex justify-end gap-3">
-                <button onclick="closeAddModal()" class="px-5 py-2.5 rounded-xl border border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white font-medium transition-colors">
+                <button onclick="closeAddModal()" class="px-5 py-2.5 rounded-xl border border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white font-medium transition-colors text-sm">
                     Cancel
                 </button>
-                <button onclick="createRepository()" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-500 font-medium shadow-lg shadow-blue-600/20 transition-all transform hover:-translate-y-0.5">
+                <button onclick="createRepository()" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-500 font-medium shadow-lg shadow-blue-600/20 transition-all transform hover:-translate-y-0.5 text-sm">
                     Create Repository
                 </button>
             </div>
         </div>
-        </div>
+    </div>
     
     </div> <!-- End Scrollable Area -->
 
@@ -205,7 +236,7 @@
 
 </div>
     <!-- Global Repository Settings Modal -->
-    <div id="repository-settings-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center bg-gray-900/80 backdrop-blur-sm p-4 animate-fade-in" onclick="if(event.target === this) window.closeSettingsModal()">
+    <div id="repository-settings-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center bg-gray-900/80 backdrop-blur-sm animate-fade-in" onclick="if(event.target === this) window.closeSettingsModal()">
         
         <!-- Modal Content -->
         <div class="bg-gray-800 border border-gray-700 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
@@ -221,11 +252,11 @@
             </div>
 
             <!-- Scrollable Body -->
-            <div class="p-6 space-y-4 overflow-y-auto">
+            <div class="px-6 py-2 space-y-4 overflow-y-auto">
                 
                     <!-- Identity -->
                     <div class="grid grid-cols-4 gap-4">
-                        <div class="col-span-1 space-y-1">
+                        <div class="col-span-2 space-y-1">
                             <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Icon</label>
                             <div class="relative">
                                 <input type="text" id="modal-input-icon" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:border-blue-500 outline-none pl-9">
@@ -234,13 +265,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-span-3 space-y-1">
+                        
+                        <div class="col-span-2 space-y-1">
                              <div class="grid grid-cols-2 gap-4 h-full items-end pb-1">
                                 <div>
                                     <label class="text-xs text-gray-500 font-bold uppercase tracking-wider block mb-1">Name</label>
                                     <div id="modal-text-name" class="text-lg font-bold text-white tracking-wide truncate"></div>
                                 </div>
-                                <div>
+                                <div class="hidden">
                                     <label class="text-xs text-gray-500 font-bold uppercase tracking-wider block mb-1">Type</label>
                                     <div id="modal-text-type" class="text-sm font-mono text-blue-400 bg-blue-400/10 px-2 py-1 rounded inline-block"></div>
                                 </div>
@@ -250,22 +282,30 @@
                     
                     <!-- Description -->
                     <div class="space-y-1">
-                        <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Description</label>
                         <textarea id="modal-input-desc" rows="3" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 focus:border-blue-500 outline-none resize-none"></textarea>
                     </div>
 
                     <!-- URLs -->
-                    <div class="space-y-1">
-                        <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">URLs</label>
                         <div class="grid grid-cols-2 gap-3">
                         <input type="text" id="modal-input-devurl" placeholder="Dev URL" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-blue-300 focus:border-blue-500 outline-none">
                         <input type="text" id="modal-input-produrl" placeholder="Prod URL" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-blue-300 focus:border-blue-500 outline-none">
+                        </div>
+                    
+                    
+                    <!-- Git Config -->
+                    <div class="space-y-1">
+                        <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Git Config</label>
+                        <div class="grid grid-cols-1 gap-2">
+                             <input type="text" id="modal-input-giturl" placeholder="Git Remote URL" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
+                             <div class="grid grid-cols-2 gap-2">
+                                  <input type="text" id="modal-input-gitorigin" placeholder="Origin (origin)" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
+                                  <input type="text" id="modal-input-gitbranch" placeholder="Branch (master)" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
+                             </div>
                         </div>
                     </div>
 
                     <!-- Commands -->
                     <div class="space-y-1">
-                        <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Commands</label>
                         <div class="grid grid-cols-1 gap-2">
                             <div class="flex gap-2 items-center">
                                     <span class="w-16 text-xs font-mono text-gray-500 text-right">Start</span>
@@ -279,10 +319,16 @@
                                     <span class="w-16 text-xs font-mono text-gray-500 text-right">Build</span>
                                     <input type="text" id="modal-input-build" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-yellow-400 focus:border-yellow-500 outline-none">
                             </div>
-                                <div class="flex gap-2 items-center">
+                             <div class="flex gap-2 items-center">
+                                    <span class="w-16 text-xs font-mono text-gray-500 text-right">Lint</span>
+                                    <input type="text" id="modal-input-lint" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-pink-400 focus:border-pink-500 outline-none">
+                            </div>
+                               
+                                <div class="hidden flex gap-2 items-center">
                                     <span class="w-16 text-xs font-mono text-gray-500 text-right">Template</span>
                                     <div id="modal-text-template" class="flex-1 px-3 py-2 text-xs font-mono text-purple-400 truncate"></div>
                                 </div>
+                            
                         </div>
                     </div>
             </div>

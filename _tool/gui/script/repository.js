@@ -205,10 +205,16 @@
             icon: document.getElementById('repo-icon').value,
             type: selectedType, 
             devurl: document.getElementById('repo-devurl').value,
+            produrl: document.getElementById('repo-produrl').value,
             startcmd: document.getElementById('repo-start').value,
             stopcmd: document.getElementById('repo-stop').value,
             buildcmd: document.getElementById('repo-build').value,
+            lintcmd: document.getElementById('repo-lint').value,
             template: document.getElementById('repo-init').value, 
+
+            giturl: document.getElementById('repo-giturl').value,
+            gitorigin: document.getElementById('repo-gitorigin').value,
+            gitbranch: document.getElementById('repo-gitbranch').value, 
         };
         
         try {
