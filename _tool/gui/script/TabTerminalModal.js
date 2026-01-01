@@ -46,13 +46,13 @@ window.TabTerminal = {
         if(!this.container) return;
         
         // Swap height classes for cleaner Tailwind control
-        if (this.container.classList.contains('h-64')) {
-            this.container.classList.remove('h-64');
-            this.container.classList.add('h-10');
+        if (this.container.classList.contains('h-48')) {
+            this.container.classList.remove('h-48');
+            this.container.classList.add('h-8');
             this.container.classList.add('terminal-minimized'); // Keep for state tracking
         } else {
-            this.container.classList.add('h-64');
-            this.container.classList.remove('h-10');
+            this.container.classList.add('h-48');
+            this.container.classList.remove('h-8');
             this.container.classList.remove('terminal-minimized');
         }
         
@@ -100,13 +100,13 @@ window.TabTerminal = {
         if (!headerContainer) return; // robustness check
 
         const tabEl = document.createElement('div');
-        tabEl.className = 'tab-item group transition-colors';
+        tabEl.className = 'w-[150px] px-1 border border-gray-700 rounded flex tab-item group transition-colors';
         tabEl.innerHTML = `
             <div class="flex items-center gap-2 flex-1 min-w-0">
-                <i class="${repoData.icon || 'fas fa-terminal'} text-[10px] flex-shrink-0"></i>
-                <span class="truncate font-medium text-[10px]">${repoData.name}</span>
+                <i class="${repoData.icon || 'fas fa-terminal'} text-[18px] flex-shrink-0"></i>
+                <span class="truncate font-medium text-[16px]">${repoData.name}</span>
             </div>
-            <i class="fas fa-times tab-close opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-gray-700 text-gray-400 hover:text-white transition-all text-[10px] flex-shrink-0 ml-1" title="Stop & Close"></i>
+            <i class="fas fa-times tab-close opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-gray-700 text-gray-400 hover:text-white transition-all text-[16px] flex-shrink-0 ml-1" title="Stop & Close"></i>
         `;
         
         // Bind click to select

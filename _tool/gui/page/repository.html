@@ -1,7 +1,7 @@
 <div class="absolute inset-0 flex flex-col overflow-hidden bg-gray-900">
-    <div class="flex-1 overflow-y-auto relative scrollbar-thin scrollbar-thumb-gray-700">
+    <div class=" relative flex-1 overflow-y-auto relative scrollbar-thin scrollbar-thumb-gray-700">
     <!-- Page Header -->
-    <div class="px-8 py-6 border-b border-gray-800 bg-gray-900/95 backdrop-blur-md z-40 shadow-sm">
+    <div class="px-4 py-2 border-b border-gray-800 bg-gray-900/95 backdrop-blur-md z-40 shadow-sm">
         <h1 class="text-2xl font-bold text-white flex items-center gap-3">
             <i class="fas fa-code-branch text-blue-500"></i>
             Repositories
@@ -56,22 +56,13 @@
 
     </div>
     
-    <!-- Floating Action Button -->
-    <button onclick="openAddModal()" class="fixed bottom-8 right-8 w-14 h-14 bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-lg hover:shadow-blue-600/40 flex items-center justify-center transition-all duration-300 hover:scale-110 group z-50">
-        <i class="fas fa-plus text-xl transition-transform duration-300 group-hover:rotate-90"></i>
-        <!-- Tooltip -->
-         <div class="absolute right-full mr-4 px-3 py-1.5 bg-gray-900 text-white text-sm font-medium rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-xl border border-gray-700 whitespace-nowrap">
-            Add Repository
-        </div>
-    </button>
-
     <!-- Add Repository Modal -->
     <div id="add-repo-modal" class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
         <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[90vh] animate-fade-in relative">
             
             <!-- Modal Header -->
-            <div class="px-6 py-4 border-b border-gray-700 flex justify-between items-center bg-gray-800/50 rounded-t-2xl">
-                <h3 class="text-xl font-bold text-white">Create New Repository</h3>
+            <div class="px-4 py-2 border-b border-gray-700 flex justify-between items-center bg-gray-800/50 rounded-t-2xl">
+                <h3 class="text-lg font-bold text-white">Create New Repository</h3>
                 <button onclick="closeAddModal()" class="text-gray-400 hover:text-white transition-colors">
                     <i class="fas fa-times text-lg"></i>
                 </button>
@@ -83,40 +74,40 @@
                 <!-- Row 1: Name & Icon -->
                 <div class="flex gap-4">
                     <div class="flex-[3] space-y-1">
-                        <label class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Name</label>
+                        <label class="text-[16px] uppercase font-bold text-gray-500 tracking-wider">Name</label>
                         <input type="text" id="repo-name" value="my-service" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" >
                     </div>
                     <div class="flex-1 space-y-1">
-                        <label class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Icon</label>
+                        <label class="text-[16px] uppercase font-bold text-gray-500 tracking-wider">Icon</label>
                         <input type="text" id="repo-icon" value="fas fa-cube" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
                     </div>
                 </div>
 
                 <!-- Row 2: Description -->
                 <div class="space-y-1">
-                    <label class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Description</label>
+                    <label class="text-[16px] uppercase font-bold text-gray-500 tracking-wider">Description</label>
                     <textarea id="repo-desc" rows="1" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors resize-none" placeholder="Brief description..."></textarea>
                 </div>
 
                 <!-- Row 3: Type Chooser -->
                  <div class="space-y-1">
-                    <label class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Type</label>
+                    <label class="text-[16px] uppercase font-bold text-gray-500 tracking-wider">Type</label>
                     <div class="grid grid-cols-4 gap-3">
                         <button type="button" onclick="selectType('backend')" class="type-btn group flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg border border-gray-700 bg-gray-900/50 hover:bg-gray-800 transition-all" data-type="backend">
-                            <i class="fas fa-server text-blue-400 text-sm"></i>
-                            <span class="text-[10px] font-medium text-gray-400 group-hover:text-white">Backend</span>
+                            <i class="fas fa-server text-blue-400 text-md"></i>
+                            <span class="text-[16px] font-medium text-gray-400 group-hover:text-white">Backend</span>
                         </button>
                         <button type="button" onclick="selectType('frontend')" class="type-btn group flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg border border-gray-700 bg-gray-900/50 hover:bg-gray-800 transition-all" data-type="frontend">
-                            <i class="fas fa-desktop text-pink-400 text-sm"></i>
-                            <span class="text-[10px] font-medium text-gray-400 group-hover:text-white">Frontend</span>
+                            <i class="fas fa-desktop text-pink-400 text-md"></i>
+                            <span class="text-[16px] font-medium text-gray-400 group-hover:text-white">Frontend</span>
                         </button>
                          <button type="button" onclick="selectType('database')" class="type-btn group flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg border border-gray-700 bg-gray-900/50 hover:bg-gray-800 transition-all" data-type="database">
-                            <i class="fas fa-database text-purple-400 text-sm"></i>
-                            <span class="text-[10px] font-medium text-gray-400 group-hover:text-white">Database</span>
+                            <i class="fas fa-database text-purple-400 text-md"></i>
+                            <span class="text-[16px] font-medium text-gray-400 group-hover:text-white">Database</span>
                         </button>
                          <button type="button" onclick="selectType('service')" class="type-btn active group flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg border border-blue-500 bg-blue-500/10 transition-all" data-type="service">
-                            <i class="fas fa-microchip text-yellow-400 text-sm"></i>
-                            <span class="text-[10px] font-medium text-blue-100">Service</span>
+                            <i class="fas fa-microchip text-yellow-400 text-md"></i>
+                            <span class="text-[16px] font-medium text-blue-100">Service</span>
                         </button>
                     </div>
                 </div>
@@ -124,26 +115,26 @@
                 <!-- Row 4: URLs and Commands -->
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1">
-                         <label class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Dev URL</label>
+                         <label class="text-[16px] uppercase font-bold text-gray-500 tracking-wider">Dev URL</label>
                         <input type="text" id="repo-devurl" value="http://localhost:3000" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-blue-300">
                     </div>
                     <div class="space-y-1">
-                        <label class="text-[10px] uppercase font-bold text-green-600/70 tracking-wider">Start Cmd</label>
+                        <label class="text-[16px] uppercase font-bold text-green-600/70 tracking-wider">Start Cmd</label>
                         <input type="text" id="repo-start" value="npm run dev" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-gray-300">
                     </div>
                      <div class="space-y-1">
-                        <label class="text-[10px] uppercase font-bold text-red-500/70 tracking-wider">Stop Cmd</label>
+                        <label class="text-[16px] uppercase font-bold text-red-500/70 tracking-wider">Stop Cmd</label>
                         <input type="text" id="repo-stop" value="npm run stop" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-gray-300">
                     </div>
                      <div class="space-y-1">
-                         <label class="text-[10px] uppercase font-bold text-yellow-500/70 tracking-wider">Build Cmd</label>
+                         <label class="text-[16px] uppercase font-bold text-yellow-500/70 tracking-wider">Build Cmd</label>
                         <input type="text" id="repo-build" value="npm run build" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-gray-300">
                     </div>
                 </div>
 
                 <!-- Row 5: Init & Template -->
                  <div class="space-y-1 relative">
-                     <label class="text-[10px] uppercase font-bold text-purple-500/70 tracking-wider">Template (leave it blank it it will create a only a folder)</label>
+                     <label class="text-[16px] uppercase font-bold text-purple-500/70 tracking-wider">Template (leave it blank it it will create a only a folder)</label>
                      <div class="flex gap-2">
                         <input type="text" id="repo-init" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-gray-300" placeholder="">
                         <button onclick="toggleTemplateMenu()" class="px-4 bg-gray-700 hover:bg-gray-600 text-white rounded-lg border border-gray-600 text-xs font-bold uppercase tracking-wider transition-colors whitespace-nowrap">
@@ -180,6 +171,16 @@
 
     <!-- Terminal Mount Point -->
     <div id="repo-terminal-mount" class="w-full relative z-50"></div>
+
+
+    <!-- Floating Action Button -->
+    <button onclick="openAddModal()" class="z-50 fixed bottom-10 right-8 w-14 h-14 bg-green-600 hover:bg-green-500 text-white rounded-full shadow-lg hover:shadow-blue-600/40 flex items-center justify-center transition-all duration-300 hover:scale-110 group">
+        <i class="fas fa-plus text-xl transition-transform duration-300 group-hover:rotate-90"></i>
+        <!-- Tooltip -->
+         <div class="absolute right-full mr-4 px-3 py-1.5 bg-gray-900 text-white text-sm font-medium rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-xl border border-gray-700 whitespace-nowrap">
+            Add Repository
+        </div>
+    </button>
 
 </div>
 </div>

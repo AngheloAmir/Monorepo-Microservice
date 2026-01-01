@@ -58,18 +58,18 @@ window.Navigation = {
         
         return `
             <button 
-                class="nav-item group relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-200 outline-none focus:ring-2 focus:ring-blue-500/50 ${activeClass}" 
+                class="z-50 nav-item group relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-200 outline-none focus:ring-2 focus:ring-blue-500/50 ${activeClass}" 
                 data-id="${item.id}"
                 aria-label="${item.label}"
             >
                 <i class="fas ${item.icon} text-lg transition-transform duration-200 group-hover:scale-110"></i>
                 
                 <!-- Tooltip -->
-                <div class="absolute left-14 px-3 py-1.5 bg-gray-900 text-white text-sm font-medium rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-x-2 group-hover:translate-x-0 shadow-xl border border-gray-700 whitespace-nowrap z-50">
+                <div class="z-50 absolute bg-gray-900 left-14 px-3 py-1.5 text-white text-sm font-medium rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-x-2 group-hover:translate-x-0 shadow-xl border border-gray-700 whitespace-nowrap">
                     ${item.label}
                     <!-- Arrow -->
                     <div class="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 w-2 h-2 bg-gray-900 border-l border-b border-gray-700 rotate-45"></div>
-                </div>
+                </div> 
             </button>
         `;
     },
