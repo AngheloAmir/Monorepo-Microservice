@@ -5,7 +5,7 @@
   "main": "toolServer.js",
   "scripts": {
     "boot": "node boot.js",
-    "dev":  "nodemon index.js",
+    "dev":  "nodemon index.js --ignore tooldata/ --ignore gui/",
     "stop": "npx -y kill-port 3200"
   },
   "keywords": [],

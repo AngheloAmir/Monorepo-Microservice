@@ -20,39 +20,25 @@ const repository = {
 
     frontend: [
         {
-            name:        "temp repo",
-            description: "this is a temp repo for testing",
-            icon:        "fa fa-html5",
-            type:        "frontend",
-            path:        "../frontend/temp",
-            branch:      "master",
-            devurl:      "http://localhost:3000",
-            produrl:     "http://localhost:3000",
-            startcmd:    "npm run dev",
-            stopcmd:     "npm run stop",
-            buildcmd:    "npm run build",
-            template:    ""
-        }
-    ],
-
-    database: [
-    ],
-
-    service: [
-        {
-            name:        "my-service",
+            name:        "4444",
             description: "",
             icon:        "fas fa-cube",
-            type:        "service",
-            path:        "../service/my-service",
+            type:        "frontend",
+            path:        "../frontend/4444",
             branch:      "master",
             devurl:      "http://localhost:3000",
             produrl:     "",
             startcmd:    "npm run dev",
             stopcmd:     "npm run stop",
             buildcmd:    "npm run build",
-            template:    "react_ts_tailwind_radix"
+            template:    ""
         },
+    ],
+
+    database: [
+    ],
+
+    service: [
     ],
     
 }
