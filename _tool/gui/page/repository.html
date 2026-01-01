@@ -9,51 +9,69 @@
         <p class="text-gray-400 text-sm mt-1">Manage all microservices and applications within the monorepo.</p>
     </div>
 
-    <!-- Content Sections -->
-    <div class="p-8 flex flex-col gap-12 pb-24">
-        
-        <!-- Backend Section -->
-        <section id="section-backend" class="space-y-4 hidden">
-            <h2 class="text-lg font-semibold text-gray-300 flex items-center gap-2 border-l-4 border-blue-500 pl-3">
-                Backend Services
-                <span class="text-xs font-normal text-gray-500 ml-auto bg-gray-800 px-2 py-0.5 rounded-full" id="count-backend">0</span>
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="container-backend"></div>
-        </section>
+    <!-- Content Sections (Columnar Layout) -->
+    <div class="flex-1 overflow-hidden p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 h-full">
+            
+            <!-- Backend Column -->
+            <section id="section-backend" class="flex flex-col bg-gray-800/30 border border-gray-700/50 rounded-xl overflow-hidden h-full">
+                <!-- Column Header -->
+                <div class="p-3 border-b border-gray-700/50 bg-gray-800/80 backdrop-blur-sm flex justify-between items-center shrink-0">
+                    <h2 class="font-bold text-gray-200 text-sm uppercase tracking-wider flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+                        Backend
+                    </h2>
+                    <span class="bg-gray-700/50 border border-gray-600/30 text-xs font-mono py-0.5 px-2 rounded-full text-gray-300" id="count-backend">0</span>
+                </div>
+                <!-- Column Content -->
+                <div id="container-backend" class="flex-1 overflow-y-auto p-3 space-y-3 scrollbar-thin scrollbar-thumb-gray-700/50 hover:scrollbar-thumb-gray-600"></div>
+            </section>
+            
+            <!-- Database Column -->
+            <section id="section-database" class="flex flex-col bg-gray-800/30 border border-gray-700/50 rounded-xl overflow-hidden h-full">
+                <div class="p-3 border-b border-gray-700/50 bg-gray-800/80 backdrop-blur-sm flex justify-between items-center shrink-0">
+                     <h2 class="font-bold text-gray-200 text-sm uppercase tracking-wider flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]"></div>
+                        Database
+                    </h2>
+                    <span class="bg-gray-700/50 border border-gray-600/30 text-xs font-mono py-0.5 px-2 rounded-full text-gray-300" id="count-database">0</span>
+                </div>
+                <div id="container-database" class="flex-1 overflow-y-auto p-3 space-y-3 scrollbar-thin scrollbar-thumb-gray-700/50 hover:scrollbar-thumb-gray-600"></div>
+            </section>
 
-        <!-- Database Section -->
-        <section id="section-database" class="space-y-4 hidden">
-            <h2 class="text-lg font-semibold text-gray-300 flex items-center gap-2 border-l-4 border-purple-500 pl-3">
-                Database
-                <span class="text-xs font-normal text-gray-500 ml-auto bg-gray-800 px-2 py-0.5 rounded-full" id="count-database">0</span>
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="container-database"></div>
-        </section>
+             <!-- Frontend Column -->
+            <section id="section-frontend" class="flex flex-col bg-gray-800/30 border border-gray-700/50 rounded-xl overflow-hidden h-full">
+                 <div class="p-3 border-b border-gray-700/50 bg-gray-800/80 backdrop-blur-sm flex justify-between items-center shrink-0">
+                    <h2 class="font-bold text-gray-200 text-sm uppercase tracking-wider flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.5)]"></div>
+                        Frontend
+                    </h2>
+                    <span class="bg-gray-700/50 border border-gray-600/30 text-xs font-mono py-0.5 px-2 rounded-full text-gray-300" id="count-frontend">0</span>
+                </div>
+                 <div id="container-frontend" class="flex-1 overflow-y-auto p-3 space-y-3 scrollbar-thin scrollbar-thumb-gray-700/50 hover:scrollbar-thumb-gray-600"></div>
+            </section>
+            
+             <!-- Service Column -->
+            <section id="section-service" class="flex flex-col bg-gray-800/30 border border-gray-700/50 rounded-xl overflow-hidden h-full">
+                  <div class="p-3 border-b border-gray-700/50 bg-gray-800/80 backdrop-blur-sm flex justify-between items-center shrink-0">
+                     <h2 class="font-bold text-gray-200 text-sm uppercase tracking-wider flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.5)]"></div>
+                        Services
+                    </h2>
+                     <span class="bg-gray-700/50 border border-gray-600/30 text-xs font-mono py-0.5 px-2 rounded-full text-gray-300" id="count-service">0</span>
+                </div>
+                 <div id="container-service" class="flex-1 overflow-y-auto p-3 space-y-3 scrollbar-thin scrollbar-thumb-gray-700/50 hover:scrollbar-thumb-gray-600"></div>
+            </section>
 
-        <!-- Service Section -->
-        <section id="section-service" class="space-y-4 hidden">
-             <h2 class="text-lg font-semibold text-gray-300 flex items-center gap-2 border-l-4 border-yellow-500 pl-3">
-                Microservices
-                <span class="text-xs font-normal text-gray-500 ml-auto bg-gray-800 px-2 py-0.5 rounded-full" id="count-service">0</span>
-            </h2>
-             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="container-service"></div>
-        </section>
-
-        <!-- Frontend Section -->
-        <section id="section-frontend" class="space-y-4 hidden">
-             <h2 class="text-lg font-semibold text-gray-300 flex items-center gap-2 border-l-4 border-pink-500 pl-3">
-                Frontend Applications
-                <span class="text-xs font-normal text-gray-500 ml-auto bg-gray-800 px-2 py-0.5 rounded-full" id="count-frontend">0</span>
-            </h2>
-             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="container-frontend"></div>
-        </section>
-        
-        <!-- Empty State (if no data) -->
-        <div id="empty-state" class="hidden flex flex-col items-center justify-center py-20 text-gray-600">
-             <i class="fas fa-ghost text-6xl mb-4 opacity-50"></i>
-             <p class="text-lg">No repositories found.</p>
         </div>
 
+        <!-- Empty State (Global) -->
+        <div id="empty-state" class="hidden absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-0">
+             <div class="bg-gray-900/80 p-6 rounded-2xl border border-gray-700 backdrop-blur-md flex flex-col items-center">
+                 <i class="fas fa-ghost text-4xl mb-4 text-gray-600"></i>
+                 <p class="text-gray-400">No repositories found.</p>
+             </div>
+        </div>
     </div>
     
     <!-- Add Repository Modal -->

@@ -1,7 +1,7 @@
 
 {
     let cardRenderer;
-    const sections = ['backend', 'database', 'service', 'frontend'];
+    const sections = ['backend', 'database', 'frontend', 'service'];
 
     async function initRepoPage() {
         console.log('Repo script loaded');
@@ -55,8 +55,8 @@
 
                 if (items && items.length > 0 && container) {
                     hasItems = true;
-                    sectionEl.classList.remove('hidden');
-                    sectionEl.classList.add('animate-fade-in'); 
+                    // sectionEl.classList.remove('hidden'); // No longer needed as columns are always visible
+                    // sectionEl.classList.add('animate-fade-in'); 
                     countEl.textContent = items.length;
 
                     let html = '';
@@ -67,7 +67,7 @@
                     container.innerHTML = html;
                 } else if (container) {
                      // Explicitly handle empty sections
-                     sectionEl.classList.add('hidden'); 
+                     // sectionEl.classList.add('hidden'); // Keep columns visible
                      container.innerHTML = '';
                      countEl.textContent = '0';
                 }

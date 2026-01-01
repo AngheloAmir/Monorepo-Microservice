@@ -4,7 +4,7 @@
   "description": "",
   "main": "toolServer.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node bootserve.js",
     "boot":  "node boot.js",
     "dev":   "nodemon index.js --ignore tooldata/ --ignore gui/",
     "stop":  "npx -y kill-port 3200"
