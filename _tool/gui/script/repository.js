@@ -168,8 +168,8 @@
             const div = document.createElement('div');
             div.className = 'p-2 hover:bg-gray-700 cursor-pointer border-b border-gray-700/50 last:border-0 transition-colors flex flex-col gap-0.5';
             div.innerHTML = `
-                <div class="text-[10px] text-white font-bold uppercase tracking-wide">${t.templatename}</div>
-                <div class="text-[9px] text-gray-500 font-mono truncate">${t.templatepath}</div>
+                <div class="text-[16px] text-white font-bold uppercase tracking-wide">${t.templatename}</div>
+                <div class="text-[14px] text-gray-500 font-mono truncate">${t.templatepath}</div>
             `;
             div.onclick = () => {
                 selectTemplate(t);

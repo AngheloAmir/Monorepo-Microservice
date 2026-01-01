@@ -68,31 +68,46 @@ async function generateTemplate(data) {
 
 async function registerRepository(data) {
     const repoFilePath = path.resolve(__dirname, '../tooldata/repository.js');
-    let content = await fs.promises.readFile(repoFilePath, 'utf8');
-
-    const newEntry = `
-        {
-            name:        "${data.name || ''}",
-            description: "${data.description || ''}",
-            icon:        "${data.icon || ''}",
-            type:        "${data.type}",
-            path:        "../${data.type}/${data.name}",
-            branch:      "master",
-            devurl:      "${data.devurl || ''}",
-            produrl:     "",
-            startcmd:    "${data.startcmd || ''}",
-            stopcmd:     "${data.stopcmd || ''}",
-            buildcmd:    "${data.buildcmd || ''}",
-            template:    "${data.template || ''}"
-        },`;
-
-    // Find the array for the type, e.g., "service: ["
-    // We strictly look for "type: [" pattern.
-    const regex = new RegExp(`(${data.type}\\s*:\\s*\\[)`);
     
-    if (regex.test(content)) {
-        // Insert after the opening bracket
-        content = content.replace(regex, `$1${newEntry}`);
+    // Invalidate cache to ensure we have latest
+    if (require.cache[require.resolve(repoFilePath)]) {
+        delete require.cache[require.resolve(repoFilePath)];
+    }
+    
+    let repoData;
+    try {
+        repoData = require(repoFilePath);
+    } catch (e) {
+        console.error('Failed to load repository.js for registration', e);
+        throw e;
+    }
+
+    const newEntry = {
+        name:        data.name || '',
+        description: data.description || '',
+        icon:        data.icon || '',
+        type:        data.type,
+        path:        `../${data.type}/${data.name}`,
+        branch:      "master",
+        devurl:      data.devurl || '',
+        produrl:     "",
+        startcmd:    data.startcmd || '',
+        stopcmd:     data.stopcmd || '',
+        buildcmd:    data.buildcmd || '',
+        template:    data.template || ''
+    };
+
+    if (repoData[data.type]) {
+        repoData[data.type].push(newEntry);
+        
+        const content = `/**
+ * Repository Data
+ */
+
+const repository = ${JSON.stringify(repoData, null, 4)}
+
+module.exports = repository;
+`;
         await fs.promises.writeFile(repoFilePath, content, 'utf8');
         console.log(`[TemplateGenerator] Registered ${data.name} in repository.js`);
     } else {
