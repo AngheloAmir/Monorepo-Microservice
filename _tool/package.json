@@ -5,7 +5,8 @@
   "main": "toolServer.js",
   "scripts": {
     "boot": "node boot.js",
-    "dev":  "nodemon index.js"
+    "dev":  "nodemon index.js",
+    "stop": "npx -y kill-port 3200"
   },
   "keywords": [],
   "author": "",
