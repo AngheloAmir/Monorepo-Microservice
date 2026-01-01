@@ -1,8 +1,8 @@
 const { spawn } = require('child_process');
 const path = require('path');
 
-// Store active processes: { "uniqueId": childProcess }
-const activeProcesses = {};
+// Store active processes: Map<string, ChildProcess>
+const activeProcesses = new Map();
 
 function runCmdDevHandler(req, res) {
     if (req.method === 'POST') {
@@ -21,10 +21,10 @@ function runCmdDevHandler(req, res) {
     } else if (req.method === 'DELETE') {
         let body = '';
         req.on('data', chunk => body += chunk);
-        req.on('end', () => {
+        req.on('end', async () => {
             try {
                 const data = JSON.parse(body);
-                stopDevCommand(res, data);
+                await stopDevCommand(res, data);
             } catch (e) {
                 res.writeHead(400);
                 res.end();
@@ -40,7 +40,7 @@ function startDevCommand(res, { directory, basecmd, cmd, id }) {
         return;
     }
 
-    if (activeProcesses[id]) {
+    if (activeProcesses.has(id)) {
         res.writeHead(409, { 'Content-Type': 'text/plain' });
         res.end('Process already running for this ID');
         return;
@@ -96,42 +96,24 @@ function startDevCommand(res, { directory, basecmd, cmd, id }) {
         detached: false // Keep attached to manage easier, or true if we want it to survive server restart (but here we want control)
     });
 
-    activeProcesses[id] = child;
+    activeProcesses.set(id, child);
 
     // Heartbeat
     const heartbeat = setInterval(() => {
-        if (!child.killed) {
+        if (!child.killed && !res.writableEnded && !res.destroyed) {
             res.write('::HEARTBEAT::\n');
         }
     }, 5000);
 
     const cleanup = () => {
         clearInterval(heartbeat);
-        // We do NOT kill the process on request close for "persist" feel if the user just closes tab? 
-        // But the requirement says "optimize... open stream almost forever until it is closed". 
-        // Only explicit stop should kill it?
-        // IF the client disconnects (tab closed), we usually lose the stream. 
-        // But the process might want to stay alive? 
-        // For now, if the connection breaks, let's keep the process alive in memory 
-        // so we could potentially reconnect to it? 
-        // IMPLEMENTATION: for simplicity, if connection closes, we don't kill the process unless explicitly requested via DELETE.
-        // However, we can't "re-attach" to the stdout stream easily without more complex logic (broadcasting).
-        // Let's stick to: client disconnect -> assume we want to keep it running? 
-        // NO, typically for a "Start Dev" in a gui tool, if I close the GUI, I might want it to stop.
-        // But if I just switch tabs? The stream closes.
-        // Let's kill it on disconnect for now to avoid zombies, UNLESS we implement a re-attachable stream manager.
-        // Given complexity, let's kill on output stream failure/close for now to be safe, 
-        // OR implement explicit kill.
-        
-        // Actually, the user asked for "optimize that it will open the stream almost forever until it is closed".
-        // Let's interpret "closed" as the explicit Close button affecting StopCmd.
+        // See restart/kill logic discussion
     };
 
-    req = res.req;
+    const req = res.req;
     req.on('close', () => {
-        // Option A: Kill process. Option B: Leave it running.
-        // Going with Option A for resource safety unless requested otherwise.
-        if (activeProcesses[id] === child) {
+        // Did the client disconnect?
+        if (activeProcesses.get(id) === child) {
             console.log(`[RunCmdDev] Client disconnected for ${id}, killing process.`);
             killProcess(id); 
             cleanup();
@@ -139,36 +121,47 @@ function startDevCommand(res, { directory, basecmd, cmd, id }) {
     });
 
     child.stdout.on('data', (data) => {
-        res.write(data);
+        if (!res.writableEnded && !res.destroyed) res.write(data);
     });
 
     child.stderr.on('data', (data) => {
-        res.write(data);
+        if (!res.writableEnded && !res.destroyed) res.write(data);
     });
 
     child.on('close', (code) => {
         clearInterval(heartbeat);
-        res.write(`\n::EXIT::${code}\n`);
-        res.end();
-        delete activeProcesses[id];
+        if (!res.writableEnded && !res.destroyed) {
+            res.write(`\n::EXIT::${code}\n`);
+            res.end();
+        }
+        
+        // Prevent map corruption: Only delete if WE are the active process
+        if (activeProcesses.get(id) === child) {
+            activeProcesses.delete(id);
+        }
     });
 
     child.on('error', (err) => {
         clearInterval(heartbeat);
-        res.write(`\nERROR: ${err.message}\n`);
-        res.end();
-        delete activeProcesses[id];
+        if (!res.writableEnded && !res.destroyed) {
+            res.write(`\nERROR: ${err.message}\n`);
+            res.end();
+        }
+        
+        if (activeProcesses.get(id) === child) {
+            activeProcesses.delete(id);
+        }
     });
 }
 
-function stopDevCommand(res, { id, stopcmd, directory }) {
+async function stopDevCommand(res, { id, stopcmd, directory }) {
     console.log(`[RunCmdDev] Stopping ${id}...`);
     
-    const child = activeProcesses[id];
+    const child = activeProcesses.get(id);
     let killed = false;
 
     if (child) {
-        killProcess(id);
+        killProcess(id); // This marks it for death, but it might take time
         killed = true;
     }
 
@@ -181,11 +174,26 @@ function stopDevCommand(res, { id, stopcmd, directory }) {
         
         const fs = require('fs');
         if (fs.existsSync(targetDir)) {
-            spawn(stopcmd, {
-                cwd: targetDir,
-                shell: true,
-                stdio: 'ignore'
-            });
+             try {
+                await new Promise((resolve) => {
+                    const sc = spawn(stopcmd, {
+                        cwd: targetDir,
+                        shell: true,
+                        stdio: 'ignore'
+                    });
+                    
+                    // Force timeout of 10s for stop command
+                    const timeout = setTimeout(() => {
+                         if(!sc.killed) sc.kill();
+                         resolve();
+                    }, 10000);
+
+                    sc.on('close', () => { clearTimeout(timeout); resolve(); });
+                    sc.on('error', () => { clearTimeout(timeout); resolve(); });
+                });
+             } catch(e) {
+                 console.error('Stop command failed', e);
+             }
         } else {
             console.log(`[RunCmdDev] Directory not found for stop command: ${targetDir}, skipping.`);
         }
@@ -196,11 +204,11 @@ function stopDevCommand(res, { id, stopcmd, directory }) {
 }
 
 function killProcess(id) {
-    const child = activeProcesses[id];
+    const child = activeProcesses.get(id);
     if (child) {
         // process.kill(-child.pid) for process groups if detached
         child.kill(); 
-        delete activeProcesses[id];
+        activeProcesses.delete(id);
     }
 }
 

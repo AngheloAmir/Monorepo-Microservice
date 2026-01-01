@@ -19,7 +19,22 @@ const repository = {
             "template": "node_ts_nodemon_jwt"
         }
     ],
-    "frontend": [],
+    "frontend": [
+        {
+            "name": "customer",
+            "description": "",
+            "icon": "fas fa-cube",
+            "type": "frontend",
+            "path": "/frontend/customer",
+            "branch": "master",
+            "devurl": "http://localhost:3000",
+            "produrl": "",
+            "startcmd": "npm run dev",
+            "stopcmd": "npm run stop",
+            "buildcmd": "npm run build",
+            "template": "react_ts_tailwind_radix"
+        }
+    ],
     "database": [],
     "service": [
         {
