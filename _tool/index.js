@@ -5,6 +5,7 @@ const { serveFile, serveGUIFile } = require('./tools/serveGUIFile');
 const { serveRepositoryData }     = require('./tools/apiRespository');
 const { generateTemplate }        = require('./tools/templateGenerator');
 const { runCmdHandler }           = require('./tools/runcmd');
+const { runCmdDevHandler }        = require('./tools/runcmddev');
 
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -49,6 +50,9 @@ const server = http.createServer((req, res) => {
             return runCmdHandler(req, res);
         }
         break;
+    case '/api/runcmddev':
+        // POST to start, DELETE to stop
+        return runCmdDevHandler(req, res);
 
     default:
       if (req.url.startsWith('/gui/')) {

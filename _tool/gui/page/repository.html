@@ -1,4 +1,5 @@
-<div class="relative min-h-full">
+<div class="absolute inset-0 flex flex-col overflow-hidden bg-gray-900">
+    <div class="flex-1 overflow-y-auto relative scrollbar-thin scrollbar-thumb-gray-700">
     <!-- Page Header -->
     <div class="px-8 py-6 border-b border-gray-800 bg-gray-900/95 backdrop-blur-md z-40 shadow-sm">
         <h1 class="text-2xl font-bold text-white flex items-center gap-3">
@@ -173,7 +174,14 @@
                 </button>
             </div>
         </div>
-    </div>
+        </div>
+    
+    </div> <!-- End Scrollable Area -->
+
+    <!-- Terminal Mount Point -->
+    <div id="repo-terminal-mount" class="w-full relative z-50"></div>
+
+</div>
 </div>
 
 <!-- Load Scripts for this page -->

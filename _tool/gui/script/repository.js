@@ -23,6 +23,14 @@
 
         cardRenderer = new RepositoryCard(cardTemplate);
 
+        // Init Terminal in this view
+        if (window.TabTerminal) {
+            const mount = document.getElementById('repo-terminal-mount');
+            if (mount) {
+                await window.TabTerminal.init(mount);
+            }
+        }
+
         await window.loadRepositoryData();
     }
 

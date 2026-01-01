@@ -1,0 +1,93 @@
+<!-- Tabbed Terminal Container -->
+<div id="tab-terminal-container" class="h-64 bg-gray-900 border-t border-gray-700 flex flex-col z-40 transition-all duration-300 shadow-2xl">
+    
+    <!-- Drag Handle / Resizer (Visual only for now) -->
+    <div class="h-1 bg-gray-800 cursor-ns-resize hover:bg-blue-500 transition-colors w-full"></div>
+
+    <!-- Tabs Header -->
+    <div class="flex items-center bg-gray-800 h-9 border-b border-gray-700 px-2 gap-1 justify-between select-none">
+        
+        <!-- Tabs List -->
+        <div class="flex items-center gap-1 overflow-x-auto h-full scrollbar-none" id="terminal-tabs-header">
+            <!-- Tabs injected here -->
+        </div>
+
+        <!-- Controls -->
+        <div class="flex items-center gap-2 px-2">
+            <button onclick="window.TabTerminal.toggleMinimize()" class="text-gray-400 hover:text-white transition-colors p-1 rounded hover:bg-gray-700" title="Toggle Terminal">
+                <i id="terminal-toggle-icon" class="fas fa-chevron-down text-xs"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Terminal Content Area -->
+    <div id="terminal-content-area" class="flex-1 bg-gray-900 relative overflow-hidden transition-all duration-300">
+        <!-- Terminal panels injected here -->
+        <div id="terminal-panels-container" class="absolute inset-0">
+            <!-- Panels -->
+        </div>
+        
+        <!-- Empty State -->
+        <div id="terminal-empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-gray-500 pointer-events-none">
+            <p class="text-xs">No active terminals</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* VS Code-like Terminal Colors */
+    .term-span { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; }
+    
+    /* Scrollbar */
+    #tab-terminal-container ::-webkit-scrollbar { width: 10px; height: 10px; }
+    #tab-terminal-container ::-webkit-scrollbar-track { background: #111827; }
+    #tab-terminal-container ::-webkit-scrollbar-thumb { background: #374151; }
+    #tab-terminal-container ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+
+    /* Tab Styles */
+    /* Tab Styles */
+    .tab-item { 
+        display: flex; 
+        align-items: center; 
+        gap: 0.5rem; 
+        padding: 0.375rem 0.75rem; 
+        color: #9ca3af; 
+        font-size: 0.75rem; 
+        cursor: pointer; 
+        min-width: 120px;       
+        max-width: 240px;
+        justify-content: space-between; 
+        border: 1px solid #374151; /* Full border */
+        border-radius: 0.375rem;    /* Rounded corners */
+        margin-right: 0.5rem;       /* Spacing between tabs */
+        background-color: #1f2937;
+        white-space: nowrap;        /* Single line */
+        flex-shrink: 0;
+    }
+    .tab-item:hover { 
+        background-color: #374151; 
+        border-color: #4b5563;
+    }
+    
+    .tab-item.active { 
+        background-color: #111827; 
+        color: white; 
+        border-color: #3b82f6; 
+        border-bottom-color: #111827; /* Blend with content? */
+    }
+    
+    .tab-close { 
+        opacity: 0; 
+        padding: 0.125rem; 
+        border-radius: 0.25rem; 
+        color: #9ca3af; 
+        transition: all 0.15s; 
+    }
+    .group:hover .tab-close { opacity: 1; }
+    .tab-close:hover { background-color: #374151; color: white; }
+
+    /* Minimized State */
+    .terminal-minimized {
+        height: 40px !important; /* Header height (36px) + Resizer (4px) */
+    }
+</style>
