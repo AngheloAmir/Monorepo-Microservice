@@ -22,10 +22,13 @@ const server = http.createServer((req, res) => {
     case '/':
     case '/index.html':
       return serveGUIFile(req, res);
+      
     case '/api/repository':
       return serveRepositoryData(res, req, 'repository.js');
+
     case '/api/repotemplate':
       return serveRepositoryData(res, req, 'repotemplate.js');
+
     case '/api/create-repository':
         if (req.method === 'POST') {
             let body = '';
@@ -45,25 +48,19 @@ const server = http.createServer((req, res) => {
             return;
         }
         break;
+
     case '/api/runcmd':
-        if (req.method === 'POST') {
-            return runCmdHandler(req, res);
-        }
-        break;
+        return runCmdHandler(req, res);
+        
     case '/api/repository/update':
-        if (req.method === 'POST') {
-            const { updateRepositoryData } = require('./tools/apiRespository');
-            return updateRepositoryData(req, res);
-        }
-        break;
+        const { updateRepositoryData } = require('./tools/apiRespository');
+        return updateRepositoryData(req, res);
+    
     case '/api/repository/delete':
-        if (req.method === 'POST' || req.method === 'DELETE') {
-             const { deleteRepositoryData } = require('./tools/apiRespository');
-             return deleteRepositoryData(req, res);
-        }
-        break;
+        const { deleteRepositoryData } = require('./tools/apiRespository');
+        return deleteRepositoryData(req, res);
+
     case '/api/runcmddev':
-        // POST to start, DELETE to stop
         return runCmdDevHandler(req, res);
 
     default:
