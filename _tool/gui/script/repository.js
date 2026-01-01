@@ -61,7 +61,8 @@
 
                     let html = '';
                     items.forEach((item, index) => {
-                        html += cardRenderer.render(item, index);
+                        const uniqueId = `${section}-${index}`;
+                        html += cardRenderer.render(item, uniqueId);
                     });
                     container.innerHTML = html;
                 } else if (container) {

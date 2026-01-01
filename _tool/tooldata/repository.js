@@ -20,11 +20,25 @@ const repository = {
 
     frontend: [
         {
-            name:        "4444",
+            name:        "frontendtest2",
             description: "",
             icon:        "fas fa-cube",
             type:        "frontend",
-            path:        "../frontend/4444",
+            path:        "../frontend/frontendtest2",
+            branch:      "master",
+            devurl:      "http://localhost:3000",
+            produrl:     "",
+            startcmd:    "npm run dev",
+            stopcmd:     "npm run stop",
+            buildcmd:    "npm run build",
+            template:    ""
+        },
+        {
+            name:        "frontendtest",
+            description: "",
+            icon:        "fas fa-cube",
+            type:        "frontend",
+            path:        "../frontend/frontendtest",
             branch:      "master",
             devurl:      "http://localhost:3000",
             produrl:     "",
@@ -39,6 +53,20 @@ const repository = {
     ],
 
     service: [
+        {
+            name:        "my-service2",
+            description: "",
+            icon:        "fas fa-cube",
+            type:        "service",
+            path:        "../service/my-service2",
+            branch:      "master",
+            devurl:      "http://localhost:3000",
+            produrl:     "",
+            startcmd:    "npm run dev",
+            stopcmd:     "npm run stop",
+            buildcmd:    "npm run build",
+            template:    ""
+        },
         {
             name:        "my-service",
             description: "",

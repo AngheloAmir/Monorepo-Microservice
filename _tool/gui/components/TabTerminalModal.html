@@ -5,7 +5,7 @@
     <!-- <div class="h-1 bg-gray-800 cursor-ns-resize hover:bg-blue-500 transition-colors w-full"></div> -->
 
     <!-- Tabs Header -->
-    <div class="py-0 px-2 flex items-center bg-gray-800 h-8 border-b border-gray-700 gap-1 justify-between select-none">
+    <div class="py-1 px-2 flex items-center bg-gray-800 h-8 border-b border-gray-700 gap-1 justify-between select-none">
         
         <!-- Tabs List -->
         <div class="p-0 flex items-center gap-1 overflow-x-auto h-full scrollbar-none" id="terminal-tabs-header">
@@ -32,7 +32,6 @@
             <p class="text-xs">No active terminals</p>
         </div>
     </div>
-</div>
 
 <style>
     /* VS Code-like Terminal Colors */
@@ -54,12 +53,9 @@
         color: #9ca3af; 
         font-size: 0.75rem; 
         cursor: pointer; 
-        min-width: 120px;       
-        max-width: 240px;
+        width: 200px;
         justify-content: space-between; 
         border: 1px solid #374151; /* Full border */
-        border-radius: 0.375rem;    /* Rounded corners */
-        margin-right: 0.5rem;       /* Spacing between tabs */
         background-color: #1f2937;
         white-space: nowrap;        /* Single line */
         flex-shrink: 0;
@@ -70,10 +66,11 @@
     }
     
     .tab-item.active { 
-        background-color: #111827; 
+        background-color: #111827 !important; 
         color: white; 
-        border-color: #3b82f6; 
-        border-bottom-color: #111827; /* Blend with content? */
+        border-color: #4b5563 !important; 
+        border-bottom-color: #111827 !important; /* Match content bg */
+        border-bottom-width: 2px;
     }
     
     .tab-close { 
@@ -91,3 +88,4 @@
         height: 40px !important; /* Header height (36px) + Resizer (4px) */
     }
 </style>
+</div>
