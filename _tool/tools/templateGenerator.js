@@ -87,7 +87,7 @@ async function registerRepository(data) {
         description: data.description || '',
         icon:        data.icon || '',
         type:        data.type,
-        path:        `../${data.type}/${data.name}`,
+        path:        `/${data.type}/${data.name}`,
         branch:      "master",
         devurl:      data.devurl || '',
         produrl:     "",

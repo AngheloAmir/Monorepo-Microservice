@@ -81,7 +81,8 @@ const deleteRepositoryData = (req, res) => {
                 
                 // Delete folder if path exists
                 if (item.path) {
-                    const absPath = path.resolve(__dirname, '../', item.path);
+                    const rootDir = path.resolve(__dirname, '../../');
+                    const absPath = path.join(rootDir, item.path);
                     if (fs.existsSync(absPath)) {
                         fs.rmSync(absPath, { recursive: true, force: true });
                     }
