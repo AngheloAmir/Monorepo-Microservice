@@ -40,34 +40,6 @@ const repository = {
 
     service: [
         {
-            name:        "my-service3",
-            description: "",
-            icon:        "fas fa-cube",
-            type:        "service",
-            path:        "../service/my-service3",
-            branch:      "master",
-            devurl:      "http://localhost:3000",
-            produrl:     "",
-            startcmd:    "npm run dev",
-            stopcmd:     "npm run stop",
-            buildcmd:    "npm run build",
-            template:    "react_ts_tailwind_radix"
-        },
-        {
-            name:        "my-service2",
-            description: "",
-            icon:        "fas fa-cube",
-            type:        "service",
-            path:        "../service/my-service2",
-            branch:      "master",
-            devurl:      "http://localhost:3000",
-            produrl:     "",
-            startcmd:    "npm run dev",
-            stopcmd:     "npm run stop",
-            buildcmd:    "npm run build",
-            template:    ""
-        },
-        {
             name:        "my-service",
             description: "",
             icon:        "fas fa-cube",

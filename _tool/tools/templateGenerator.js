@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { exec } = require('child_process');
 
 /**
  * 
@@ -32,9 +33,18 @@ async function generateTemplate(data) {
             throw new Error(`Template source not found: ${templateSource}`);
         }
 
-        // Copy recursively
-        // Node 16.7+ has fs.promises.cp
-        await fs.promises.cp(templateSource, targetDir, { recursive: true });
+        // Copy using cp -r for reliability on Linux
+        // Create dir first
+        await fs.promises.mkdir(targetDir, { recursive: true });
+        
+        await new Promise((resolve, reject) => {
+            // cp -r source/. target/ 
+            // copies contents of source to target
+            exec(`cp -r "${templateSource}/." "${targetDir}"`, (err) => {
+                if (err) reject(err);
+                else resolve();
+            });
+        });
     } else {
         console.log(`[TemplateGenerator] No template selected, creating empty with README`);
         // Create directory

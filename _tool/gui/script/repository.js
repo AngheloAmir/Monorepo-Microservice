@@ -183,7 +183,6 @@
 
     window.createRepository = async function() {
         const createBtn = document.querySelector('#add-repo-modal button.bg-blue-600');
-        // Basic UI feedback
         if(createBtn) {
             createBtn.dataset.originalText = createBtn.innerText;
             createBtn.innerText = 'Creating...';
@@ -194,15 +193,13 @@
             name: document.getElementById('repo-name').value,
             description: document.getElementById('repo-desc').value,
             icon: document.getElementById('repo-icon').value,
-            type: selectedType, // Uses usage-scoped variable
+            type: selectedType, 
             devurl: document.getElementById('repo-devurl').value,
             startcmd: document.getElementById('repo-start').value,
             stopcmd: document.getElementById('repo-stop').value,
             buildcmd: document.getElementById('repo-build').value,
             template: document.getElementById('repo-init').value, 
         };
-        
-        console.log('Creating Repository:', data);
         
         try {
             const response = await fetch('/api/create-repository', {
@@ -215,15 +212,24 @@
 
             if (response.ok && result.success) {
                 closeAddModal();
-                // Refetch data instead of reloading
                 await window.loadRepositoryData();
+
+                // If template, run NPM Install
+                if (data.template && data.template.trim() !== '') {
+                     await runCommandStream({
+                        directory: `${data.type}/${data.name}`,
+                        basecmd: 'npm',
+                        cmd: ['install']
+                    });
+                }
+
             } else {
                 console.error(result);
                 alert('Failed to create repository: ' + (result.error || 'Unknown error'));
             }
         } catch (error) {
             console.error('Network error:', error);
-            alert('Network error while creating repository');
+            alert('Network error while creating repository: ' + error.message);
         } finally {
             if(createBtn) {
                 createBtn.innerText = createBtn.dataset.originalText || 'Create';
@@ -231,4 +237,40 @@
             }
         }
     };
+
+    async function runCommandStream(payload) {
+        if (!window.TerminalModal) {
+            console.error('TerminalModal not found');
+            return;
+        }
+
+        await window.TerminalModal.open();
+        window.TerminalModal.write(`Starting command: ${payload.basecmd} ${payload.cmd.join(' ')}\n`);
+        window.TerminalModal.write(`Directory: ${payload.directory}\n\n`);
+
+        try {
+            const response = await fetch('/api/runcmd', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder("utf-8");
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                const chunk = decoder.decode(value, { stream: true });
+                window.TerminalModal.write(chunk);
+            }
+            
+            window.TerminalModal.setRunning(false);
+            window.TerminalModal.write('\n\n--- Process Completed ---\n');
+
+        } catch (e) {
+            window.TerminalModal.write(`\nError: ${e.message}\n`);
+            window.TerminalModal.setRunning(false);
+        }
+    }
 }

@@ -4,6 +4,7 @@ const PORT     = process.env.PORT || 3200;
 const { serveFile, serveGUIFile } = require('./tools/serveGUIFile');
 const { serveRepositoryData }     = require('./tools/apiRespository');
 const { generateTemplate }        = require('./tools/templateGenerator');
+const { runCmdHandler }           = require('./tools/runcmd');
 
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -41,6 +42,11 @@ const server = http.createServer((req, res) => {
                 }
             });
             return;
+        }
+        break;
+    case '/api/runcmd':
+        if (req.method === 'POST') {
+            return runCmdHandler(req, res);
         }
         break;
 
