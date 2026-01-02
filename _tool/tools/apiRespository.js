@@ -36,15 +36,20 @@ const updateRepositoryData = (req, res) => {
     req.on('end', () => {
         try {
             const { id, data } = JSON.parse(body);
-            const [section, indexStr] = id.split('-');
-            const index = parseInt(indexStr);
+            const firstHyphen = id.indexOf('-');
+            if (firstHyphen === -1) throw new Error('Invalid ID format');
+            
+            const section = id.substring(0, firstHyphen);
+            const name    = id.substring(firstHyphen + 1);
 
             if (require.cache[require.resolve(repoFilePath)]) {
                 delete require.cache[require.resolve(repoFilePath)];
             }
             const repoData = require(repoFilePath);
             
-            if (repoData[section] && repoData[section][index]) {
+            const index = repoData[section] ? repoData[section].findIndex(item => item.name === name) : -1;
+
+            if (index !== -1) {
                 // Merge updates
                 repoData[section][index] = { ...repoData[section][index], ...data };
                 writeRepositoryFile(repoData);
@@ -52,7 +57,7 @@ const updateRepositoryData = (req, res) => {
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: true }));
             } else {
-                throw new Error('Repository not found');
+                throw new Error('Repository not found: ' + section + ' ' + name);
             }
         } catch (e) {
             console.error(e);
@@ -68,15 +73,20 @@ const deleteRepositoryData = (req, res) => {
     req.on('end', () => {
         try {
             const { id } = JSON.parse(body);
-            const [section, indexStr] = id.split('-');
-            const index = parseInt(indexStr);
+            const firstHyphen = id.indexOf('-');
+            if (firstHyphen === -1) throw new Error('Invalid ID format');
+            
+            const section = id.substring(0, firstHyphen);
+            const name    = id.substring(firstHyphen + 1);
 
             if (require.cache[require.resolve(repoFilePath)]) {
                 delete require.cache[require.resolve(repoFilePath)];
             }
             const repoData = require(repoFilePath);
             
-            if (repoData[section] && repoData[section][index]) {
+            const index = repoData[section] ? repoData[section].findIndex(item => item.name === name) : -1;
+
+            if (index !== -1) {
                 const item = repoData[section][index];
                 
                 // Delete folder if path exists
@@ -96,7 +106,7 @@ const deleteRepositoryData = (req, res) => {
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: true }));
             } else {
-                throw new Error('Repository not found');
+                throw new Error('Repository not found: ' + section + ' ' + name);
             }
         } catch (e) {
             console.error(e);

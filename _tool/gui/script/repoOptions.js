@@ -59,6 +59,9 @@ window.saveRepo = async function() {
     if (!id) return;
 
     const data = {
+        name: document.getElementById('modal-text-name').textContent,
+        type: document.getElementById('modal-text-type').textContent,
+        template: document.getElementById('modal-text-template').textContent,
         icon: document.getElementById('modal-input-icon').value,
         description: document.getElementById('modal-input-desc').value,
         devurl: document.getElementById('modal-input-devurl').value,

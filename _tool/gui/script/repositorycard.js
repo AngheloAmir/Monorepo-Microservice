@@ -16,16 +16,18 @@ class RepositoryCard {
                 window.TabTerminal.isRunning(processID);
         
         let btnHtml = '';
-        if (isRunning) {
-             btnHtml = `<button id="btn-action-${uniqueID}" onclick="window.stopDevRepo('${uniqueID}')" class="flex-1 py-2 px-3 rounded-lg bg-red-600 text-white hover:bg-red-500 transition-colors shadow-lg shadow-red-600/20 text-sm font-medium flex items-center justify-center gap-2">
-                <i class="fas fa-stop text-xs"></i> Stop
-            </button>`;
-        } else {
-             btnHtml = `<button id="btn-action-${uniqueID}" onclick="window.startDevRepo('${uniqueID}')" class="flex-1 py-2 px-3 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20 text-sm font-medium flex items-center justify-center gap-2">
-                <i class="fas fa-play text-xs"></i> Start Dev
-            </button>`;
-        }
 
+        if( data.startcmd && data.startcmd.length > 0 ) {
+            if (isRunning) {
+                btnHtml = `<button id="btn-action-${uniqueID}" onclick="window.stopDevRepo('${uniqueID}')" class="flex-1 py-2 px-3 rounded-lg bg-red-600 text-white hover:bg-red-500 transition-colors shadow-lg shadow-red-600/20 text-sm font-medium flex items-center justify-center gap-2">
+                    <i class="fas fa-stop text-xs"></i> Stop
+                </button>`;
+            } else {
+                btnHtml = `<button id="btn-action-${uniqueID}" onclick="window.startDevRepo('${uniqueID}')" class="flex-1 py-2 px-3 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20 text-sm font-medium flex items-center justify-center gap-2">
+                    <i class="fas fa-play text-xs"></i> Start Dev
+                </button>`;
+            }
+        }
 
         if (html.includes('Start Dev')) {
             const btnStartMarker = '<button class="flex-1';
