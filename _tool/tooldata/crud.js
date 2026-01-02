@@ -9,7 +9,7 @@ const crud = [
                 "description": "Ping the tool server to check if it is running.",
                 "sampleInput": "{}",
                 "suggested": [],
-                "expectedOutcome": "# You should see the word \"pong\" as a messsage \n\n{\n  \"message\": \"pong\"\n}",
+                "expectedOutcome": "# You should see the word \"pong\" as a message \n\n{\n  \"message\": \"pong\"\n}",
                 "availableFor": "public"
             },
             {
@@ -56,7 +56,7 @@ const crud = [
                 "description": "1213",
                 "sampleInput": "{\n    \"name\": \"marichan\"\n}",
                 "suggested": [],
-                "expectedOutcome": "# hehehe\ni dont known what will happen hehehe\n\nasda\nasads\nhehehe",
+                "expectedOutcome": "",
                 "availableFor": "authenticated"
             }
         ]
