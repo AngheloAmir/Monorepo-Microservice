@@ -3,7 +3,7 @@ window.Navigation = {
         { id: 'home', label: 'Home', icon: 'fa-home', component: 'home' },
         { id: 'repository', label: 'Repository', icon: 'fa-cube', component: 'repository' },
         { id: 'cicd', label: 'CI/CD Tool', icon: 'fa-rocket', component: 'cicd' },
-        { id: 'crud', label: 'CRUD Tester', icon: 'fa-microscope', component: 'crud' },
+        { id: 'crudtester', label: 'CRUD Tester', icon: 'fa-microscope', component: 'crudtester' },
         { id: 'stream', label: 'Stream Tester', icon: 'fa-stream', component: 'stream' },
     ],
     settingsItem: { id: 'settings', label: 'Setting', icon: 'fa-cog', component: 'settings' },
@@ -76,6 +76,9 @@ window.Navigation = {
         switch(id) {
             case 'repository':
                 await window.repositoryLoader();
+                break;
+            case 'crudtester':
+                if (window.crudTesterLoader) await window.crudTesterLoader();
                 break;
             default:
                 break;

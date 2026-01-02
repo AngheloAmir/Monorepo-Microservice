@@ -1,0 +1,39 @@
+<div class="flex h-full w-full opacity-0 animate-fade-in" style="opacity: 1;">
+    <!-- Sidebar -->
+    <div class="w-[320px] h-full flex-none border-r border-gray-700/50 bg-gray-800/50 flex flex-col backdrop-blur-sm z-20">
+        <div class="p-3 flex items-center justify-between border-b border-gray-700/50">
+            <span class="text-xs font-bold uppercase text-gray-500 tracking-wider">CRUD Explorer</span>
+            <button class="text-gray-500 hover:text-white transition-colors">
+                <i class="fas fa-sync-alt text-xs"></i>
+            </button>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto p-2 custom-scrollbar" id="crud-nav-container">
+            <!-- Accordion mounted here -->
+            <div class="flex items-center justify-center h-20">
+                <i class="fas fa-spinner fa-spin text-blue-500"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col bg-gray-900 relative overflow-hidden">
+        <!-- Background Patterns -->
+        <div class="absolute inset-0 z-0 pointer-events-none opacity-20">
+            <div class="absolute top-10 right-10 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-10 left-10 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl"></div>
+        </div>
+
+        <!-- Placeholder for now -->
+        <div class="relative z-10 flex-1 flex items-center justify-center text-gray-500 flex-col gap-4 opacity-40 select-none">
+             <i class="fas fa-microscope text-6xl"></i>
+             <p class="text-lg font-medium">Select an endpoint to test</p>
+        </div>
+    </div>
+</div>
+
+<!-- Load Scripts dynamically via pageloader or ensure they are present -->
+<!-- Note: If loaded via innerHTML, script tags might not execute immediately without help. 
+     However, standard convention in this project seems to carry scripts separate or reliance on pageloader.js 
+     For now, we will rely on crudtester.js which should be loaded by the page loader mechanism. 
+-->

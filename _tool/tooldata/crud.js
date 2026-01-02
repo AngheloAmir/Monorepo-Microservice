@@ -5,7 +5,7 @@ const crud = [
             {
                 label: "logout",
                 route: "/api/auth/logout",
-                methods: "POST",
+                methods: "GET",
                 description: "Invalidates the user's session token.",
                 sampleInput: '{}',
                 suggested: [],
@@ -35,7 +35,7 @@ const crud = [
             {
                 label: "logout",
                 route: "/api/auth/logout",
-                methods: "POST",
+                methods: "DELETE",
                 description: "Invalidates the user's session token.",
                 sampleInput: '{}',
                 suggested: [],

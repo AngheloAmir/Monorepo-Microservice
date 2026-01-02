@@ -29,6 +29,9 @@ const server = http.createServer((req, res) => {
     case '/api/repotemplate':
       return serveRepositoryData(res, req, 'repotemplate.js');
 
+    case '/api/crud':
+      return serveRepositoryData(res, req, 'crud.js');
+
     case '/api/create-repository':
         if (req.method === 'POST') {
             let body = '';
