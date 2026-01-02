@@ -107,7 +107,7 @@ window.AccordionNav = {
 
         el.innerHTML = `
             <span class="font-mono font-bold w-12 flex-none ${methodColor}">${method.toUpperCase()}</span>
-            <span class="flex-1 truncate opacity-90" title="${item.label}">${item.label}</span>
+            <span class="flex-1 truncate opacity-90 font-medium" title="${item.label}">${item.label}</span>
             <button class="opacity-0 group-hover:opacity-100 p-1 hover:text-blue-400 transition-opacity" 
                     title="Edit"
                     onclick="event.stopPropagation(); window.CrudEditor.open(${catIndex}, ${itemIndex})">
