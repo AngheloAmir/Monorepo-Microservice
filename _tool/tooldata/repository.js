@@ -1,5 +1,5 @@
 /**
- * Repository Data. The mono repo tool use .js file so for quick setup
+ * Repository Data
  */
 
 const repository = {
@@ -19,7 +19,9 @@ const repository = {
             "template": "node_ts_nodemon_jwt",
             "giturl": "temp",
             "gitorigin": "origin",
-            "gitbranch": "master"
+            "gitbranch": "master",
+            "installcmd": "",
+            "testcmd": "npm run test"
         }
     ],
     "frontend": [
@@ -42,24 +44,7 @@ const repository = {
         }
     ],
     "database": [],
-    "service": [
-        {
-            "name": "my-service",
-            "description": "213213",
-            "icon": "fas fa-cube",
-            "type": "service",
-            "path": "/service/my-service",
-            "devurl": "http://localhost:3000",
-            "produrl": "",
-            "startcmd": "npm run dev",
-            "stopcmd": "npm run stop",
-            "buildcmd": "npm run build",
-            "template": "",
-            "giturl": "21312",
-            "gitorigin": "origin",
-            "gitbranch": "master"
-        }
-    ]
+    "service": []
 }
 
 module.exports = repository;
