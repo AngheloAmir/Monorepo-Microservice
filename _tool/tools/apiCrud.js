@@ -17,16 +17,29 @@ const saveCrudData = (req, res) => {
             const currentData = require(crudPath);
 
             // 2. Modify data
-            if (categoryIndex >= 0 && currentData[categoryIndex]) {
+            // 2. Modify data
+            if (action === 'add_category') {
+                currentData.push({ category: itemData.category, items: [] });
+            } else if (action === 'rename_category') {
+                 const { newName } = JSON.parse(body);
+                 if (currentData[categoryIndex]) {
+                     currentData[categoryIndex].category = newName;
+                 }
+            } else if (action === 'delete_category') {
+                 if (currentData[categoryIndex]) {
+                     currentData.splice(categoryIndex, 1);
+                 }
+            } else if (categoryIndex >= 0 && currentData[categoryIndex]) {
+                // Item Operations
                 if (action === 'delete') {
                     // Remove item
                     currentData[categoryIndex].items.splice(itemIndex, 1);
                 } else if (action === 'add') {
-                     // Add new item (itemData should be fully formed)
+                     // Add new item
                      // If itemIndex is -1, push to end.
                      currentData[categoryIndex].items.push(itemData);
                 } else {
-                    // Update existing
+                    // Update existing item
                     if (itemIndex >= 0 && currentData[categoryIndex].items[itemIndex]) {
                          currentData[categoryIndex].items[itemIndex] = {
                              ...currentData[categoryIndex].items[itemIndex],
@@ -34,19 +47,6 @@ const saveCrudData = (req, res) => {
                          };
                     }
                 }
-            } else if (action === 'add_category') {
-                currentData.push({ category: itemData.category, items: [] });
-            } else if (action === 'rename_category') {
-                 // Req body: { action: 'rename_category', categoryIndex: 0, newName: '...' }
-                 const { newName } = JSON.parse(body);
-                 if (currentData[categoryIndex]) {
-                     currentData[categoryIndex].category = newName;
-                 }
-            } else if (action === 'delete_category') {
-                 // Req body: { action: 'delete_category', categoryIndex: 0 }
-                 if (currentData[categoryIndex]) {
-                     currentData.splice(categoryIndex, 1);
-                 }
             }
 
             // 3. Write back

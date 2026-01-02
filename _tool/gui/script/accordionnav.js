@@ -105,7 +105,7 @@ window.AccordionNav = {
         const el = document.createElement('div');
         
         // Base classes
-        let classes = 'flex items-center gap-2 px-1.5 py-1 rounded-md group text-xs cursor-pointer transition-all duration-200 nav-item-row mb-0.5 ';
+        let classes = 'flex items-center gap-2 px-2 rounded-md group cursor-pointer transition-all duration-200 nav-item-row';
         
         // Check Active State
         const isActive = window.crudState.currentItem && 
@@ -141,12 +141,12 @@ window.AccordionNav = {
         const method = item.methods || 'GET';
 
         el.innerHTML = `
-            <span class="font-black font-mono w-10 flex-none text-[10px] ${methodColor} opacity-90">${method.toUpperCase()}</span>
-            <span class="flex-1 truncate font-medium" title="${item.label}">${item.label}</span>
+            <span class="font-black font-mono w-10 flex-none text-[12px] ${methodColor} opacity-90">${method.toUpperCase()}</span>
+            <span class="flex-1 truncate text-[14px]" title="${item.label}">${item.label}</span>
             <button class="opacity-0 group-hover:opacity-100 p-1 hover:text-white text-gray-500 transition-opacity" 
                     title="Edit"
                     onclick="event.stopPropagation(); window.CrudEditor.open(${catIndex}, ${itemIndex})">
-                <i class="fas fa-pen text-[10px]"></i>
+                <i class="fas fa-pen text-[12px]"></i>
             </button>
         `;
         return el;
