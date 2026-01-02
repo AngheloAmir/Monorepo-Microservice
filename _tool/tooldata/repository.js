@@ -24,7 +24,27 @@ const repository = {
             "testcmd": "npm run test"
         }
     ],
-    "frontend": [],
+    "frontend": [
+        {
+            "name": "MyReactApp",
+            "description": "",
+            "icon": "fa-brands fa-react",
+            "type": "frontend",
+            "path": "/frontend/MyReactApp",
+            "devurl": "http://localhost:3000",
+            "produrl": "",
+            "installcmd": "npm install",
+            "startcmd": "npm run dev",
+            "stopcmd": "npm run stop",
+            "buildcmd": "npm run build",
+            "lintcmd": "npm run lint",
+            "testcmd": "",
+            "template": "react_ts_tailwind_radix",
+            "giturl": "",
+            "gitorigin": "origin",
+            "gitbranch": "master"
+        }
+    ],
     "database": [],
     "service": []
 }
