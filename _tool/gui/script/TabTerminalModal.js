@@ -150,9 +150,10 @@ window.TabTerminal = {
 
     writeOnTerminal: function(id, text) {
         if (text.trim() === '::HEARTBEAT::') return;
-        
         const item      = window.tabTerminalItems [id];
         const panel     = item.panelElement;
+
+        if( !panel ) return;
         const formatted = window.TerminalModal ? window.TerminalModal.parseAnsi(text) : text;
         const span      = document.createElement('span');
         span.innerHTML  = formatted;
