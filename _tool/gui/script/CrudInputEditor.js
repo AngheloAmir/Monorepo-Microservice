@@ -48,30 +48,25 @@ window.CrudInputEditor = {
     },
 
     highlight: function(editor) {
-        const text = editor.innerText;
-        // Simple JSON highlighting: keys in orange
-        // Regex: "key":
-        // We need to be careful with JSON structure.
+        let text = editor.innerText;
         
+        // Helper: escape HTML
+        const escapeHtml = (str) => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+        // Try to Prettify JSON if valid
         try {
-            // Re-format if valid JSON
-            // const obj = JSON.parse(text);
-            // const pretty = JSON.stringify(obj, null, 2);
-            // editor.innerText = pretty; // This might be annoying if user is typing partial JSON
-            
-            // Regex approach for coloring
-            // Escape HTML first? innerText handles basic content.
-            // We'll replace innerHTML.
-            
-            let html = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            
-            // Keys: "key": -> key colored orange
-            html = html.replace(/"([^"]+)":/g, '<span class="text-orange-500">"$1"</span>:');
-            
-            editor.innerHTML = html;
+            const obj = JSON.parse(text);
+            // Prettify
+            text = JSON.stringify(obj, null, 2);
         } catch(e) {
-            // invalid json, leave as is or just text
-            // editor.innerText = text;
+            // If invalid JSON, just keep text as is (might be flattened if browser did so, but usually innerText preserves)
         }
+
+        let html = escapeHtml(text);
+        
+        // Keys: "key": -> key colored orange
+        html = html.replace(/"([^"]+)":/g, '<span class="text-orange-500">"$1"</span>:');
+        
+        editor.innerHTML = html;
     }
 };

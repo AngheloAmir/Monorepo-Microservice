@@ -11,15 +11,17 @@ const pingMe = (req, res) => {
 const pingPost = (req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
 
-    const requestHeader = req.headers;
-    const requestBody   = req.body;
-
-    res.write(JSON.stringify({
-        message: "it mirrors your inputs",
-        requestHeader,
-        requestBody
-    }));
-    res.end();
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+        res.write(JSON.stringify({
+            message: "it mirrors your inputs",
+            timestamp: new Date().toISOString(),
+            headers: req.headers,
+            body:    JSON.parse(body)
+        }));
+        res.end();
+    });
 }
 
 module.exports = {

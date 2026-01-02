@@ -12,7 +12,7 @@ window.CrudTest = {
 
         // Initialize Components
         // 1. Header Editor (Left Col Top)
-        this.headerEditor = await window.CrudInputEditor.create('input-header-container', 'Header JSON', '{\n  "Content-Type": "application/json"\n}');
+        this.headerEditor = await window.CrudInputEditor.create('input-header-container', 'Header JSON', '{\n  "Content-Type": "application/json",\n  "Authorization": "Bearer token"\n}');
         
         // 2. Body Editor (Left Col Bottom)
         this.bodyEditor = await window.CrudInputEditor.create('input-body-container', 'Body JSON', '{}');

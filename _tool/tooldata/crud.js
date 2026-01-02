@@ -16,8 +16,8 @@ const crud = [
                 label: "Check Post",
                 route: "/pingpost",
                 methods: "POST",
-                description: "Ping the tool server to check if it is running.",
-                sampleInput: '{}',
+                description: "Send a POST request to check if it sending correctly",
+                sampleInput: '{"data": "test", "message": "test"}',
                 suggested: [],
                 expectedOutcome: '{\n  "message": "pong"\n}',
                 availableFor: "public"
