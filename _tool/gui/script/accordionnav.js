@@ -113,9 +113,9 @@ window.AccordionNav = {
                          window.crudState.currentItem.methods === item.methods;
 
         if (isActive) {
-            classes += 'bg-blue-600/20 text-blue-200 border border-blue-500/30 shadow-sm'; 
+            classes += ' bg-blue-600/20 text-blue-200 border border-blue-500/30 shadow-sm'; 
         } else {
-            classes += 'text-gray-400 hover:bg-gray-800 hover:text-gray-100 border border-transparent';
+            classes += ' text-gray-400 hover:bg-gray-800 hover:text-gray-100 border border-transparent';
         }
 
         el.className = classes;

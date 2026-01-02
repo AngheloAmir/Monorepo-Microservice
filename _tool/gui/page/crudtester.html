@@ -28,11 +28,11 @@
         <!-- Root URL Header (Persistent) -->
         <div class="h-11 bg-gray-800 border-b border-gray-700 flex items-center px-4 gap-4 z-20 shadow-md">
             <div class="flex items-center gap-2">
-                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Root URL:</span>
-                <input type="text" id="crud-root-url" class="bg-gray-900 border border-gray-700 rounded px-2 py-0.5 text-xs text-blue-400 font-mono w-64 focus:outline-none focus:border-blue-500" placeholder="http://localhost:3000">
+                <span class="text-[14px] font-bold text-gray-500 uppercase tracking-wider">Root URL:</span>
+                <input type="text" id="crud-root-url" class="bg-gray-900 border border-gray-700 rounded px-2 py-0.5 text-[14px] text-blue-400 font-mono w-64 focus:outline-none focus:border-blue-500" placeholder="http://localhost:3200">
             </div>
             
-            <div class="h-4 w-px bg-gray-700"></div>
+            <div class="h-8 w-px bg-gray-700"></div>
 
             <!-- Moved Info Elements: Avail -> Method -> Route -->
             <div class="flex items-center gap-3">
@@ -50,14 +50,14 @@
 
         <!-- Active State (Hidden by default) -->
         <div id="crud-active-state" class="relative z-10 flex-1 flex flex-col overflow-hidden hidden">
+
             <!-- Info Block (Redesigned) -->
-            <div class="p-4 bg-gray-800/40 backdrop-blur-md flex flex-col gap-4">
-                
+            <div class="py-2 px-4 bg-gray-800/40 backdrop-blur-md flex flex-col gap-4">
                 <!-- Row 1: Label | Description -->
                 <div class="flex items-center gap-3">
                     <h1 id="crud-info-label" class="text-lg font-bold text-white tracking-tight flex-none">Endpoint Label</h1>
-                    <div class="h-4 w-px bg-gray-600/50"></div>
-                    <p id="crud-info-desc" class="text-sm text-gray-400 italic truncate flex-1">
+                    <div class="h-6 w-px bg-gray-600/50"></div>
+                    <p id="crud-info-desc" class="text-[14px] text-gray-400 truncate flex-1">
                         No description provided.
                     </p>
                 </div>

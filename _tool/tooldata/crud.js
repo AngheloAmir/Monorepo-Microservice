@@ -57,7 +57,7 @@ const crud = [
                 "sampleInput": "{\n    \"name\": \"marichan\"\n}",
                 "suggested": [],
                 "expectedOutcome": "# hehehe\ni dont known what will happen hehehe\n\nasda\nasads\nhehehe",
-                "availableFor": "public"
+                "availableFor": "authenticated"
             }
         ]
     },
