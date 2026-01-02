@@ -203,6 +203,7 @@ window.CrudTest = {
         if (idx === "" || !window.crudState.currentItem || !window.crudState.currentItem.suggested) return;
         const suggestion = window.crudState.currentItem.suggested[parseInt(idx)];
         if (suggestion) {
+            // Apply Content
             try {
                  const obj = JSON.parse(suggestion.content);
                  const pretty = JSON.stringify(obj, null, 2);
@@ -212,6 +213,15 @@ window.CrudTest = {
                  this.bodyEditor.setValue(suggestion.content);
                  window.crudState.bodyValue = suggestion.content;
             }
+
+            // Apply URL Params
+            const params = suggestion.urlparams || '';
+            const paramInput = document.getElementById('crud-param-input');
+            if (paramInput) {
+                paramInput.value = params;
+            }
+            window.crudState.paramValue = params;
+            this.updateUrlDisplay();
         }
     },
 

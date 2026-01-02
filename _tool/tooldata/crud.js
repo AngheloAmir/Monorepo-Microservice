@@ -44,7 +44,9 @@ const crud = [
                 methods: "STREAM",
                 description: "Send a POST request to check if it sending correctly",
                 sampleInput: '{"data": "test", "message": "test"}',
-                suggested: [],
+                suggested: [ {
+                    name: "CusRaRa", content: "{}", urlparams: "?search=rarar"
+                }],
                 expectedOutcome: '{\n  "message": "pong"\n}',
                 availableFor: "public"
             },
