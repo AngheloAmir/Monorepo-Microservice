@@ -2,25 +2,106 @@
     <div class="bg-gray-900 border border-gray-700 rounded-xl shadow-2xl w-[800px] max-h-[90vh] flex flex-col overflow-hidden animate-fade-in">
         <!-- Header -->
         <div class="flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-gray-900/50">
-            <h3 class="font-medium text-white">Edit CRUD Item</h3>
+            <h3 id="crud-editor-title" class="font-medium text-white text-lg">Edit CRUD Item</h3>
             <button onclick="window.CrudEditor.close()" class="text-gray-400 hover:text-white transition-colors">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         
         <!-- Content -->
-        <div class="flex-1 p-6 overflow-y-auto" id="crud-editor-content">
-            <div class="flex flex-col items-center justify-center h-40 text-gray-500 gap-3">
-                <i class="fas fa-hammer text-4xl opacity-20"></i>
-                <p>Editor content will be implemented here</p>
-                <p class="text-xs font-mono bg-gray-800 px-2 py-1 rounded" id="crud-editor-debug-info">Selected: None</p>
-            </div>
+        <div class="flex-1 p-6 overflow-y-auto custom-scrollbar" id="crud-editor-content">
+            <form id="crud-edit-form" class="flex flex-col gap-4 text-sm text-gray-300">
+                
+                <!-- Debug / Hidden Indices -->
+                <input type="hidden" id="edit-cat-index">
+                <input type="hidden" id="edit-item-index">
+
+                <!-- Row 1: Method | Availability | Route -->
+                <div class="flex gap-4">
+                    <div class="flex flex-col gap-1 w-[120px] flex-none">
+                        <label class="text-xs font-bold text-gray-500 uppercase">Method</label>
+                        <select id="edit-method" class="bg-gray-800 border border-gray-700 rounded px-3 py-2 focus:border-blue-500 outline-none text-white h-[38px] text-sm">
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                            <option value="PUT">PUT</option>
+                            <option value="DELETE">DELETE</option>
+                            <option value="PATCH">PATCH</option>
+                            <option value="STREAM">STREAM</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-1 w-[200px] flex-none">
+                        <label class="text-xs font-bold text-gray-500 uppercase">Availability</label>
+                        <select id="edit-avail" class="bg-gray-800 border border-gray-700 rounded px-3 py-2 focus:border-blue-500 outline-none text-white h-[38px] text-sm">
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                            <option value="authenticated">Authenticated</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-1 flex-1">
+                        <label class="text-xs font-bold text-gray-500 uppercase">Route</label>
+                        <input type="text" id="edit-route" class="bg-gray-800 border border-gray-700 rounded px-3 py-2 focus:border-blue-500 outline-none text-blue-400 font-mono h-[38px] text-sm">
+                    </div>
+                </div>
+
+                <!-- Row 2: Label | Description -->
+                <div class="grid grid-cols-[1fr_2fr] gap-4">
+                     <div class="flex flex-col gap-1">
+                        <label class="text-xs font-bold text-gray-500 uppercase">Label</label>
+                        <input type="text" id="edit-label" class="bg-gray-800 border border-gray-700 rounded px-3 py-2 focus:border-blue-500 outline-none text-white h-[38px] text-sm">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs font-bold text-gray-500 uppercase">Description</label>
+                        <input type="text" id="edit-desc" class="bg-gray-800 border border-gray-700 rounded px-3 py-2 focus:border-blue-500 outline-none text-white h-[38px] text-sm">
+                    </div>
+                </div>
+
+                <!-- JSON Editors Area -->
+                <div class="grid grid-cols-2 gap-4 h-[300px]">
+                    <!-- Sample Input -->
+                    <div class="flex flex-col gap-1 h-full">
+                        <label class="font-bold text-gray-500 uppercase flex justify-between text-xs">
+                            <span>Sample Input (JSON)</span>
+                        </label>
+                        <textarea id="edit-sample-input" class="flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-2 focus:border-blue-500 outline-none text-white font-mono text-sm resize-none custom-scrollbar leading-none"></textarea>
+                    </div>
+
+                    <!-- Expected Outcome -->
+                    <div class="flex flex-col gap-1 h-full">
+                        <div class="flex items-center justify-between">
+                            <label class="font-bold text-gray-500 uppercase text-xs">Expected Outcome</label>
+                        </div>
+                        <textarea id="edit-expected-outcome" class="flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-2 focus:border-blue-500 outline-none text-white font-mono text-sm resize-none custom-scrollbar leading-none"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Suggested Inputs (UI Card List) -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-bold text-gray-500 uppercase">Suggested Inputs</label>
+                        <button type="button" onclick="window.CrudEditor.addSuggestionUI()" class="text-sm bg-gray-800 hover:bg-gray-700 text-blue-400 px-2 py-1 rounded border border-gray-700 transition-colors">
+                            <i class="fas fa-plus mr-1"></i> Add Suggestion
+                        </button>
+                    </div>
+                    
+                    <div id="suggested-items-container" class="flex flex-col gap-3 p-2 bg-gray-900/50 rounded border border-gray-800 min-h-[100px] max-h-[300px] overflow-y-auto custom-scrollbar">
+                        <!-- Cards injected via JS -->
+                        <div class="text-center text-gray-600 italic text-sm py-4" id="suggested-empty-msg">No suggestions added.</div>
+                    </div>
+                </div>
+
+            </form>
         </div>
 
         <!-- Footer -->
-        <div class="px-4 py-3 border-t border-gray-800 flex justify-end gap-2 bg-gray-900/50">
-             <button onclick="window.CrudEditor.close()" class="px-4 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-gray-800 transition-colors">Cancel</button>
-             <button class="px-4 py-2 rounded-lg text-sm bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-500/20 transition-colors">Save Changes</button>
+        <div class="px-4 py-3 border-t border-gray-800 flex items-center bg-gray-900/50">
+             <button type="button" id="crud-delete-btn" onclick="window.CrudEditor.delete()" class="hidden mr-auto px-4 py-2 rounded-lg text-sm text-red-500 hover:text-red-400 hover:bg-red-500/10 transition-colors font-medium">
+                <i class="fas fa-trash mr-1"></i> Delete
+             </button>
+
+             <div class="flex gap-2 ml-auto">
+                 <button onclick="window.CrudEditor.close()" class="px-4 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-gray-800 transition-colors">Cancel</button>
+                 <button onclick="window.CrudEditor.save()" class="px-4 py-2 rounded-lg text-sm bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-500/20 transition-colors">Save Changes</button>
+             </div>
         </div>
     </div>
 </div>

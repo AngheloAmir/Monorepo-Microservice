@@ -161,6 +161,15 @@ window.CrudTest = {
         }
     },
 
+    resetSelection: function() {
+        const emptyState = document.getElementById('crud-empty-state');
+        const activeState = document.getElementById('crud-active-state');
+        if (emptyState && activeState) {
+            emptyState.classList.remove('hidden');
+            activeState.classList.add('hidden');
+        }
+    },
+
     selectItem: async function(item) {
         if (!this.headerEditor || !this.bodyEditor) {
              await this.init();
@@ -410,28 +419,34 @@ window.crudTesterLoader = async function() {
             inject(accordionTpl); // accordionnav.html has id accordion-nav-template
     }
 
-    try {
-        const res = await fetch('/api/crud');
-        if (!res.ok) throw new Error('Failed to fetch CRUD data');
-        const data = await res.json();
-        
-        // Init Navigation
-        await window.CrudEditor.init();
-        await window.AccordionNav.init('crud-nav-container', data);
-        
-        // Init Main Content Logic
-        await window.CrudTest.init();
 
-    } catch (e) {
-        console.error('Error loading CRUD tester:', e);
-        const container = document.getElementById('crud-nav-container');
-        if(container) {
-            container.innerHTML = `
-                <div class="text-red-500 p-4 text-xs flex flex-col items-center justify-center h-40 text-center gap-2">
-                    <i class="fas fa-exclamation-circle text-2xl"></i>
-                    <span>Error loading data.<br>${e.message}</span>
-                </div>`;
+    // Define global reloader
+    window.loadCrudData = async function() {
+        try {
+            const res = await fetch('/api/crud');
+            if (!res.ok) throw new Error('Failed to fetch CRUD data');
+            const data = await res.json();
+            
+            // Init Navigation (Rerenders the list)
+            await window.CrudEditor.init();
+            await window.AccordionNav.init('crud-nav-container', data);
+            
+        } catch (e) {
+            console.error('Error loading CRUD data:', e);
+            const container = document.getElementById('crud-nav-container');
+            if(container) {
+                container.innerHTML = `
+                    <div class="text-red-500 p-4 text-xs flex flex-col items-center justify-center h-40 text-center gap-2">
+                        <i class="fas fa-exclamation-circle text-2xl"></i>
+                        <span>Error loading data.<br>${e.message}</span>
+                    </div>`;
+            }
         }
-    }
+    };
+
+    await window.loadCrudData();
+    
+    // Init Main Content Logic (Independent of data reload usually)
+    await window.CrudTest.init();
 };
 

@@ -67,6 +67,10 @@ const server = http.createServer((req, res) => {
     case '/api/runcmddev':
         return runCmdDevHandler(req, res);
 
+    case '/api/crudedit':
+        const { saveCrudData } = require('./tools/apiCrud');
+        return saveCrudData(req, res);
+
     //internal CRUD testing routes===========================================
     case '/pingme':
        return internalCrudTester.pingMe(req, res);

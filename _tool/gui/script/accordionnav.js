@@ -1,5 +1,6 @@
 window.AccordionNav = {
     init: async function(containerId, data) {
+        this.data = data; // Store for access
         const container = document.getElementById(containerId);
         if (!container) return;
         
@@ -62,12 +63,67 @@ window.AccordionNav = {
             if (category.items) {
                 category.items.forEach((item, itemIndex) => {
                     const el = this.createItemElement(item, catIndex, itemIndex);
-                    content.appendChild(el);
+                    // Insert before the last child (Add Route button)
+                    if (content.lastElementChild) {
+                        content.insertBefore(el, content.lastElementChild);
+                    } else {
+                        content.appendChild(el);
+                    }
                 });
             }
             
+            // Add Route Button Logic
+            const addRouteBtn = catNode.querySelector('.add-route-btn');
+            if (addRouteBtn) {
+                addRouteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (window.CrudEditor) {
+                        window.CrudEditor.create(catIndex);
+                    }
+                };
+            }
+
             container.appendChild(catNode);
         });
+        
+        // Add Category Button
+        const addCatBtn = document.createElement('div');
+        addCatBtn.className = 'mt-4 px-2 mb-8';
+        addCatBtn.innerHTML = `
+            <button class="w-full border border-dashed border-gray-700 hover:border-blue-500/50 text-gray-500 hover:text-blue-400 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 group bg-gray-800/20 hover:bg-blue-500/5">
+                <i class="fas fa-folder-plus group-hover:scale-110 transition-transform"></i>
+                Add Category
+            </button>
+        `;
+        addCatBtn.onclick = async () => {
+            const name = prompt("Enter new category name:");
+            if (name) {
+                try {
+                    const res = await fetch('/api/crudedit', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'add_category',
+                            itemData: { category: name }
+                        })
+                    });
+                    const result = await res.json();
+                    if (result.success) {
+                        if (window.loadCrudData) {
+                            window.loadCrudData();
+                        } else {
+                            window.location.reload();
+                        }
+                    } else {
+                        alert('Error: ' + result.error);
+                    }
+                } catch(e) {
+                    console.error(e);
+                    alert("Network error");
+                }
+            }
+        };
+        container.appendChild(addCatBtn);
     },
 
     createItemElement: function(item, catIndex, itemIndex) {
@@ -132,5 +188,13 @@ window.AccordionNav = {
             case 'STREAM': return 'text-orange-500';
             default: return 'text-gray-500';
         }
+    },
+
+    deselectAll: function() {
+         window.crudState.currentItem = null;
+         document.querySelectorAll('.nav-item-row').forEach(row => {
+             row.classList.remove('bg-blue-600/20', 'text-blue-200', 'border-blue-500/30', 'shadow-sm');
+             row.classList.add('text-gray-400', 'hover:bg-gray-800', 'hover:text-gray-100', 'border-transparent');
+         });
     }
 };
