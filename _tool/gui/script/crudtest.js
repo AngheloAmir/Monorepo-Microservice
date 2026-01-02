@@ -240,7 +240,10 @@ window.CrudTest = {
         const root = document.getElementById('crud-root-url').value;
         const params = window.crudState.paramValue || '';
         const url = `${root}${item.route}${params}`;
-        const method = item.methods || 'GET';
+        const methodLabel = item.methods || 'GET';
+        // If method is STREAM, we actually send a GET request for simplicity, 
+        // as standard browsers don't support custom 'STREAM' HTTP verb easily.
+        const networkMethod = methodLabel === 'STREAM' ? 'GET' : methodLabel;
         
         const headerText = this.headerEditor.getValue();
         const bodyText = this.bodyEditor.getValue();
@@ -249,7 +252,7 @@ window.CrudTest = {
         try { headers = JSON.parse(headerText); } catch(e) { alert('Invalid Header JSON'); return; }
 
         let body = null;
-        if (method !== 'GET' && method !== 'HEAD') {
+        if (networkMethod !== 'GET' && networkMethod !== 'HEAD') {
              try { body = bodyText; JSON.parse(bodyText); } catch(e) { alert('Invalid Body JSON'); return; }
         }
 
@@ -260,13 +263,65 @@ window.CrudTest = {
 
         try {
             const options = {
-                method: method,
+                method: networkMethod,
                 headers: headers,
                 mode: 'cors'
             };
             if (body) options.body = body;
+            
+            // Clear Output for Stream start
+            if (methodLabel === 'STREAM') {
+                this.outputViewer.setValue('Connecting...'); 
+            }
 
             const res = await fetch(url, options);
+            
+            // Handle STREAM
+            if (methodLabel === 'STREAM' && res.body) {
+                const reader = res.body.getReader();
+                const decoder = new TextDecoder("utf-8");
+                let fullText = "";
+                let firstChunk = true;
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    
+                    const chunk = decoder.decode(value, { stream: true });
+                    fullText += chunk;
+                    
+                    // Update UI
+                    if(firstChunk) {
+                        this.outputViewer.setValue(fullText);
+                        firstChunk = false;
+                    } else {
+                        // We set value repeatedly. If CrudOutput supports append that's better, 
+                        // but setValue works for now.
+                        this.outputViewer.setValue(fullText); 
+                    }
+                    
+                    // Update timer live
+                    const now = performance.now();
+                    timeEl.textContent = `${(now - this.startTime).toFixed(0)} ms`;
+                }
+                
+                // Final flush and formatted update
+                const now = performance.now();
+                timeEl.textContent = `${(now - this.startTime).toFixed(2)} ms`;
+
+                // Try pretty print final result
+                try {
+                    const json = JSON.parse(fullText);
+                    const pretty = JSON.stringify(json, null, 4);
+                    this.outputViewer.setValue(pretty);
+                    window.crudState.outputValue = pretty;
+                } catch(e) {
+                    window.crudState.outputValue = fullText;
+                }
+                return;
+            }
+
+            // Normal Request Handling
             const endTime = performance.now();
             const duration = (endTime - this.startTime).toFixed(2);
             timeEl.textContent = `${duration} ms`;
@@ -286,7 +341,7 @@ window.CrudTest = {
                 valToSet = finalOutput + text;
                 this.outputViewer.setValue(text);
             }
-            window.crudState.outputValue = valToSet; // Store result
+            window.crudState.outputValue = valToSet;
 
         } catch (e) {
             const endTime = performance.now();

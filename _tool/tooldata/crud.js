@@ -9,7 +9,7 @@ const crud = [
                 description: "Ping the tool server to check if it is running.",
                 sampleInput: '{}',
                 suggested: [],
-                expectedOutcome: '{\n  "message": "pong"\n}',
+                expectedOutcome: '# You should see the word "pong" as a messsage \n\n{\n  "message": "pong"\n}',
                 availableFor: "public"
             },
             {
@@ -35,38 +35,23 @@ const crud = [
     "delivery_notes": "Make sure that it is packed correctly"
 }`
                     },],
-                expectedOutcome: '{\n  "message": "pong"\n}',
+                expectedOutcome: '# Note \nYou should see the mirror of your inputs',
                 availableFor: "public"
             },
             {
                 label: "Check Stream",
                 route: "/pingstream",
                 methods: "STREAM",
-                description: "Send a POST request to check if it sending correctly",
+                description: "Send a stream request to check if it sending correctly",
                 sampleInput: '{"data": "test", "message": "test"}',
                 suggested: [ {
                     name: "CusRaRa", content: "{}", urlparams: "?search=rarar"
                 }],
-                expectedOutcome: '{\n  "message": "pong"\n}',
+                expectedOutcome: '# Note \nYou should see the stream of words',
                 availableFor: "public"
             },
         ]
-    },
-    {
-        category: "Local Node Server",
-        items: [
-            {
-                label: "Login",
-                route: "/login",
-                methods: "GET",
-                description: "Ping the tool server to check if it is running.",
-                sampleInput: '{}',
-                suggested: [],
-                expectedOutcome: '{\n  "message": "pong"\n}',
-                availableFor: "public"
-            },
-        ]
-    },
+    }
 ]
 
 module.exports = crud;

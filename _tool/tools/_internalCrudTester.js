@@ -24,23 +24,54 @@ const pingPost = (req, res) => {
     });
 }
 
-const pingStream = async (req, res) => {
+const pingStream = (req, res) => {
     let body = '';
     req.on('data', chunk => body += chunk);
-    req.on('end', () => {
+    req.on('end', async () => {
         res.writeHead(200, {
             'Content-Type': 'text/plain; charset=utf-8',
             'Transfer-Encoding': 'chunked',
             'X-Content-Type-Options': 'nosniff' 
         });
 
-        const sentenceToStream = "lorem ipsum dolor sit amet consectetur adipiscing elit";
-        const words            = sentenceToStream.split(" ");
+        const sentenceToStream ="" +
+`[I Wandered Lonely as a Cloud]
+
+I wandered lonely as a cloud
+That floats on high o'er vales and hills,
+When all at once I saw a crowd,
+A host, of golden daffodils;
+Beside the lake, beneath the trees,
+Fluttering and dancing in the breeze.
+
+Continuous as the stars that shine
+And twinkle on the milky way,
+They stretched in never-ending line
+Along the margin of a bay:
+Ten thousand saw I at a glance,
+Tossing their heads in sprightly dance.
+
+The waves beside them danced; but they
+Out-did the sparkling waves in glee:
+A poet could not but be gay,
+In such a jocund company:
+I gazed—and gazed—but little thought
+What wealth the show to me had brought:
+ 
+For oft, when on my couch I lie
+In vacant or in pensive mood,
+They flash upon that inward eye
+Which is the bliss of solitude;
+And then my heart with pleasure fills,
+And dances with the daffodils.
+`
+        const words = sentenceToStream.split(" ");
         
-        words.forEach(async word => {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            res.write(word + "\n");
-        });
+        for (const word of words) {
+            res.write(word + " ");
+            // Use a proper delay
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
         
         res.end();
     });
