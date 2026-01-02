@@ -1,11 +1,17 @@
 <div id="accordion-nav-template" class="hidden">
-    <!-- This is a template for one category -->
-    <div class="accordion-category border-b border-gray-700 last:border-0">
-        <div class="py-1 px-2 accordion-header flex items-center justify-between cursor-pointer hover:bg-gray-700 transition-colors text-gray-300">
-            <span class="category-title text-sm p-1">Category Name</span>
-            <i class="fas fa-chevron-right text-xs transition-transform duration-200"></i>
+    <!-- Category Block -->
+    <div class="accordion-category mb-1 select-none group">
+        <!-- Header -->
+        <div class="accordion-header flex items-center justify-between p-1.5 rounded-lg cursor-pointer hover:bg-white/5 text-gray-400 hover:text-white transition-all duration-200">
+            <div class="flex items-center gap-2 overflow-hidden">
+                <i class="fas fa-folder text-xs opacity-70 group-hover:text-blue-400 transition-colors"></i>
+                <span class="category-title text-xs font-bold uppercase tracking-wider truncate">Category Name</span>
+            </div>
+            <i class="fas fa-chevron-right text-[10px] opacity-50 group-hover:opacity-100 transition-transform duration-200"></i>
         </div>
-        <div class="accordion-content hidden p-1 flex flex-col gap-1">
+        
+        <!-- Content Container -->
+        <div class="accordion-content hidden pl-2 pr-1 pt-0.5 pb-1 flex flex-col gap-0.5 border-l border-gray-700/50 ml-2.5 mt-0.5">
             <!-- Items injected here -->
         </div>
     </div>

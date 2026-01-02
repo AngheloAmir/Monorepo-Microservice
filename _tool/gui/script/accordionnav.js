@@ -30,14 +30,16 @@ window.AccordionNav = {
             const header = catNode.querySelector('.accordion-header');
             const content = catNode.querySelector('.accordion-content');
             const title = catNode.querySelector('.category-title');
-            const icon = catNode.querySelector('.fa-chevron-right');
+            const arrowIcon = catNode.querySelector('.fa-chevron-right');
+            const folderIcon = catNode.querySelector('.fa-folder');
             
             title.textContent = category.category;
             
             // Restore State
             if (window.crudState.expandedCategories.has(catIndex)) {
                 content.classList.remove('hidden');
-                icon.style.transform = 'rotate(90deg)';
+                arrowIcon.style.transform = 'rotate(90deg)';
+                folderIcon.classList.add('text-blue-400', 'opacity-100');
             }
 
             // Toggle Logic
@@ -45,11 +47,13 @@ window.AccordionNav = {
                 const isHidden = content.classList.contains('hidden');
                 if (isHidden) {
                     content.classList.remove('hidden');
-                    icon.style.transform = 'rotate(90deg)';
+                    arrowIcon.style.transform = 'rotate(90deg)';
+                    folderIcon.classList.add('text-blue-400', 'opacity-100'); 
                     window.crudState.expandedCategories.add(catIndex);
                 } else {
                     content.classList.add('hidden');
-                    icon.style.transform = 'rotate(0deg)';
+                    arrowIcon.style.transform = 'rotate(0deg)';
+                    folderIcon.classList.remove('text-blue-400', 'opacity-100');
                     window.crudState.expandedCategories.delete(catIndex);
                 }
             };
@@ -70,7 +74,7 @@ window.AccordionNav = {
         const el = document.createElement('div');
         
         // Base classes
-        let classes = 'flex items-center gap-2 p-1.5 rounded group text-xs cursor-pointer transition-colors nav-item-row ';
+        let classes = 'flex items-center gap-2 px-1.5 py-1 rounded-md group text-xs cursor-pointer transition-all duration-200 nav-item-row mb-0.5 ';
         
         // Check Active State
         const isActive = window.crudState.currentItem && 
@@ -78,9 +82,9 @@ window.AccordionNav = {
                          window.crudState.currentItem.methods === item.methods;
 
         if (isActive) {
-            classes += 'bg-gray-700 text-white'; // Active bg
+            classes += 'bg-blue-600/20 text-blue-200 border border-blue-500/30 shadow-sm'; 
         } else {
-            classes += 'text-gray-400 hover:bg-gray-700 hover:text-gray-200'; // Inactive hover
+            classes += 'text-gray-400 hover:bg-gray-800 hover:text-gray-100 border border-transparent';
         }
 
         el.className = classes;
@@ -91,11 +95,11 @@ window.AccordionNav = {
 
              // Update UI Visually (Remove active from others, add to this)
              document.querySelectorAll('.nav-item-row').forEach(row => {
-                 row.classList.remove('bg-gray-700', 'text-white');
-                 row.classList.add('text-gray-400', 'hover:bg-gray-700', 'hover:text-gray-200');
+                 row.classList.remove('bg-blue-600/20', 'text-blue-200', 'border-blue-500/30', 'shadow-sm');
+                 row.classList.add('text-gray-400', 'hover:bg-gray-800', 'hover:text-gray-100', 'border-transparent');
              });
-             el.classList.remove('text-gray-400', 'hover:bg-gray-700', 'hover:text-gray-200');
-             el.classList.add('bg-gray-700', 'text-white');
+             el.classList.remove('text-gray-400', 'hover:bg-gray-800', 'hover:text-gray-100', 'border-transparent');
+             el.classList.add('bg-blue-600/20', 'text-blue-200', 'border-blue-500/30', 'shadow-sm');
 
              if (window.CrudTest && window.CrudTest.selectItem) {
                  window.CrudTest.selectItem(item);
@@ -106,12 +110,12 @@ window.AccordionNav = {
         const method = item.methods || 'GET';
 
         el.innerHTML = `
-            <span class="font-mono font-bold w-12 flex-none ${methodColor}">${method.toUpperCase()}</span>
-            <span class="flex-1 truncate opacity-90 font-medium" title="${item.label}">${item.label}</span>
-            <button class="opacity-0 group-hover:opacity-100 p-1 hover:text-blue-400 transition-opacity" 
+            <span class="font-black font-mono w-10 flex-none text-[10px] ${methodColor} opacity-90">${method.toUpperCase()}</span>
+            <span class="flex-1 truncate font-medium" title="${item.label}">${item.label}</span>
+            <button class="opacity-0 group-hover:opacity-100 p-1 hover:text-white text-gray-500 transition-opacity" 
                     title="Edit"
                     onclick="event.stopPropagation(); window.CrudEditor.open(${catIndex}, ${itemIndex})">
-                <i class="fas fa-edit"></i>
+                <i class="fas fa-pen text-[10px]"></i>
             </button>
         `;
         return el;
