@@ -4,6 +4,7 @@ window.AccordionNav = {
         if (!container) return;
         
         let template = document.getElementById('accordion-nav-template');
+        // Fallback if not injected by crudtest.js loader (though it should be)
         if (!template) {
              const res = await fetch('/gui/components/accordionnav.html');
              const text = await res.text();
@@ -19,6 +20,9 @@ window.AccordionNav = {
     render: function(container, data, template) {
         container.innerHTML = '';
         
+        // Ensure state exists
+        if (!window.crudState) window.crudState = { expandedCategories: new Set(), currentItem: null };
+
         data.forEach((category, catIndex) => {
             const clone = template.cloneNode(true);
             const catNode = clone.querySelector('.accordion-category');
@@ -30,15 +34,23 @@ window.AccordionNav = {
             
             title.textContent = category.category;
             
+            // Restore State
+            if (window.crudState.expandedCategories.has(catIndex)) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(90deg)';
+            }
+
             // Toggle Logic
             header.onclick = () => {
                 const isHidden = content.classList.contains('hidden');
                 if (isHidden) {
                     content.classList.remove('hidden');
                     icon.style.transform = 'rotate(90deg)';
+                    window.crudState.expandedCategories.add(catIndex);
                 } else {
                     content.classList.add('hidden');
                     icon.style.transform = 'rotate(0deg)';
+                    window.crudState.expandedCategories.delete(catIndex);
                 }
             };
             
@@ -56,8 +68,35 @@ window.AccordionNav = {
 
     createItemElement: function(item, catIndex, itemIndex) {
         const el = document.createElement('div');
-        el.className = 'flex items-center gap-2 p-1.5 rounded hover:bg-gray-700 group text-xs text-gray-400 cursor-pointer transition-colors';
+        
+        // Base classes
+        let classes = 'flex items-center gap-2 p-1.5 rounded group text-xs cursor-pointer transition-colors nav-item-row ';
+        
+        // Check Active State
+        const isActive = window.crudState.currentItem && 
+                         window.crudState.currentItem.route === item.route && 
+                         window.crudState.currentItem.methods === item.methods;
+
+        if (isActive) {
+            classes += 'bg-gray-700 text-white'; // Active bg
+        } else {
+            classes += 'text-gray-400 hover:bg-gray-700 hover:text-gray-200'; // Inactive hover
+        }
+
+        el.className = classes;
+
         el.onclick = () => {
+             // Update Global State
+             window.crudState.currentItem = item;
+
+             // Update UI Visually (Remove active from others, add to this)
+             document.querySelectorAll('.nav-item-row').forEach(row => {
+                 row.classList.remove('bg-gray-700', 'text-white');
+                 row.classList.add('text-gray-400', 'hover:bg-gray-700', 'hover:text-gray-200');
+             });
+             el.classList.remove('text-gray-400', 'hover:bg-gray-700', 'hover:text-gray-200');
+             el.classList.add('bg-gray-700', 'text-white');
+
              if (window.CrudTest && window.CrudTest.selectItem) {
                  window.CrudTest.selectItem(item);
              }
@@ -68,7 +107,7 @@ window.AccordionNav = {
 
         el.innerHTML = `
             <span class="font-mono font-bold w-12 flex-none ${methodColor}">${method.toUpperCase()}</span>
-            <span class="flex-1 truncate text-gray-300" title="${item.label}">${item.label}</span>
+            <span class="flex-1 truncate opacity-90" title="${item.label}">${item.label}</span>
             <button class="opacity-0 group-hover:opacity-100 p-1 hover:text-blue-400 transition-opacity" 
                     title="Edit"
                     onclick="event.stopPropagation(); window.CrudEditor.open(${catIndex}, ${itemIndex})">

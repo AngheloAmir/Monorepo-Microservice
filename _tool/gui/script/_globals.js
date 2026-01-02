@@ -20,5 +20,6 @@ window.crudState = {       // Persistent state
     bodyValue: '{}',
     outputValue: '',
     suggestValue: '',
-    rootUrl: 'http://localhost:3000'
+    rootUrl: 'http://localhost:3000',
+    expandedCategories: new Set() // Store indices of open categories
 };
