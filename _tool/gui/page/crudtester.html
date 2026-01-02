@@ -1,7 +1,7 @@
 <div class="flex h-full w-full opacity-0 animate-fade-in" style="opacity: 1;">
     <!-- Sidebar -->
     <div class="w-[320px] h-full flex-none border-r border-gray-700/50 bg-gray-800/50 flex flex-col backdrop-blur-sm z-20">
-        <div class="p-3 flex items-center justify-between border-b border-gray-700/50">
+        <div class="h-11 px-3 flex-none flex items-center justify-between border-b border-gray-700/50">
             <span class="text-xs font-bold uppercase text-gray-500 tracking-wider">CRUD Explorer</span>
             <button class="text-gray-500 hover:text-white transition-colors">
                 <i class="fas fa-sync-alt text-xs"></i>
@@ -26,7 +26,7 @@
 
         <!-- Placeholder for now -->
         <!-- Root URL Header (Persistent) -->
-        <div class="h-10 bg-gray-800 border-b border-gray-700 flex items-center px-4 gap-4 z-20 shadow-md">
+        <div class="h-11 bg-gray-800 border-b border-gray-700 flex items-center px-4 gap-4 z-20 shadow-md">
             <div class="flex items-center gap-2">
                 <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Root URL:</span>
                 <input type="text" id="crud-root-url" class="bg-gray-900 border border-gray-700 rounded px-2 py-0.5 text-xs text-blue-400 font-mono w-64 focus:outline-none focus:border-blue-500" placeholder="http://localhost:3000">
@@ -34,11 +34,11 @@
             
             <div class="h-4 w-px bg-gray-700"></div>
 
-            <!-- Moved Info Elements -->
+            <!-- Moved Info Elements: Avail -> Method -> Route -->
             <div class="flex items-center gap-3">
+                 <span id="crud-info-avail" class="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider bg-gray-700 text-gray-400"></span>
                  <span id="crud-info-method" class="font-black text-sm"></span>
                  <span id="crud-info-route" class="font-mono text-xs text-blue-300 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded"></span>
-                 <span id="crud-info-avail" class="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider bg-gray-700 text-gray-400"></span>
             </div>
         </div>
 
@@ -108,9 +108,9 @@
             <!-- 3 Column Grid -->
             <div id="crud-grid-layout" class="flex-1 grid grid-cols-3 gap-0 min-h-0 transition-all duration-300">
                 <!-- Col 1: Inputs -->
-                <div class="grid grid-rows-5 grid-cols-1 h-full bg-gray-900 p-2 gap-2 min-h-0">
-                    <div id="input-header-container" class="row-span-1 min-h-0"></div>
-                    <div id="input-body-container"   class="row-span-4 min-h-0"></div>
+                <div class="grid grid-rows-12 grid-cols-1 h-full bg-gray-900 p-2 gap-2 min-h-0">
+                    <div id="input-header-container" class="row-span-3 min-h-0"></div>
+                    <div id="input-body-container"   class="row-span-9 min-h-0"></div>
                 </div>
 
                 <!-- Col 2: Output -->
