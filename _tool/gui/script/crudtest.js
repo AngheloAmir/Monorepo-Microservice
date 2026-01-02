@@ -17,8 +17,8 @@ window.CrudTest = {
             'Header JSON', 
             window.crudState.headerValue
         );
-        // Bind state update
-        this.headerEditor.editor.addEventListener('input', () => {
+        // Bind state update (Ace Editor change event)
+        this.headerEditor.instance.session.on('change', () => {
             window.crudState.headerValue = this.headerEditor.getValue();
         });
         
@@ -29,7 +29,7 @@ window.CrudTest = {
             window.crudState.bodyValue
         );
         // Bind state update
-        this.bodyEditor.editor.addEventListener('input', () => {
+        this.bodyEditor.instance.session.on('change', () => {
             window.crudState.bodyValue = this.bodyEditor.getValue();
         });
 
