@@ -1,9 +1,12 @@
 <div class="flex flex-col h-full bg-transparent text-sm font-mono">
     <div class="flex items-center justify-between px-3 h-9 flex-none bg-gray-800">
         <span class="text-gray-400 font-bold uppercase tracking-wider text-xs">Output</span>
-        <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-             <button class="px-2 py-0.5 rounded bg-gray-900 border border-gray-800 hover:bg-gray-800 text-gray-400 hover:text-white transition-colors text-[10px]" id="btn-save">Save</button>
-             <button class="px-2 py-0.5 rounded bg-gray-900 border border-gray-800 hover:bg-gray-800 text-gray-400 hover:text-white transition-colors text-[10px]" id="btn-load">Load</button>
+        <div class="flex gap-1 transition-opacity">
+             <button class="w-16 py-0.5 rounded bg-gray-900 border border-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white transition-colors text-[12px]" id="btn-save">Save</button>
+             <button class="w-16 py-0.5 rounded bg-gray-900 border border-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white transition-colors text-[12px]" id="btn-load">Load</button>
+             <button class="w-24 py-0.5 rounded bg-gray-900 border border-gray-800 hover:bg-gray-700 text-blue-400 hover:text-blue-200 transition-colors text-[12px] ml-2" id="btn-show-code">
+                <i class="fas fa-code mr-1"></i> Show Code
+             </button>
         </div>
     </div>
     <div class="flex-1 overflow-auto custom-scrollbar p-2 group">

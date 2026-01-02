@@ -25,14 +25,20 @@ window.CrudOutput = {
         clone.querySelector('#btn-save').onclick = () => {
              const raw = contentEl.dataset.raw || contentEl.innerText;
              localStorage.setItem('crud-output-last', raw);
-             alert('Output saved to LocalStorage');
         };
 
         clone.querySelector('#btn-load').onclick = () => {
              const saved = localStorage.getItem('crud-output-last');
              if(saved) this.setValue(contentEl, saved);
-             else alert('No saved output found');
         };
+
+        const codeBtn = clone.querySelector('#btn-show-code');
+        if (codeBtn) {
+            codeBtn.onclick = () => {
+                if (window.CodePreview) window.CodePreview.open();
+                else alert('CodePreview module not loaded');
+            };
+        }
 
         container.appendChild(clone);
 

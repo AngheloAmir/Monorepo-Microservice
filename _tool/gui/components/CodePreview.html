@@ -1,0 +1,31 @@
+<div id="code-preview-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden">
+    <div class="bg-gray-900 border border-gray-700 rounded-xl shadow-2xl w-[800px] h-[50vh] flex flex-col overflow-hidden animate-fade-in">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-gray-900/50 flex-none">
+            <h3 class="font-medium text-white text-lg">Fetch Request Code</h3>
+            <button onclick="window.CodePreview.close()" class="text-gray-400 hover:text-white transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <!-- Content -->
+        <div class="flex-1 bg-gray-800 relative group min-h-0">
+             <!-- Copy Button -->
+             <button onclick="window.CodePreview.copy()" class="absolute top-4 right-4 z-20 bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                <i class="fas fa-copy mr-1"></i> Copy
+             </button>
+             
+             <!-- Scrollable Area -->
+             <div class="absolute inset-0 overflow-auto p-4 custom-scrollbar">
+                 <pre class="w-full text-sm font-mono text-gray-300" id="code-content"></pre>
+             </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="px-4 py-3 border-t border-gray-800 bg-gray-900/50 flex justify-end flex-none">
+            <button onclick="window.CodePreview.close()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-1.5 rounded text-sm transition-colors font-medium">
+                OK
+            </button>
+        </div>
+    </div>
+</div>

@@ -430,6 +430,7 @@ window.crudTesterLoader = async function() {
             // Init Navigation (Rerenders the list)
             await window.CrudEditor.init(); // Modal 1
             if (window.ManageCategories) await window.ManageCategories.init(); // Modal 2
+            if (window.CodePreview) await window.CodePreview.init(); // Modal 3
             await window.AccordionNav.init('crud-nav-container', data);
             
         } catch (e) {
