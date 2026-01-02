@@ -8,7 +8,8 @@ const repotemplate = [
         stopcmd:      "npm run stop",
         buildcmd:     "npm run build",
         lintcmd:      "npm run lint",
-        testcmd:      "npm run test"
+        testcmd:      "npm run test",
+        devurl:       "http://localhost:3000",
     },
     {
         templatename: "[Backend] Node TS Nodemon Jan2026",
@@ -19,7 +20,8 @@ const repotemplate = [
         stopcmd:      "npm run stop",
         buildcmd:     "npm run build",
         lintcmd:      "npm run lint",
-        testcmd:      "npm run test"
+        testcmd:      "npm run test",
+        devurl:       "http://localhost:8000",
     },
     {
         templatename: "[Backend] PHP Vanilla",
@@ -30,7 +32,8 @@ const repotemplate = [
         stopcmd:      "docker compose down",
         buildcmd:     "",
         lintcmd:      "",
-        testcmd:      ""
+        testcmd:      "",
+        devurl:       "http://localhost:8000",
     },
     {
         templatename: "[Database] Supabase Jan2026",
@@ -41,7 +44,8 @@ const repotemplate = [
         stopcmd:      "docker compose down",
         buildcmd:     "",
         lintcmd:      "",
-        testcmd:      ""
+        testcmd:      "",
+        devurl:       "http://localhost:54321",
     },
     {
         templatename: "[AWS] Localstack Jan2026",
@@ -52,7 +56,8 @@ const repotemplate = [
         stopcmd:      "docker compose down",
         buildcmd:     "",
         lintcmd:      "",
-        testcmd:      ""
+        testcmd:      "",
+        devurl:       "",
     }
 ];
 

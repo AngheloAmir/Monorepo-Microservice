@@ -77,10 +77,31 @@ function renderTemplates(templates) {
     }
 }
 
+
+let currentInstallCmd = null;
+
 function selectTemplate(template) {
     // Fill init command with text: "TEMPLATE: <path>" to indicate it's using a template
     document.getElementById('repo-init').value = template.templatepath;
     
+    // Auto-fill Type
+    if (template.type) {
+        window.selectType(template.type);
+    }
+
+    // Auto-fill URLs
+    document.getElementById('repo-devurl').value = template.devurl || '';
+
+    // Auto-fill Commands
+    document.getElementById('repo-start').value = template.startcmd || '';
+    document.getElementById('repo-stop').value = template.stopcmd || '';
+    document.getElementById('repo-build').value = template.buildcmd || '';
+    document.getElementById('repo-lint').value = template.lintcmd || '';
+    document.getElementById('repo-test').value = template.testcmd || '';
+
+    // Store install command for later use
+    currentInstallCmd = template.installcmd;
+
     // Close menu
     document.getElementById('template-menu').classList.add('hidden');
 }
@@ -104,7 +125,9 @@ window.createRepository = async function() {
         stopcmd: document.getElementById('repo-stop').value,
         buildcmd: document.getElementById('repo-build').value,
         lintcmd: document.getElementById('repo-lint').value,
+        testcmd: document.getElementById('repo-test').value,
         template: document.getElementById('repo-init').value, 
+        installcmd: currentInstallCmd, // Pass this just in case backend wants it? No, backend doesn't seem to use it for execution, but for record maybe?
 
         giturl: document.getElementById('repo-giturl').value,
         gitorigin: document.getElementById('repo-gitorigin').value,
@@ -124,14 +147,28 @@ window.createRepository = async function() {
             closeAddModal();
             await window.loadRepositoryData();
 
-            // If template, run NPM Install
+            // If template, run Install Command
             if (data.template && data.template.trim() !== '') {
-                    await runCommandStream({
+                
+                // Determine command components
+                let cmdToRun = ['install'];
+                let baseCmd = 'npm';
+
+                if (currentInstallCmd) {
+                    const parts = currentInstallCmd.split(' ');
+                    baseCmd = parts[0];
+                    cmdToRun = parts.slice(1);
+                }
+
+                await runCommandStream({
                     directory: `${data.type}/${data.name}`,
-                    basecmd: 'npm',
-                    cmd: ['install']
+                    basecmd: baseCmd,
+                    cmd: cmdToRun
                 });
             }
+
+            // Reset
+            currentInstallCmd = null;
 
         } else {
             console.error(result);

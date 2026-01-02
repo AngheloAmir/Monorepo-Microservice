@@ -69,6 +69,7 @@ class RepositoryCard {
         html = html.replace(/{stopcmd}/g, data.stopcmd || 'npm run stop');
         html = html.replace(/{buildcmd}/g, data.buildcmd || 'npm run build');
         html = html.replace(/{lintcmd}/g, data.lintcmd || 'npm run lint');
+        html = html.replace(/{testcmd}/g, data.testcmd || 'npm run test');
         html = html.replace(/{template}/g, data.template || 'None');
         
         return html;

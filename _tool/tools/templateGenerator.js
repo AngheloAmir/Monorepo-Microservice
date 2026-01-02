@@ -94,6 +94,7 @@ async function registerRepository(data) {
         stopcmd:     data.stopcmd || '',
         buildcmd:    data.buildcmd || '',
         lintcmd:     data.lintcmd || '',
+        testcmd:     data.testcmd || '',
         template:    data.template || '',
         giturl:      data.giturl || '',
         gitorigin:   data.gitorigin || 'origin',

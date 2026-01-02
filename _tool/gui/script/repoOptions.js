@@ -37,6 +37,7 @@ window.openSettingsModal = function(id) {
     document.getElementById('modal-input-stop').value = data.stopcmd || '';
     document.getElementById('modal-input-build').value = data.buildcmd || '';
     document.getElementById('modal-input-lint').value = data.lintcmd || 'npm run lint';
+    document.getElementById('modal-input-test').value = data.testcmd || 'npm run test';
 
     // Git Config
     document.getElementById('modal-input-giturl').value = data.giturl || '';
@@ -65,6 +66,7 @@ window.saveRepo = async function() {
         stopcmd: document.getElementById('modal-input-stop').value,
         buildcmd: document.getElementById('modal-input-build').value,
         lintcmd: document.getElementById('modal-input-lint').value,
+        testcmd: document.getElementById('modal-input-test').value,
         giturl: document.getElementById('modal-input-giturl').value,
         gitorigin: document.getElementById('modal-input-gitorigin').value,
         gitbranch: document.getElementById('modal-input-gitbranch').value,

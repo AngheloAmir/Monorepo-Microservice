@@ -34,8 +34,30 @@
             </div>
 
             <!-- Description -->
-             <div class="space-y-1">
+             <div class="">
                 <textarea id="repo-desc" rows="2" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 focus:border-blue-500 outline-none resize-none" placeholder="Brief description..."></textarea>
+            </div>
+
+             <!-- Template Input -->
+            <div class="relative">
+                 <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Template</label>
+                 <div class="flex gap-2 mb-2">
+                    <input type="text" id="repo-init" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-purple-300 focus:border-purple-500 outline-none" placeholder="[ no template used ]">
+                    <button onclick="toggleTemplateMenu()" class="px-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg border border-gray-600 text-xs font-bold uppercase tracking-wider transition-colors whitespace-nowrap">
+                        Select
+                    </button>
+                 </div>
+                 
+                 <!-- Template Menu Dropdown remains same ID -->
+                 <div id="template-menu" class="hidden absolute -top-8 right-0 w-full max-w-md bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-50 overflow-hidden">
+                     <div class="p-2 border-b border-gray-600 bg-gray-800/50 flex justify-between items-center">
+                         <span class="text-xs font-bold text-gray-400 ml-2">SELECT A TEMPLATE</span>
+                         <button onclick="toggleTemplateMenu()" class="text-gray-500 hover:text-white px-2"><i class="fas fa-times text-xs"></i></button>
+                     </div>
+                     <div id="template-list" class="max-h-[600px] overflow-y-auto p-1">
+                         <div class="p-3 text-center text-gray-500 text-xs">Loading...</div>
+                     </div>
+                 </div>
             </div>
 
             <!-- Type Selection -->
@@ -82,27 +104,8 @@
             </div>
 
             <!-- Template & Commands -->
-            <div class="space-y-1 relative">
-                 <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Template & Commands</label>
-                 
-                 <!-- Template Input -->
-                 <div class="flex gap-2 mb-2">
-                    <input type="text" id="repo-init" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-purple-300 focus:border-purple-500 outline-none" placeholder="Template Name">
-                    <button onclick="toggleTemplateMenu()" class="px-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg border border-gray-600 text-xs font-bold uppercase tracking-wider transition-colors whitespace-nowrap">
-                        Select
-                    </button>
-                 </div>
-                 <!-- Template Menu Dropdown remains same ID -->
-                 <div id="template-menu" class="hidden absolute bottom-12 right-0 w-full max-w-xs bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-50 overflow-hidden">
-                     <div class="p-2 border-b border-gray-700 bg-gray-900/50 flex justify-between items-center">
-                         <span class="text-xs font-bold text-gray-400 ml-2">SELECT A TEMPLATE</span>
-                         <button onclick="toggleTemplateMenu()" class="text-gray-500 hover:text-white px-2"><i class="fas fa-times text-xs"></i></button>
-                     </div>
-                     <div id="template-list" class="max-h-40 overflow-y-auto p-1">
-                         <div class="p-3 text-center text-gray-500 text-xs">Loading...</div>
-                     </div>
-                 </div>
-
+            <div class="relative">
+                 <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Commands</label>
                  <!-- Commands List -->
                  <div class="grid grid-cols-1 gap-2">
                         <div class="flex gap-2 items-center">
@@ -120,6 +123,10 @@
                         <div class="flex gap-2 items-center">
                                 <span class="w-16 text-xs font-mono text-gray-500 text-right">Lint</span>
                                 <input type="text" id="repo-lint" value="npm run lint" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-pink-400 focus:border-pink-500 outline-none">
+                        </div>
+                        <div class="flex gap-2 items-center">
+                                <span class="w-16 text-xs font-mono text-gray-500 text-right">Test</span>
+                                <input type="text" id="repo-test" value="npm run test" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-indigo-400 focus:border-indigo-500 outline-none">
                         </div>
                 </div>
 
