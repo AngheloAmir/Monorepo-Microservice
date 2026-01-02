@@ -1,4 +1,3 @@
-
 // Logic for repoNew.html
 
 let selectedType = 'service';
@@ -78,8 +77,6 @@ function renderTemplates(templates) {
 }
 
 
-let currentInstallCmd = null;
-
 function selectTemplate(template) {
     // Fill init command with text: "TEMPLATE: <path>" to indicate it's using a template
     document.getElementById('repo-init').value = template.templatepath;
@@ -93,14 +90,12 @@ function selectTemplate(template) {
     document.getElementById('repo-devurl').value = template.devurl || '';
 
     // Auto-fill Commands
+    document.getElementById('repo-install').value = template.installcmd || '';
     document.getElementById('repo-start').value = template.startcmd || '';
     document.getElementById('repo-stop').value = template.stopcmd || '';
     document.getElementById('repo-build').value = template.buildcmd || '';
     document.getElementById('repo-lint').value = template.lintcmd || '';
     document.getElementById('repo-test').value = template.testcmd || '';
-
-    // Store install command for later use
-    currentInstallCmd = template.installcmd;
 
     // Close menu
     document.getElementById('template-menu').classList.add('hidden');
@@ -121,14 +116,14 @@ window.createRepository = async function() {
         type: selectedType, 
         devurl: document.getElementById('repo-devurl').value,
         produrl: document.getElementById('repo-produrl').value,
+        installcmd: document.getElementById('repo-install').value,
         startcmd: document.getElementById('repo-start').value,
         stopcmd: document.getElementById('repo-stop').value,
         buildcmd: document.getElementById('repo-build').value,
         lintcmd: document.getElementById('repo-lint').value,
         testcmd: document.getElementById('repo-test').value,
         template: document.getElementById('repo-init').value, 
-        installcmd: currentInstallCmd, // Pass this just in case backend wants it? No, backend doesn't seem to use it for execution, but for record maybe?
-
+        
         giturl: document.getElementById('repo-giturl').value,
         gitorigin: document.getElementById('repo-gitorigin').value,
         gitbranch: document.getElementById('repo-gitbranch').value, 
@@ -147,18 +142,13 @@ window.createRepository = async function() {
             closeAddModal();
             await window.loadRepositoryData();
 
-            // If template, run Install Command
-            if (data.template && data.template.trim() !== '') {
+            // If template AND installcmd is present, run Install Command
+            if (data.template && data.template.trim() !== '' && data.installcmd && data.installcmd.trim() !== '') {
                 
                 // Determine command components
-                let cmdToRun = ['install'];
-                let baseCmd = 'npm';
-
-                if (currentInstallCmd) {
-                    const parts = currentInstallCmd.split(' ');
-                    baseCmd = parts[0];
-                    cmdToRun = parts.slice(1);
-                }
+                const parts = data.installcmd.trim().split(' ');
+                const baseCmd = parts[0];
+                const cmdToRun = parts.slice(1);
 
                 await runCommandStream({
                     directory: `${data.type}/${data.name}`,
@@ -166,9 +156,6 @@ window.createRepository = async function() {
                     cmd: cmdToRun
                 });
             }
-
-            // Reset
-            currentInstallCmd = null;
 
         } else {
             console.error(result);

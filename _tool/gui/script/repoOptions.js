@@ -33,6 +33,7 @@ window.openSettingsModal = function(id) {
     document.getElementById('modal-input-devurl').value = data.devurl || '';
     document.getElementById('modal-input-produrl').value = data.produrl || '';
     
+    document.getElementById('modal-input-install').value = data.installcmd || '';
     document.getElementById('modal-input-start').value = data.startcmd || '';
     document.getElementById('modal-input-stop').value = data.stopcmd || '';
     document.getElementById('modal-input-build').value = data.buildcmd || '';
@@ -62,6 +63,7 @@ window.saveRepo = async function() {
         description: document.getElementById('modal-input-desc').value,
         devurl: document.getElementById('modal-input-devurl').value,
         produrl: document.getElementById('modal-input-produrl').value,
+        installcmd: document.getElementById('modal-input-install').value,
         startcmd: document.getElementById('modal-input-start').value,
         stopcmd: document.getElementById('modal-input-stop').value,
         buildcmd: document.getElementById('modal-input-build').value,

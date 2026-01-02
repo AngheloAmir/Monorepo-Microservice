@@ -50,7 +50,7 @@ const repotemplate = [
     {
         templatename: "[AWS] Localstack Jan2026",
         templatepath: "aws",
-        type:         "aws",
+        type:         "service",
         installcmd:   "docker compose up -d",
         startcmd:     "docker compose up -d",
         stopcmd:      "docker compose down",

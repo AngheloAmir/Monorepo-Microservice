@@ -90,6 +90,7 @@ async function registerRepository(data) {
         path:        `/${data.type}/${data.name}`,
         devurl:      data.devurl || '',
         produrl:     "",
+        installcmd:  data.installcmd || '',
         startcmd:    data.startcmd || '',
         stopcmd:     data.stopcmd || '',
         buildcmd:    data.buildcmd || '',
