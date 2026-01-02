@@ -6,6 +6,7 @@ const { serveRepositoryData }     = require('./tools/apiRespository');
 const { generateTemplate }        = require('./tools/templateGenerator');
 const { runCmdHandler }           = require('./tools/runcmd');
 const { runCmdDevHandler }        = require('./tools/runcmddev');
+const internalCrudTester          = require('./tools/_internalCrudTester');
 
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -65,6 +66,12 @@ const server = http.createServer((req, res) => {
 
     case '/api/runcmddev':
         return runCmdDevHandler(req, res);
+
+    //internal CRUD testing routes===========================================
+    case '/pingme':
+       return internalCrudTester.pingMe(req, res);
+    case '/pingpost':
+       return internalCrudTester.pingPost(req, res);
 
     default:
       if (req.url.startsWith('/gui/')) {

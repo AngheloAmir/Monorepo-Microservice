@@ -57,6 +57,11 @@ window.AccordionNav = {
     createItemElement: function(item, catIndex, itemIndex) {
         const el = document.createElement('div');
         el.className = 'flex items-center gap-2 p-1.5 rounded hover:bg-gray-700 group text-xs text-gray-400 cursor-pointer transition-colors';
+        el.onclick = () => {
+             if (window.CrudTest && window.CrudTest.selectItem) {
+                 window.CrudTest.selectItem(item);
+             }
+        };
         
         const methodColor = this.getMethodColor(item.methods);
         const method = item.methods || 'GET';

@@ -17,7 +17,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col bg-gray-900 relative overflow-hidden">
+    <div id="crud-main-content" class="flex-1 flex flex-col bg-gray-900 relative overflow-hidden">
         <!-- Background Patterns -->
         <div class="absolute inset-0 z-0 pointer-events-none opacity-20">
             <div class="absolute top-10 right-10 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl"></div>
@@ -25,9 +25,70 @@
         </div>
 
         <!-- Placeholder for now -->
-        <div class="relative z-10 flex-1 flex items-center justify-center text-gray-500 flex-col gap-4 opacity-40 select-none">
+        <!-- Root URL Header (Persistent) -->
+        <div class="h-10 bg-gray-800 border-b border-gray-700 flex items-center px-4 gap-2 z-20">
+            <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Root URL:</span>
+            <input type="text" id="crud-root-url" class="bg-gray-900 border border-gray-700 rounded px-2 py-0.5 text-xs text-blue-400 font-mono w-64 focus:outline-none focus:border-blue-500" placeholder="http://localhost:3000">
+        </div>
+
+        <!-- Empty State -->
+        <div id="crud-empty-state" class="relative z-10 flex-1 flex items-center justify-center text-gray-500 flex-col gap-4 opacity-40 select-none">
              <i class="fas fa-microscope text-6xl"></i>
              <p class="text-lg font-medium">Select an endpoint to test</p>
+        </div>
+
+        <!-- Active State (Hidden by default) -->
+        <div id="crud-active-state" class="relative z-10 flex-1 flex flex-col overflow-hidden hidden">
+            <!-- Info Block -->
+            <div class="p-4 border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm flex flex-col gap-4">
+                <!-- Method Label Route Available -->
+                <div class="flex items-center gap-3 text-sm">
+                    <span id="crud-info-method" class="font-bold">METHOD</span>
+                    <span id="crud-info-label" class="text-gray-300">Label</span>
+                    <span id="crud-info-route" class="font-mono text-gray-400 bg-gray-800 px-2 py-0.5 rounded">/route</span>
+                    <span id="crud-info-avail" class="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider">Public</span>
+                </div>
+                
+                <!-- Description -->
+                <div id="crud-info-desc" class="text-gray-400 text-xs mt-1">
+                    Description goes here...
+                </div>
+
+                <!-- Controls -->
+                <div class="flex items-center gap-3 mt-1">
+                    <button onclick="window.CrudTest.sendRequest()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-lg shadow-lg shadow-blue-500/20 flex items-center gap-2 font-medium text-xs transition-transform active:scale-95">
+                        <i class="fas fa-paper-plane"></i> Send Request
+                    </button>
+                    
+                    <select id="crud-suggest-dropdown" onchange="window.CrudTest.applySuggestion(this.value)" class="bg-gray-800 border border-gray-700 text-gray-300 text-xs rounded px-2 py-1.5 focus:outline-none focus:border-blue-500 cursor-pointer disabled:opacity-50">
+                        <option value="">Suggested Inputs</option>
+                    </select>
+
+                    <div class="bg-black/30 border border-gray-800 px-3 py-1.5 rounded font-mono text-xs text-blue-400 flex items-center gap-2">
+                        <i class="fas fa-clock"></i>
+                        <span id="crud-timer">0 ms</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3 Column Grid -->
+            <div class="flex-1 grid grid-cols-3 gap-0 min-h-0 divide-x divide-gray-800">
+                <!-- Col 1: Inputs -->
+                <div class="flex flex-col h-full bg-gray-900 p-2 gap-2 min-h-0">
+                    <div id="input-header-container" class="h-1/2 min-h-0"></div>
+                    <div id="input-body-container" class="h-1/2 min-h-0"></div>
+                </div>
+
+                <!-- Col 2: Output -->
+                <div class="flex flex-col h-full bg-gray-900 p-2 min-h-0">
+                    <div id="output-container" class="h-full"></div>
+                </div>
+
+                <!-- Col 3: Suggested -->
+                <div class="flex flex-col h-full bg-gray-900 p-2 min-h-0">
+                    <div id="suggest-container-wrapper" class="h-full transition-all"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
