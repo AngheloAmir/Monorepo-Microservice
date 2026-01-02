@@ -55,7 +55,7 @@
         // We might want to show a spinner if it takes time, but for now fast replace.
 
         try {
-            const response = await fetch('/api/repository');
+            const response = await fetch('/api/repository', { cache: "no-store" });
             if(!response.ok) throw new Error('API Error');
             const data = await response.json();
             

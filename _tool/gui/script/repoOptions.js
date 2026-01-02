@@ -33,17 +33,17 @@ window.openSettingsModal = function(id) {
     document.getElementById('modal-input-devurl').value = data.devurl || '';
     document.getElementById('modal-input-produrl').value = data.produrl || '';
     
-    document.getElementById('modal-input-install').value = data.installcmd || '';
-    document.getElementById('modal-input-start').value = data.startcmd || '';
-    document.getElementById('modal-input-stop').value = data.stopcmd || '';
-    document.getElementById('modal-input-build').value = data.buildcmd || '';
-    document.getElementById('modal-input-lint').value = data.lintcmd || 'npm run lint';
-    document.getElementById('modal-input-test').value = data.testcmd || 'npm run test';
+    document.getElementById('modal-input-install').value = data.installcmd !== undefined ? data.installcmd : '';
+    document.getElementById('modal-input-start').value = data.startcmd !== undefined ? data.startcmd : '';
+    document.getElementById('modal-input-stop').value = data.stopcmd !== undefined ? data.stopcmd : '';
+    document.getElementById('modal-input-build').value = data.buildcmd !== undefined ? data.buildcmd : '';
+    document.getElementById('modal-input-lint').value = data.lintcmd !== undefined ? data.lintcmd : 'npm run lint';
+    document.getElementById('modal-input-test').value = data.testcmd !== undefined ? data.testcmd : 'npm run test';
 
     // Git Config
-    document.getElementById('modal-input-giturl').value = data.giturl || '';
-    document.getElementById('modal-input-gitorigin').value = data.gitorigin || 'origin';
-    document.getElementById('modal-input-gitbranch').value = data.gitbranch || 'master';
+    document.getElementById('modal-input-giturl').value = data.giturl !== undefined ? data.giturl : '';
+    document.getElementById('modal-input-gitorigin').value = data.gitorigin !== undefined ? data.gitorigin : 'origin';
+    document.getElementById('modal-input-gitbranch').value = data.gitbranch !== undefined ? data.gitbranch : 'master';
    
     // Show modal
     modal.classList.remove('hidden');
