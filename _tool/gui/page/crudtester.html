@@ -26,9 +26,20 @@
 
         <!-- Placeholder for now -->
         <!-- Root URL Header (Persistent) -->
-        <div class="h-10 bg-gray-800 border-b border-gray-700 flex items-center px-4 gap-2 z-20">
-            <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Root URL:</span>
-            <input type="text" id="crud-root-url" class="bg-gray-900 border border-gray-700 rounded px-2 py-0.5 text-xs text-blue-400 font-mono w-64 focus:outline-none focus:border-blue-500" placeholder="http://localhost:3000">
+        <div class="h-10 bg-gray-800 border-b border-gray-700 flex items-center px-4 gap-4 z-20 shadow-md">
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Root URL:</span>
+                <input type="text" id="crud-root-url" class="bg-gray-900 border border-gray-700 rounded px-2 py-0.5 text-xs text-blue-400 font-mono w-64 focus:outline-none focus:border-blue-500" placeholder="http://localhost:3000">
+            </div>
+            
+            <div class="h-4 w-px bg-gray-700"></div>
+
+            <!-- Moved Info Elements -->
+            <div class="flex items-center gap-3">
+                 <span id="crud-info-method" class="font-black text-sm"></span>
+                 <span id="crud-info-route" class="font-mono text-xs text-blue-300 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded"></span>
+                 <span id="crud-info-avail" class="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider bg-gray-700 text-gray-400"></span>
+            </div>
         </div>
 
         <!-- Empty State -->
@@ -39,37 +50,52 @@
 
         <!-- Active State (Hidden by default) -->
         <div id="crud-active-state" class="relative z-10 flex-1 flex flex-col overflow-hidden hidden">
-            <!-- Info Block -->
-            <div class="p-4 border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm flex flex-col gap-2">
-                <!-- Method Label Route Available -->
-                <div class="flex items-center gap-3 text-sm">
-                    <span id="crud-info-method" class="font-bold">METHOD</span>
-                    <span id="crud-info-label" class="text-gray-300">Label</span>
-                    <span id="crud-info-route" class="font-mono text-gray-400 bg-gray-800 px-2 py-0.5 rounded">/route</span>
-                    <span id="crud-info-avail" class="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider">Public</span>
-                </div>
+            <!-- Info Block (Redesigned) -->
+            <div class="p-4 border-b border-gray-800 bg-gray-800/40 backdrop-blur-md flex flex-col gap-4">
                 
-                <!-- Description -->
-                <div id="crud-info-desc" class="text-gray-400 text-sm">
-                    Description goes here...
+                <!-- Row 1: Label | Description -->
+                <div class="flex items-center gap-3">
+                    <h1 id="crud-info-label" class="text-lg font-bold text-white tracking-tight flex-none">Endpoint Label</h1>
+                    <div class="h-4 w-px bg-gray-600/50"></div>
+                    <p id="crud-info-desc" class="text-sm text-gray-400 italic truncate flex-1">
+                        No description provided.
+                    </p>
                 </div>
 
-                <!-- Controls -->
-                <div class="flex items-center gap-3 mt-1">
-                    <button onclick="window.CrudTest.sendRequest()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-lg shadow-lg shadow-blue-500/20 flex items-center gap-2 font-medium text-xs transition-transform active:scale-95">
-                        <i class="fas fa-paper-plane"></i> Send Request
-                    </button>
+                <!-- Row 2: Controls [Send] [Presets] [Params]       [Latency] -->
+                <div class="flex items-center gap-3">
                     
-                    <select id="crud-suggest-dropdown" onchange="window.CrudTest.applySuggestion(this.value)" class="bg-gray-800 border border-gray-700 text-gray-300 text-xs rounded px-2 py-1.5 focus:outline-none focus:border-blue-500 cursor-pointer disabled:opacity-50">
-                        <option value="">Suggested Inputs</option>
-                    </select>
+                    <!-- 1. Send Button (Leftmost) -->
+                    <button onclick="window.CrudTest.sendRequest()" 
+                            class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-1.5 rounded shadow-lg shadow-blue-900/50 flex items-center gap-2 font-bold text-xs tracking-wide transition-all transform active:scale-95 hover:shadow-blue-500/20 flex-none h-9">
+                        <span>SEND</span>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
 
-                    <input type="text" id="crud-param-input" placeholder="Params (e.g. ?id=1)" class="bg-gray-800 border border-gray-700 text-gray-300 text-xs rounded px-2 py-1.5 focus:outline-none focus:border-blue-500 w-32 font-mono placeholder-gray-600">
-
-                    <div class="bg-black/30 border border-gray-800 px-3 py-1.5 rounded font-mono text-xs text-blue-400 flex items-center gap-2">
-                        <i class="fas fa-clock"></i>
-                        <span id="crud-timer">0 ms</span>
+                    <!-- 2. Presets Dropdown -->
+                    <div class="relative flex-none h-9">
+                        <select id="crud-suggest-dropdown" onchange="window.CrudTest.applySuggestion(this.value)" 
+                                class="h-full appearance-none bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs rounded pl-3 pr-8 cursor-pointer focus:outline-none transition-colors border border-gray-600 font-medium">
+                            <option value="">Presets</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                            <i class="fas fa-chevron-down text-[10px]"></i>
+                        </div>
                     </div>
+
+                    <!-- 3. Params Input (Expands) -->
+                    <div class="flex-1 flex items-center gap-2 bg-gray-900/50 border border-gray-700 rounded px-3 h-9 focus-within:border-blue-500/50 focus-within:ring-1 focus-within:ring-blue-500/20 transition-all group">
+                        <i class="fas fa-code-branch text-gray-600 text-xs group-focus-within:text-blue-500"></i>
+                        <input type="text" id="crud-param-input" placeholder="Query Params (e.g. ?id=123)" 
+                               class="bg-transparent border-none text-xs text-gray-300 w-full focus:outline-none placeholder-gray-600 font-mono h-full">
+                    </div>
+
+                    <!-- 4. Latency (Rightmost) -->
+                    <div class="flex-none bg-black/40 border border-gray-700/50 rounded px-3 h-9 flex items-center gap-2">
+                        <span class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Latency:</span>
+                        <span id="crud-timer" class="text-blue-400 font-mono font-bold text-sm">0 ms</span>
+                    </div>
+
                 </div>
             </div>
 

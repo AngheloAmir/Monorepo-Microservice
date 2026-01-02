@@ -87,7 +87,7 @@ window.CrudTest = {
 
         if (methodEl) {
             methodEl.textContent = method;
-            methodEl.className = `font-bold ${this.getMethodColor(method)}`;
+            methodEl.className = `font-black text-sm ${this.getMethodColor(method)}`;
             labelEl.textContent = item.label;
             descEl.textContent = item.description || 'No description';
             

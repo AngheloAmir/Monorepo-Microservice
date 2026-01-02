@@ -18,7 +18,23 @@ const crud = [
                 methods: "POST",
                 description: "Send a POST request to check if it sending correctly",
                 sampleInput: '{"data": "test", "message": "test"}',
-                suggested: [],
+                suggested: [{
+                        name: "CusRaRa", content: "" +
+                            `{
+    "name": "Cus Ra Ramana",
+    "email": "CusRaRa@customer.com",
+    "phone1": "11111111111",
+    "phone2": "11111111111",
+    "address": "5000 malapitan, malakas, philippines",
+    "city": "malapitan",
+    "state": "malakas",
+    "zip": "12345",
+    "country": "philippines",
+    "icon": "test icon",
+    "gender": "female",
+    "delivery_notes": "Make sure that it is packed correctly"
+}`
+                    },],
                 expectedOutcome: '{\n  "message": "pong"\n}',
                 availableFor: "public"
             },
