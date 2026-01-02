@@ -19,6 +19,9 @@ window.openAddModal = function() {
     document.getElementById('repo-build').value    = '';
     document.getElementById('repo-lint').value     = '';
     document.getElementById('repo-test').value     = '';
+    
+    // Default to service
+    window.selectType('service');
 };
 
 window.closeAddModal = function() {
@@ -127,7 +130,7 @@ window.createRepository = async function() {
         name: document.getElementById('repo-name').value,
         description: document.getElementById('repo-desc').value,
         icon: document.getElementById('repo-icon').value,
-        type: "service", 
+        type: document.querySelector('#add-repo-modal .type-btn.active')?.dataset.type || 'service', 
         devurl: document.getElementById('repo-devurl').value,
         produrl: document.getElementById('repo-produrl').value,
         installcmd: document.getElementById('repo-install').value,
