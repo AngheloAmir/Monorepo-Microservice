@@ -16,7 +16,7 @@ window.tabTerminalContainer = null;
 window.crudTemplates = {}; // Cache HTML strings
 window.crudState = {       // Persistent state
     currentItem: null,
-    headerValue: '{\n  "Content-Type": "application/json",\n  "Authorization": "Bearer token"\n}',
+    headerValue: '{\n  "Content-Type": "application/json",\n  "Accept": "application/json",\n  "Authorization": "Bearer token",\n  "x-refresh-token": "refresh-token",\n  "X-CSRF-Token": "csrf-token-placeholder",\n  "Cache-Control": "no-cache"\n}',
     bodyValue: '{}',
     outputValue: '',
     suggestValue: '',

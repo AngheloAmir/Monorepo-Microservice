@@ -1,3 +1,5 @@
+const url = require('url');
+
 const pingMe = (req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.write(JSON.stringify({
@@ -34,7 +36,7 @@ const pingStream = (req, res) => {
             'X-Content-Type-Options': 'nosniff' 
         });
 
-        const sentenceToStream ="" +
+        const poem1 ="" +
 `[I Wandered Lonely as a Cloud]
 
 I wandered lonely as a cloud
@@ -65,7 +67,39 @@ Which is the bliss of solitude;
 And then my heart with pleasure fills,
 And dances with the daffodils.
 `
-        const words = sentenceToStream.split(" ");
+        const poem2 = "" +  
+`[The Sun Has Long Been Set]
+
+The sun has long been set,
+The stars are out by twos and threes,
+The little birds are piping yet
+Among the bushes and trees;
+There's a cuckoo, and one or two thrushes,
+And a far-off wind that rushes,
+And a sound of water that gushes,
+And the cuckoo's sovereign cry
+Fills all the hollow of the sky.
+Who would "go parading"
+In London, "and masquerading,"
+On such a night of June
+With that beautiful soft half-moon,
+And all these innocent blisses?
+On such a night as this is!
+`
+        // Parse Query Params manually
+        const parsedUrl = url.parse(req.url, true);
+        const whichPoem = parsedUrl.query.poem;
+        
+        let poem;
+        if (whichPoem === "I Wandered Lonely as a Cloud") {
+            poem = poem1;
+        } else if (whichPoem === "The Sun Has Long Been Set") {
+            poem = poem2;
+        } else {
+            poem = "No poem provided or unknown title. Try ?poem=... with the exact title.";
+        }
+
+        const words = poem.split(" ");
         
         for (const word of words) {
             res.write(word + " ");

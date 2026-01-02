@@ -44,9 +44,10 @@ const crud = [
                 methods: "STREAM",
                 description: "Send a stream request to check if it sending correctly",
                 sampleInput: '{"data": "test", "message": "test"}',
-                suggested: [ {
-                    name: "CusRaRa", content: "{}", urlparams: "?search=rarar"
-                }],
+                suggested: [ 
+                    { name: "I Wandered Lonely as a Cloud", content: "{}", urlparams: "?poem=I%20Wandered%20Lonely%20as%20a%20Cloud"},
+                    { name: "The Sun Has Long Been Set",    content: "{}", urlparams: "?poem=The%20Sun%20Has%20Long%20Been%20Set"}
+                ],
                 expectedOutcome: '# Note \nYou should see the stream of words',
                 availableFor: "public"
             },

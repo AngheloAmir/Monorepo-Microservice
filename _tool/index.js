@@ -72,10 +72,20 @@ const server = http.createServer((req, res) => {
        return internalCrudTester.pingMe(req, res);
     case '/pingpost':
        return internalCrudTester.pingPost(req, res);
-    case '/pingstream':
-       return internalCrudTester.pingStream(req, res);
-
+    // Use default block logic or explicit check higher up if strict switch is used.
+    // Switching to explicit if inside default or modifying switch logic is better?
+    // The previous code had case '/pingstream'. Since switch(req.url) matches exactly,
+    // we must move params handling logic out or use a smarter router.
+    // Minimal change: Keep switch for exact matches, but for /pingstream with params, 
+    // it will fall into default. So I'll adding a fallthrough check in default case.
+    // OR simply checking 'if starts with' is safer but requires converting switch to if-else or handling it before.
+    // Given the structure, I'll add a specific check in default case.
+    
     default:
+      if (req.url.startsWith('/pingstream')) {
+          return internalCrudTester.pingStream(req, res);
+      }
+      
       if (req.url.startsWith('/gui/')) {
         const relativePath = req.url.slice(5);
         const safePath     = path.normalize(relativePath).replace(/^(\.\.[\/\\])+/, '');
