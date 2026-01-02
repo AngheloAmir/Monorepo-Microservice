@@ -4,6 +4,22 @@ let selectedType = 'service';
 
 window.openAddModal = function() {
     document.getElementById('add-repo-modal').classList.remove('hidden');
+    
+    //clears some field
+    document.getElementById('repo-name').value    = '';
+    document.getElementById('repo-desc').value    = '';
+    document.getElementById('repo-icon').value    = 'fa fa-cube';
+    document.getElementById('repo-devurl').value  = 'localhost:3000';
+    document.getElementById('repo-produrl').value = '';
+    document.getElementById('repo-giturl').value    = '';
+    document.getElementById('repo-gitorigin').value = '';
+    document.getElementById('repo-gitbranch').value = '';
+    document.getElementById('repo-install').value  = '';
+    document.getElementById('repo-start').value    = '';
+    document.getElementById('repo-stop').value     = '';
+    document.getElementById('repo-build').value    = '';
+    document.getElementById('repo-lint').value     = '';
+    document.getElementById('repo-test').value     = '';
 };
 
 window.closeAddModal = function() {
@@ -87,15 +103,13 @@ function selectTemplate(template) {
     }
 
     // Auto-fill URLs
-    document.getElementById('repo-devurl').value = template.devurl || '';
-
-    // Auto-fill Commands
+    document.getElementById('repo-devurl').value  = template.devurl || '';
     document.getElementById('repo-install').value = template.installcmd || '';
-    document.getElementById('repo-start').value = template.startcmd || '';
-    document.getElementById('repo-stop').value = template.stopcmd || '';
-    document.getElementById('repo-build').value = template.buildcmd || '';
-    document.getElementById('repo-lint').value = template.lintcmd || '';
-    document.getElementById('repo-test').value = template.testcmd || '';
+    document.getElementById('repo-start').value   = template.startcmd || '';
+    document.getElementById('repo-stop').value    = template.stopcmd || '';
+    document.getElementById('repo-build').value   = template.buildcmd || '';
+    document.getElementById('repo-lint').value    = template.lintcmd || '';
+    document.getElementById('repo-test').value    = template.testcmd || '';
 
     // Close menu
     document.getElementById('template-menu').classList.add('hidden');

@@ -93,12 +93,12 @@
 
              <!-- Git Config -->
              <div class="space-y-1">
-                    <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Git Config</label>
+                    <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Git Config (To allow Git Sub-Tree)</label>
                     <div class="grid grid-cols-1 gap-2">
-                         <input type="text" id="repo-giturl" placeholder="Git Remote URL" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
+                         <input type="text" id="repo-giturl" placeholder="Git URL for a sub-tree" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
                          <div class="grid grid-cols-2 gap-2">
-                              <input type="text" id="repo-gitorigin" value="origin" placeholder="Origin" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
-                              <input type="text" id="repo-gitbranch" value="master" placeholder="Branch" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
+                              <input type="text" id="repo-gitorigin" value="" placeholder="Sub-Tree Origin Name" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
+                              <input type="text" id="repo-gitbranch" value="" placeholder="Sub-Tree Branch Name" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
                          </div>
                     </div>
             </div>

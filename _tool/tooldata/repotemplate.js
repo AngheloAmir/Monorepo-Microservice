@@ -8,7 +8,7 @@ const repotemplate = [
         stopcmd:      "npm run stop",
         buildcmd:     "npm run build",
         lintcmd:      "npm run lint",
-        testcmd:      "npm run test",
+        testcmd:      "",
         devurl:       "http://localhost:3000",
     },
     {
@@ -19,8 +19,8 @@ const repotemplate = [
         startcmd:     "npm run dev",
         stopcmd:      "npm run stop",
         buildcmd:     "npm run build",
-        lintcmd:      "npm run lint",
-        testcmd:      "npm run test",
+        lintcmd:      "",
+        testcmd:      "",
         devurl:       "http://localhost:8000",
     },
     {

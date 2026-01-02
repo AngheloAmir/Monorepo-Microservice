@@ -31,16 +31,18 @@ const repository = {
             "icon": "fas fa-cube",
             "type": "frontend",
             "path": "/frontend/customer",
-            "devurl": "http://localhost:3000",
+            "devurl": "",
             "produrl": "",
-            "startcmd": "npm run dev",
+            "startcmd": "",
             "stopcmd": "npm run stop",
             "buildcmd": "npm run build",
             "lintcmd": "npm run lint23132",
             "template": "react_ts_tailwind_radix",
-            "giturl": "temp32132",
-            "gitorigin": "origin312",
-            "gitbranch": "master3132"
+            "giturl": "",
+            "gitorigin": "",
+            "gitbranch": "",
+            "installcmd": "",
+            "testcmd": "npm run test"
         }
     ],
     "database": [],
