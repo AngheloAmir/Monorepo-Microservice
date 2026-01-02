@@ -110,9 +110,12 @@ function selectTemplate(template) {
     document.getElementById('repo-build').value   = template.buildcmd || '';
     document.getElementById('repo-lint').value    = template.lintcmd || '';
     document.getElementById('repo-test').value    = template.testcmd || '';
+    document.getElementById('repo-icon').value    = template.icon;
+    document.getElementById('add-icon-preview').className = template.icon;
 
     // Close menu
     document.getElementById('template-menu').classList.add('hidden');
+    
 }
 
 window.createRepository = async function() {

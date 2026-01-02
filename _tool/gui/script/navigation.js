@@ -1,9 +1,9 @@
 window.Navigation = {
     items: [
         { id: 'home', label: 'Home', icon: 'fa-home', component: 'home' },
-        { id: 'repository', label: 'Repository', icon: 'fa-code-branch', component: 'repository' },
+        { id: 'repository', label: 'Repository', icon: 'fa-cube', component: 'repository' },
         { id: 'cicd', label: 'CI/CD Tool', icon: 'fa-rocket', component: 'cicd' },
-        { id: 'crud', label: 'CRUD Tester', icon: 'fa-database', component: 'crud' },
+        { id: 'crud', label: 'CRUD Tester', icon: 'fa-microscope', component: 'crud' },
         { id: 'stream', label: 'Stream Tester', icon: 'fa-stream', component: 'stream' },
     ],
     
@@ -22,7 +22,7 @@ window.Navigation = {
         if (!navContainer) return;
 
         // Top items
-        let html = '<div class="flex flex-col gap-2 w-full px-2">';
+        let html = '<div class="relative z-[999999] flex flex-col gap-2 w-full px-2">';
         this.items.forEach(item => {
             html += this.createNavItem(item);
         });
@@ -57,20 +57,22 @@ window.Navigation = {
             : 'text-gray-400 hover:bg-gray-800 hover:text-white';
         
         return `
-            <button 
-                class="z-50 nav-item group relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-200 outline-none focus:ring-2 focus:ring-blue-500/50 ${activeClass}" 
-                data-id="${item.id}"
-                aria-label="${item.label}"
-            >
-                <i class="fas ${item.icon} text-lg transition-transform duration-200 group-hover:scale-110"></i>
-                
-                <!-- Tooltip -->
-                <div class="z-50 absolute bg-gray-900 left-14 px-3 py-1.5 text-white text-sm font-medium rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-x-2 group-hover:translate-x-0 shadow-xl border border-gray-700 whitespace-nowrap">
-                    ${item.label}
-                    <!-- Arrow -->
-                    <div class="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 w-2 h-2 bg-gray-900 border-l border-b border-gray-700 rotate-45"></div>
-                </div> 
-            </button>
+          
+                <button 
+                    class="z-50 nav-item group relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-200 outline-none focus:ring-2 focus:ring-blue-500/50 ${activeClass}" 
+                    data-id="${item.id}"
+                    aria-label="${item.label}"
+                >
+                    <i class="fas ${item.icon} text-lg transition-transform duration-200 group-hover:scale-110"></i>
+                    
+                    <!-- Tooltip -->
+                    <div class=" absolute bg-gray-900 left-14 px-3 py-1.5 text-white text-sm font-medium rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-x-2 group-hover:translate-x-0 shadow-xl border border-gray-700 whitespace-nowrap">
+                        ${item.label}
+                        <!-- Arrow -->
+                        <div class="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 w-2 h-2 bg-gray-900 border-l border-b border-gray-700 rotate-45"></div>
+                    </div> 
+                </button>
+           
         `;
     },
     

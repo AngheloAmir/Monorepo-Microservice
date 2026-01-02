@@ -10,6 +10,7 @@ const repotemplate = [
         lintcmd:      "npm run lint",
         testcmd:      "",
         devurl:       "http://localhost:3000",
+        icon:         "fa-brands fa-react",
     },
     {
         templatename: "[Backend] Node TS Nodemon Jan2026",
@@ -22,6 +23,7 @@ const repotemplate = [
         lintcmd:      "",
         testcmd:      "",
         devurl:       "http://localhost:8000",
+        icon:         "fa-brands fa-node-js",
     },
     {
         templatename: "[Backend] PHP Vanilla",
@@ -34,6 +36,7 @@ const repotemplate = [
         lintcmd:      "",
         testcmd:      "",
         devurl:       "http://localhost:8000",
+        icon:         "fa-brands fa-php",
     },
     {
         templatename: "[Database] Supabase Jan2026",
@@ -46,6 +49,7 @@ const repotemplate = [
         lintcmd:      "",
         testcmd:      "",
         devurl:       "http://localhost:54321",
+        icon:         "fas fa-database",
     },
     {
         templatename: "[AWS] Localstack Jan2026",
@@ -58,6 +62,7 @@ const repotemplate = [
         lintcmd:      "",
         testcmd:      "",
         devurl:       "",
+        icon:         "fa-brands fa-aws",
     }
 ];
 

@@ -11,7 +11,7 @@ window.openSettingsModal = function(id) {
     const modal = document.getElementById('repository-settings-modal');
     
     // Populate fields
-    document.getElementById('settings-title-name').textContent = data.name;
+    //document.getElementById('settings-title-name').textContent = data.name;
     
     // Text based fields
     document.getElementById('modal-text-name').textContent = data.name || 'Untitled';

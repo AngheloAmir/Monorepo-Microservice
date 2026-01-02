@@ -17,9 +17,9 @@ const repository = {
             "buildcmd": "npm run build",
             "lintcmd": "npm run lint",
             "template": "node_ts_nodemon_jwt",
-            "giturl": "temp",
-            "gitorigin": "origin",
-            "gitbranch": "master",
+            "giturl": "",
+            "gitorigin": "",
+            "gitbranch": "",
             "installcmd": "",
             "testcmd": "npm run test"
         }
@@ -28,21 +28,21 @@ const repository = {
         {
             "name": "customer",
             "description": "",
-            "icon": "fas fa-cube",
+            "icon": "fa-brands fa-react",
             "type": "frontend",
             "path": "/frontend/customer",
-            "devurl": "",
+            "devurl": "http://localhost:3000/",
             "produrl": "",
-            "startcmd": "",
+            "startcmd": "npm run dev",
             "stopcmd": "npm run stop",
             "buildcmd": "npm run build",
-            "lintcmd": "npm run lint23132",
+            "lintcmd": "",
             "template": "react_ts_tailwind_radix",
             "giturl": "",
             "gitorigin": "",
             "gitbranch": "",
             "installcmd": "",
-            "testcmd": "npm run test"
+            "testcmd": ""
         }
     ],
     "database": [],
