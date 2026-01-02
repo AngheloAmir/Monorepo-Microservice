@@ -86,6 +86,7 @@ window.AccordionNav = {
             case 'PUT': return 'text-violet-500';
             case 'DELETE': return 'text-red-500';
             case 'PATCH': return 'text-purple-500';
+            case 'STREAM': return 'text-orange-500';
             default: return 'text-gray-500';
         }
     }

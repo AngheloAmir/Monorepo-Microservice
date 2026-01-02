@@ -72,6 +72,8 @@ const server = http.createServer((req, res) => {
        return internalCrudTester.pingMe(req, res);
     case '/pingpost':
        return internalCrudTester.pingPost(req, res);
+    case '/pingstream':
+       return internalCrudTester.pingStream(req, res);
 
     default:
       if (req.url.startsWith('/gui/')) {

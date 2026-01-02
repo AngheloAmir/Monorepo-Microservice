@@ -11,3 +11,14 @@ window.repoSections     = ['backend', 'database', 'frontend', 'service'];
 window.tabTerminalItems     = {};
 window.tabTerminalActiveId  = null;
 window.tabTerminalContainer = null;
+
+// CRUD Tester variables
+window.crudTemplates = {}; // Cache HTML strings
+window.crudState = {       // Persistent state
+    currentItem: null,
+    headerValue: '{\n  "Content-Type": "application/json",\n  "Authorization": "Bearer token"\n}',
+    bodyValue: '{}',
+    outputValue: '',
+    suggestValue: '',
+    rootUrl: 'http://localhost:3000'
+};

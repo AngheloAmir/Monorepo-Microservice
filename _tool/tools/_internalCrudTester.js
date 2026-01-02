@@ -24,7 +24,31 @@ const pingPost = (req, res) => {
     });
 }
 
+const pingStream = async (req, res) => {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+        res.writeHead(200, {
+            'Content-Type': 'text/plain; charset=utf-8',
+            'Transfer-Encoding': 'chunked',
+            'X-Content-Type-Options': 'nosniff' 
+        });
+
+        const sentenceToStream = "lorem ipsum dolor sit amet consectetur adipiscing elit";
+        const words            = sentenceToStream.split(" ");
+        
+        words.forEach(async word => {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            res.write(word + "\n");
+        });
+        
+        res.end();
+    });
+}
+
+
 module.exports = {
     pingMe,
-    pingPost
+    pingPost,
+    pingStream
 }
