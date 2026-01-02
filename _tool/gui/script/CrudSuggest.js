@@ -20,24 +20,47 @@ window.CrudSuggest = {
         clone.classList.remove('hidden');
         
         const contentEl = clone.querySelector('#suggest-content');
-        const wrapper   = clone.querySelector('#suggest-container');
+        const wrapper   = clone;
         const icon      = clone.querySelector('#btn-toggle-size i');
         
-        // Minimize/Maximize Logic (Toggle height or fullscreen?)
-        // User asked for min/max. Let's toggle between flex-1 (default) and h-10 (minimized)
+        // Minimize/Maximize Width Logic
         let isMinimized = false;
         clone.querySelector('#btn-toggle-size').onclick = () => {
              isMinimized = !isMinimized;
+             
+             const grid = document.getElementById('crud-grid-layout');
+             const title = clone.querySelector('.font-bold'); // "SUGGESTED OUTCOME"
+             const contentWrapper = clone.querySelector('#suggest-content-wrapper');
+             const header = clone.querySelector('.border-b');
+
              if (isMinimized) {
-                 wrapper.classList.remove('flex-1'); // Assuming parent is flex
-                 wrapper.style.height = '32px'; // Just header
-                 wrapper.querySelector('#suggest-content-wrapper').classList.add('hidden');
-                 icon.className = 'fas fa-compress-alt';
+                 // Minimize: 1fr 1fr 40px
+                 if (grid) {
+                     grid.classList.remove('grid-cols-3');
+                     grid.style.gridTemplateColumns = 'minmax(0, 1fr) minmax(0, 1fr) 40px';
+                 }
+                 
+                 contentWrapper.classList.add('hidden');
+                 title.classList.add('hidden');
+                 
+                 // center button
+                 header.classList.remove('justify-between', 'px-2');
+                 header.classList.add('justify-center', 'px-0');
+                 
+                 icon.className = 'fas fa-chevron-left';
              } else {
-                 if(wrapper.parentElement.classList.contains('flex')) wrapper.classList.add('flex-1');
-                 wrapper.style.height = 'auto'; // restore
-                 wrapper.style.height = '100%'; 
-                 wrapper.querySelector('#suggest-content-wrapper').classList.remove('hidden');
+                 // Restore
+                 if (grid) {
+                     grid.style.gridTemplateColumns = '';
+                     grid.classList.add('grid-cols-3');
+                 }
+                 
+                 contentWrapper.classList.remove('hidden');
+                 title.classList.remove('hidden');
+                 
+                 header.classList.add('justify-between', 'px-2');
+                 header.classList.remove('justify-center', 'px-0');
+                 
                  icon.className = 'fas fa-expand-alt';
              }
         };

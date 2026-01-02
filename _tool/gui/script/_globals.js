@@ -21,5 +21,6 @@ window.crudState = {       // Persistent state
     outputValue: '',
     suggestValue: '',
     rootUrl: localStorage.getItem('crud-root-url') || 'http://localhost:3200',
+    paramValue: '',
     expandedCategories: new Set() // Store indices of open categories
 };

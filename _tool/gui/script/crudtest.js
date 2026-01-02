@@ -56,6 +56,16 @@ window.CrudTest = {
                 this.updateUrlDisplay();
             });
         }
+        
+        // Initialize Params Input
+        const paramInput = document.getElementById('crud-param-input');
+        if (paramInput) {
+            paramInput.value = window.crudState.paramValue || '';
+            paramInput.addEventListener('input', () => {
+                window.crudState.paramValue = paramInput.value;
+                this.updateUrlDisplay();
+            });
+        }
 
         // Restore Selection if exists
         if (window.crudState.currentItem) {
@@ -72,6 +82,7 @@ window.CrudTest = {
         const labelEl = document.getElementById('crud-info-label');
         const descEl = document.getElementById('crud-info-desc');
         const availEl = document.getElementById('crud-info-avail');
+        const paramInput = document.getElementById('crud-param-input');
         const method = item.methods || 'GET';
 
         if (methodEl) {
@@ -87,6 +98,10 @@ window.CrudTest = {
             } else {
                 availEl.style.display = 'none';
             }
+        }
+        
+        if (paramInput) {
+            paramInput.value = window.crudState.paramValue || '';
         }
 
         this.updateUrlDisplay();
@@ -128,6 +143,8 @@ window.CrudTest = {
 
         // Save new item to state
         window.crudState.currentItem = item;
+        // Reset Params for new item
+        window.crudState.paramValue = '';
         
         // Update UI (Shared logic)
         this.restoreSelection(item);
@@ -172,8 +189,9 @@ window.CrudTest = {
     updateUrlDisplay: function() {
         if (!window.crudState.currentItem) return;
         const root = document.getElementById('crud-root-url').value;
+        const params = window.crudState.paramValue || '';
         const routeEl = document.getElementById('crud-info-route');
-        if(routeEl) routeEl.textContent = `${root}${window.crudState.currentItem.route}`;
+        if(routeEl) routeEl.textContent = `${root}${window.crudState.currentItem.route}${params}`;
     },
 
     sendRequest: async function() {
@@ -181,7 +199,8 @@ window.CrudTest = {
         if (!item) return;
 
         const root = document.getElementById('crud-root-url').value;
-        const url = `${root}${item.route}`;
+        const params = window.crudState.paramValue || '';
+        const url = `${root}${item.route}${params}`;
         const method = item.methods || 'GET';
         
         const headerText = this.headerEditor.getValue();
