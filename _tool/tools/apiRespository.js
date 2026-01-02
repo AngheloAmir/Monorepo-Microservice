@@ -39,7 +39,7 @@ const updateRepositoryData = (req, res) => {
             const firstHyphen = id.indexOf('-');
             if (firstHyphen === -1) throw new Error('Invalid ID format');
             
-            const section = id.substring(0, firstHyphen);
+            const section = id.substring(0, firstHyphen).toLowerCase();
             const name    = id.substring(firstHyphen + 1);
 
             if (require.cache[require.resolve(repoFilePath)]) {
@@ -76,7 +76,7 @@ const deleteRepositoryData = (req, res) => {
             const firstHyphen = id.indexOf('-');
             if (firstHyphen === -1) throw new Error('Invalid ID format');
             
-            const section = id.substring(0, firstHyphen);
+            const section = id.substring(0, firstHyphen).toLowerCase();
             const name    = id.substring(firstHyphen + 1);
 
             if (require.cache[require.resolve(repoFilePath)]) {

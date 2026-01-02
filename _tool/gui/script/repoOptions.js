@@ -60,7 +60,7 @@ window.saveRepo = async function() {
 
     const data = {
         name: document.getElementById('modal-text-name').textContent,
-        type: document.getElementById('modal-text-type').textContent,
+        type: document.getElementById('modal-text-type').textContent.toLowerCase(),
         template: document.getElementById('modal-text-template').textContent,
         icon: document.getElementById('modal-input-icon').value,
         description: document.getElementById('modal-input-desc').value,

@@ -7,8 +7,8 @@ const repository = {
         {
             "name": "NodeJS",
             "description": "The main server of the app",
-            "icon": "fas fa-cube",
-            "type": "backend",
+            "icon": "fa-brands fa-node-js",
+            "type": "BACKEND",
             "path": "/backend/NodeJS",
             "devurl": "http://localhost:8000",
             "produrl": "",
@@ -46,46 +46,7 @@ const repository = {
         }
     ],
     "database": [],
-    "service": [
-        {
-            "name": "test",
-            "description": "",
-            "icon": "fa fa-cube",
-            "type": "SERVICE",
-            "path": "/service/test",
-            "devurl": "localhost:3000",
-            "produrl": "",
-            "installcmd": "",
-            "startcmd": "1321",
-            "stopcmd": "",
-            "buildcmd": "",
-            "lintcmd": "",
-            "testcmd": "",
-            "template": "None",
-            "giturl": "",
-            "gitorigin": "origin",
-            "gitbranch": "master"
-        },
-        {
-            "name": "test22",
-            "description": "",
-            "icon": "fa fa-cube",
-            "type": "SERVICE",
-            "path": "/service/test22",
-            "devurl": "localhost:3000",
-            "produrl": "",
-            "installcmd": "",
-            "startcmd": "asdasd asd as",
-            "stopcmd": "",
-            "buildcmd": "",
-            "lintcmd": "",
-            "testcmd": "",
-            "template": "None",
-            "giturl": "hhhhhh",
-            "gitorigin": "origin",
-            "gitbranch": "master"
-        }
-    ]
+    "service": []
 }
 
 module.exports = repository;
