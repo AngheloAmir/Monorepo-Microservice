@@ -6,14 +6,11 @@ window.Navigation = {
         { id: 'crud', label: 'CRUD Tester', icon: 'fa-microscope', component: 'crud' },
         { id: 'stream', label: 'Stream Tester', icon: 'fa-stream', component: 'stream' },
     ],
-    
     settingsItem: { id: 'settings', label: 'Setting', icon: 'fa-cog', component: 'settings' },
-    
     activeId: null, // Start null so first navigation always triggers load
     
     init: function() {
         this.render();
-        // Load whatever defaults or maybe check URL hash in future?
         this.navigateTo('home');
     },
 
@@ -56,9 +53,7 @@ window.Navigation = {
             ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30 ring-1 ring-blue-500' 
             : 'text-gray-400 hover:bg-gray-800 hover:text-white';
         
-        return `
-          
-                <button 
+        return `<button 
                     class="z-50 nav-item group relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-200 outline-none focus:ring-2 focus:ring-blue-500/50 ${activeClass}" 
                     data-id="${item.id}"
                     aria-label="${item.label}"
@@ -71,29 +66,22 @@ window.Navigation = {
                         <!-- Arrow -->
                         <div class="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 w-2 h-2 bg-gray-900 border-l border-b border-gray-700 rotate-45"></div>
                     </div> 
-                </button>
-           
-        `;
+                </button>`;
     },
     
-    navigateTo: function(id) {
-        if (this.activeId === id) {
-             // Already on this page
-             if (id === 'repository' && window.loadRepositoryData) {
-                 // Initial load might trigger this if we didn't handle null activeId correctly,
-                 // but since we set activeId=null, this block only runs on manual clicks.
-                 window.loadRepositoryData();
-             }
-             return;
+    navigateTo: async function(id) {
+        await window.PageLoader.load(id); 
+
+        switch(id) {
+            case 'repository':
+                await window.repositoryLoader();
+                break;
+            default:
+                break;
         }
 
+        //update the looks of the navigation
         this.activeId = id;
-        this.render(); // Re-render sidebar to update active state look
-        
-        if (window.PageLoader) {
-            window.PageLoader.load(id); 
-        } else {
-            console.error('PageLoader not found');
-        }
+        this.render();
     }
 };

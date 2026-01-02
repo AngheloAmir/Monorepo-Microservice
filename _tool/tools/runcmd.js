@@ -43,8 +43,6 @@ function executeCommand(res, { directory, basecmd, cmd }) {
         'X-Content-Type-Options': 'nosniff' 
     });
 
-    console.log(`[RunCmd] Spawning ${basecmd} ${cmd} in ${targetDir}`);
-
     // Prepare Environment
     const env = { 
         ...process.env, 

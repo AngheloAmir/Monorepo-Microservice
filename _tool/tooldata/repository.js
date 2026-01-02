@@ -46,7 +46,46 @@ const repository = {
         }
     ],
     "database": [],
-    "service": []
+    "service": [
+        {
+            "name": "test",
+            "description": "",
+            "icon": "fa fa-cube",
+            "type": "service",
+            "path": "/service/test",
+            "devurl": "localhost:3000",
+            "produrl": "",
+            "installcmd": "",
+            "startcmd": "",
+            "stopcmd": "",
+            "buildcmd": "",
+            "lintcmd": "",
+            "testcmd": "",
+            "template": "",
+            "giturl": "",
+            "gitorigin": "origin",
+            "gitbranch": "master"
+        },
+        {
+            "name": "test22",
+            "description": "",
+            "icon": "fa fa-cube",
+            "type": "service",
+            "path": "/service/test22",
+            "devurl": "localhost:3000",
+            "produrl": "",
+            "installcmd": "",
+            "startcmd": "",
+            "stopcmd": "",
+            "buildcmd": "",
+            "lintcmd": "",
+            "testcmd": "",
+            "template": "",
+            "giturl": "hhhhhh",
+            "gitorigin": "origin",
+            "gitbranch": "master"
+        }
+    ]
 }
 
 module.exports = repository;

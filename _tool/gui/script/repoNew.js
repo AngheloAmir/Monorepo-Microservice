@@ -1,6 +1,5 @@
 // Logic for repoNew.html
 
-let selectedType = 'service';
 
 window.openAddModal = function() {
     document.getElementById('add-repo-modal').classList.remove('hidden');
@@ -27,8 +26,6 @@ window.closeAddModal = function() {
 };
 
 window.selectType = function(type) {
-    selectedType = type;
-    
     // Reset all buttons
     document.querySelectorAll('.type-btn').forEach(btn => {
         btn.classList.remove('active', 'border-blue-500', 'bg-blue-500/10');
@@ -130,7 +127,7 @@ window.createRepository = async function() {
         name: document.getElementById('repo-name').value,
         description: document.getElementById('repo-desc').value,
         icon: document.getElementById('repo-icon').value,
-        type: selectedType, 
+        type: "service", 
         devurl: document.getElementById('repo-devurl').value,
         produrl: document.getElementById('repo-produrl').value,
         installcmd: document.getElementById('repo-install').value,

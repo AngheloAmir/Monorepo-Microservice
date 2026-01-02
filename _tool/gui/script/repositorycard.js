@@ -5,13 +5,8 @@ class RepositoryCard {
 
     render(data, index) {
         let html   = this.template;
-
-        /** The ID of the process, it will unique by using type + name */
-        /** The ID of the process, it will unique by using type + name */
         const processID             = data.type + '-' + data.name;
-        
-        // Use the index-based ID (e.g. 'service-0') for cache and DOM IDs to match backend expectation
-        const uniqueID = index; 
+        const uniqueID              = processID; 
         window.repoCache            = window.repoCache || {};
         window.repoCache[uniqueID]  = data;
         
@@ -108,7 +103,6 @@ window.updateCardState = function(id, isRunning) {
 
 window.startDevRepo = function(id) {
     const data = window.repoCache[id];
-
     if (data && window.TabTerminal) {
         window.TabTerminal.createTab(id, data);
         window.updateCardState(id, true);
