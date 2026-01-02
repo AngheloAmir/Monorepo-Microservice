@@ -51,7 +51,7 @@
         <!-- Active State (Hidden by default) -->
         <div id="crud-active-state" class="relative z-10 flex-1 flex flex-col overflow-hidden hidden">
             <!-- Info Block (Redesigned) -->
-            <div class="p-4 border-b border-gray-800 bg-gray-800/40 backdrop-blur-md flex flex-col gap-4">
+            <div class="p-4 bg-gray-800/40 backdrop-blur-md flex flex-col gap-4">
                 
                 <!-- Row 1: Label | Description -->
                 <div class="flex items-center gap-3">
@@ -72,14 +72,20 @@
                         <i class="fas fa-paper-plane"></i>
                     </button>
 
-                    <!-- 2. Presets Dropdown -->
-                    <div class="relative flex-none h-9">
-                        <select id="crud-suggest-dropdown" onchange="window.CrudTest.applySuggestion(this.value)" 
-                                class="h-full appearance-none bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs rounded pl-3 pr-8 cursor-pointer focus:outline-none transition-colors border border-gray-600 font-medium">
-                            <option value="">Presets</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-                            <i class="fas fa-chevron-down text-[10px]"></i>
+                    <!-- 2. Presets Dropdown (Custom UI) -->
+                    <div class="relative flex-none" id="crud-presets-container">
+                        <button id="crud-presets-btn" onclick="document.getElementById('crud-presets-menu').classList.toggle('hidden')" 
+                                class="flex items-center justify-between gap-2 bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs font-medium px-3 h-9 rounded border border-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-40">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-list-ul text-[10px]"></i>
+                                <span id="crud-presets-label">Presets</span>
+                            </div>
+                            <i class="fas fa-chevron-down text-[10px] opacity-50"></i>
+                        </button>
+                        
+                        <!-- Dropdown Menu -->
+                        <div id="crud-presets-menu" class="hidden absolute top-full left-0 mt-2 w-56 bg-gray-800 border border-gray-700 rounded-md shadow-xl z-50 overflow-hidden flex flex-col py-1 animate-fade-in-down">
+                            <!-- Items injected here -->
                         </div>
                     </div>
 
@@ -100,11 +106,11 @@
             </div>
 
             <!-- 3 Column Grid -->
-            <div id="crud-grid-layout" class="flex-1 grid grid-cols-3 gap-0 min-h-0 divide-x divide-gray-800 transition-all duration-300">
+            <div id="crud-grid-layout" class="flex-1 grid grid-cols-3 gap-0 min-h-0 transition-all duration-300">
                 <!-- Col 1: Inputs -->
-                <div class="grid grid-rows-3 grid-cols-1 h-full bg-gray-900 p-2 gap-2 min-h-0">
+                <div class="grid grid-rows-5 grid-cols-1 h-full bg-gray-900 p-2 gap-2 min-h-0">
                     <div id="input-header-container" class="row-span-1 min-h-0"></div>
-                    <div id="input-body-container"   class="row-span-2 min-h-0"></div>
+                    <div id="input-body-container"   class="row-span-4 min-h-0"></div>
                 </div>
 
                 <!-- Col 2: Output -->

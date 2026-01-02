@@ -67,6 +67,15 @@ window.CrudTest = {
             });
         }
 
+        // Initialize Global Click to lose menus
+        document.addEventListener('click', (e) => {
+            const container = document.getElementById('crud-presets-container');
+            const menu = document.getElementById('crud-presets-menu');
+            if (container && menu && !container.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+
         // Restore Selection if exists
         if (window.crudState.currentItem) {
             this.restoreSelection(window.crudState.currentItem);
@@ -106,20 +115,40 @@ window.CrudTest = {
 
         this.updateUrlDisplay();
 
-        // Update Suggested Inputs Dropdown
-        const suggestDropdown = document.getElementById('crud-suggest-dropdown');
-        if (suggestDropdown) {
-            suggestDropdown.innerHTML = '<option value="">Suggested Inputs</option>';
+        // Update Custom Presets Dropdown
+        const presetsBtn = document.getElementById('crud-presets-btn');
+        const presetsLabel = document.getElementById('crud-presets-label');
+        const presetsMenu = document.getElementById('crud-presets-menu');
+
+        if (presetsBtn && presetsMenu) {
+            presetsMenu.innerHTML = ''; // Clear previous
+            
             if (item.suggested && item.suggested.length > 0) {
+                presetsBtn.disabled = false;
+                presetsBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-gray-700', 'hover:bg-gray-600', 'border-gray-600', 'text-gray-200');
+                presetsBtn.classList.add('bg-green-600', 'hover:bg-green-500', 'border-green-500', 'text-white', 'shadow-lg', 'shadow-green-900/20');
+                presetsLabel.textContent = `Presets (${item.suggested.length})`;
+                
+                // Add "Default" or custom options
                 item.suggested.forEach((s, idx) => {
-                    const opt = document.createElement('option');
-                    opt.value = idx;
-                    opt.textContent = s.name;
-                    suggestDropdown.appendChild(opt);
+                    const btn = document.createElement('button');
+                    btn.className = 'text-left px-4 py-2 text-xs text-gray-300 hover:bg-green-600/20 hover:text-green-200 transition-colors w-full border-b border-gray-700/50 last:border-0 flex items-center gap-2 group';
+                    btn.innerHTML = `
+                        <i class="fas fa-file-code text-gray-500 group-hover:text-green-400"></i>
+                        <span class="font-medium">${s.name}</span>
+                    `;
+                    btn.onclick = () => {
+                        this.applySuggestion(idx);
+                        presetsMenu.classList.add('hidden');
+                    };
+                    presetsMenu.appendChild(btn);
                 });
-                suggestDropdown.disabled = false;
+
             } else {
-                suggestDropdown.disabled = true;
+                presetsBtn.disabled = true;
+                presetsBtn.classList.remove('bg-green-600', 'hover:bg-green-500', 'border-green-500', 'text-white', 'shadow-lg', 'shadow-green-900/20');
+                presetsBtn.classList.add('opacity-50', 'cursor-not-allowed', 'bg-gray-700', 'hover:bg-gray-600', 'border-gray-600', 'text-gray-200');
+                presetsLabel.textContent = '[ No Suggestions ]';
             }
         }
         
