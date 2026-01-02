@@ -26,17 +26,7 @@ const pingPost = (req, res) => {
     });
 }
 
-const pingStream = (req, res) => {
-    let body = '';
-    req.on('data', chunk => body += chunk);
-    req.on('end', async () => {
-        res.writeHead(200, {
-            'Content-Type': 'text/plain; charset=utf-8',
-            'Transfer-Encoding': 'chunked',
-            'X-Content-Type-Options': 'nosniff' 
-        });
-
-        const poem1 ="" +
+const poem1 ="" +
 `[I Wandered Lonely as a Cloud]
 
 I wandered lonely as a cloud
@@ -67,7 +57,7 @@ Which is the bliss of solitude;
 And then my heart with pleasure fills,
 And dances with the daffodils.
 `
-        const poem2 = "" +  
+const poem2 = "" +  
 `[The Sun Has Long Been Set]
 
 The sun has long been set,
@@ -86,6 +76,17 @@ With that beautiful soft half-moon,
 And all these innocent blisses?
 On such a night as this is!
 `
+
+const pingStream = (req, res) => {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', async () => {
+        res.writeHead(200, {
+            'Content-Type': 'text/plain; charset=utf-8',
+            'Transfer-Encoding': 'chunked',
+            'X-Content-Type-Options': 'nosniff' 
+        });
+
         // Parse Query Params manually
         const parsedUrl = url.parse(req.url, true);
         const whichPoem = parsedUrl.query.poem;
@@ -110,7 +111,6 @@ On such a night as this is!
         res.end();
     });
 }
-
 
 module.exports = {
     pingMe,
