@@ -35,8 +35,18 @@ const saveCrudData = (req, res) => {
                     }
                 }
             } else if (action === 'add_category') {
-                // ... potentially handle new categories
                 currentData.push({ category: itemData.category, items: [] });
+            } else if (action === 'rename_category') {
+                 // Req body: { action: 'rename_category', categoryIndex: 0, newName: '...' }
+                 const { newName } = JSON.parse(body);
+                 if (currentData[categoryIndex]) {
+                     currentData[categoryIndex].category = newName;
+                 }
+            } else if (action === 'delete_category') {
+                 // Req body: { action: 'delete_category', categoryIndex: 0 }
+                 if (currentData[categoryIndex]) {
+                     currentData.splice(categoryIndex, 1);
+                 }
             }
 
             // 3. Write back

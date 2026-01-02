@@ -428,7 +428,8 @@ window.crudTesterLoader = async function() {
             const data = await res.json();
             
             // Init Navigation (Rerenders the list)
-            await window.CrudEditor.init();
+            await window.CrudEditor.init(); // Modal 1
+            if (window.ManageCategories) await window.ManageCategories.init(); // Modal 2
             await window.AccordionNav.init('crud-nav-container', data);
             
         } catch (e) {

@@ -1,0 +1,53 @@
+<div id="manage-categories-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden">
+    <div class="bg-gray-900 border border-gray-700 rounded-xl shadow-2xl w-[500px] max-h-[80vh] flex flex-col overflow-hidden animate-fade-in">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-gray-900/50">
+            <h3 class="font-medium text-white text-lg">Manage Categories</h3>
+            <button onclick="window.ManageCategories.close()" class="text-gray-400 hover:text-white transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <!-- Content -->
+        <div class="flex-1 p-4 overflow-y-auto custom-scrollbar flex flex-col gap-4">
+            
+            <!-- Add New -->
+            <div class="flex gap-2">
+                <input type="text" id="new-cat-name" placeholder="New Category Name" class="flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
+                <button onclick="window.ManageCategories.add()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded text-sm transition-colors">
+                    <i class="fas fa-plus mr-1"></i> Add
+                </button>
+            </div>
+
+            <!-- List -->
+            <div id="manage-cat-list" class="flex flex-col gap-2">
+                <!-- Injected via JS -->
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<template id="manage-cat-item-template">
+    <div class="cat-item flex items-center justify-between bg-gray-800/50 border border-gray-800 rounded p-2 hover:border-gray-700 transition-colors group">
+        <div class="flex items-center gap-2 flex-1">
+            <i class="fas fa-folder text-gray-500 text-xs"></i>
+            <span class="cat-name text-sm text-gray-300 font-medium">Category Name</span>
+            <input type="text" class="cat-edit-input hidden flex-1 bg-gray-900 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-blue-500 outline-none">
+        </div>
+        <div class="flex items-center gap-1 opacity-50 group-hover:opacity-100 transition-opacity">
+            <button class="btn-rename text-blue-400 hover:text-blue-300 p-1.5 rounded hover:bg-blue-500/10" title="Rename">
+                <i class="fas fa-pen text-xs"></i>
+            </button>
+            <button class="btn-save hidden text-green-400 hover:text-green-300 p-1.5 rounded hover:bg-green-500/10" title="Save">
+                <i class="fas fa-check text-xs"></i>
+            </button>
+            <button class="btn-cancel hidden text-gray-400 hover:text-gray-300 p-1.5 rounded hover:bg-gray-500/10" title="Cancel">
+                <i class="fas fa-times text-xs"></i>
+            </button>
+            <button class="btn-delete text-red-400 hover:text-red-300 p-1.5 rounded hover:bg-red-500/10" title="Delete">
+                <i class="fas fa-trash text-xs"></i>
+            </button>
+        </div>
+    </div>
+</template>

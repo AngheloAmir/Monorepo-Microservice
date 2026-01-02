@@ -86,44 +86,19 @@ window.AccordionNav = {
             container.appendChild(catNode);
         });
         
-        // Add Category Button
-        const addCatBtn = document.createElement('div');
-        addCatBtn.className = 'mt-4 px-2 mb-8';
-        addCatBtn.innerHTML = `
+        // Manage Categories Button
+        const manageBtn = document.createElement('div');
+        manageBtn.className = 'mt-4 px-2 mb-8';
+        manageBtn.innerHTML = `
             <button class="w-full border border-dashed border-gray-700 hover:border-blue-500/50 text-gray-500 hover:text-blue-400 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 group bg-gray-800/20 hover:bg-blue-500/5">
-                <i class="fas fa-folder-plus group-hover:scale-110 transition-transform"></i>
-                Add Category
+                <i class="fas fa-cog group-hover:rotate-90 transition-transform"></i>
+                Manage
             </button>
         `;
-        addCatBtn.onclick = async () => {
-            const name = prompt("Enter new category name:");
-            if (name) {
-                try {
-                    const res = await fetch('/api/crudedit', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            action: 'add_category',
-                            itemData: { category: name }
-                        })
-                    });
-                    const result = await res.json();
-                    if (result.success) {
-                        if (window.loadCrudData) {
-                            window.loadCrudData();
-                        } else {
-                            window.location.reload();
-                        }
-                    } else {
-                        alert('Error: ' + result.error);
-                    }
-                } catch(e) {
-                    console.error(e);
-                    alert("Network error");
-                }
-            }
+        manageBtn.onclick = () => {
+            if(window.ManageCategories) window.ManageCategories.open();
         };
-        container.appendChild(addCatBtn);
+        container.appendChild(manageBtn);
     },
 
     createItemElement: function(item, catIndex, itemIndex) {
