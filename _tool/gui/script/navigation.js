@@ -17,6 +17,7 @@ window.Navigation = {
     render: function() {
         const navContainer = document.getElementById('main-nav');
         if (!navContainer) return;
+        navContainer.style.zIndex = "50";
 
         // Top items
         let html = '<div class="relative z-[999999] flex flex-col gap-2 w-full px-2">';
@@ -61,7 +62,7 @@ window.Navigation = {
                     <i class="fas ${item.icon} text-lg transition-transform duration-200 group-hover:scale-110"></i>
                     
                     <!-- Tooltip -->
-                    <div class=" absolute bg-gray-900 left-14 px-3 py-1.5 text-white text-sm font-medium rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-x-2 group-hover:translate-x-0 shadow-xl border border-gray-700 whitespace-nowrap">
+                    <div class="z-50 absolute bg-gray-900 left-14 px-3 py-1.5 text-white text-sm font-medium rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-x-2 group-hover:translate-x-0 shadow-xl border border-gray-700 whitespace-nowrap">
                         ${item.label}
                         <!-- Arrow -->
                         <div class="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 w-2 h-2 bg-gray-900 border-l border-b border-gray-700 rotate-45"></div>
