@@ -156,24 +156,28 @@ async function stopDevCommand(res, { id, stopcmd, directory }) {
         const fs = require('fs');
         if (fs.existsSync(targetDir)) {
              try {
+                res.write('> Running stop command: ' + stopcmd + '\n')
                 await new Promise((resolve) => {
                     const sc = spawn(stopcmd, {
                         cwd: targetDir,
                         shell: true,
                         stdio: 'ignore'
                     });
-
-                    res.write('\n> Stop command was executed\n')
                     
-                    // Force timeout of 10s for stop command
                     const timeout = setTimeout(() => {
-                         if(!sc.killed) sc.kill();
-                         resolve();
+                        if(!sc.killed) sc.kill();
+                        res.write('> Timeout stop command\n');
+                        resolve();
                     }, 10000);
 
-                    sc.on('close', () => { clearTimeout(timeout); resolve(); });
-                    sc.on('error', () => { clearTimeout(timeout); resolve(); });
+                    sc.on('close', () => { 
+                        res.write('> Stop command done\n');
+                        clearTimeout(timeout); resolve(); });
+                    sc.on('error', () => { 
+                        res.write('> Stop command error\n');
+                        clearTimeout(timeout); resolve(); });
                 });
+
              } catch(e) {
                  console.error('Stop command failed', e);
                  res.write('Stop command failed')
