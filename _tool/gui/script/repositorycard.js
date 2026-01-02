@@ -114,14 +114,9 @@ window.startDevRepo = function(id) {
 window.stopDevRepo = function(id) {
     const data = window.repoCache[id];
     if (data && window.TabTerminal) {
-
     //before closing we need to disable the button to prevent spamming
         window.disableBtnRepo(id);
-
         window.TabTerminal.closeTab(id, data.name, data.stopcmd, data.path);
-        // State update handled by UI triggers or manual?
-        // Close tab logic removes the tab. We need to update button back.
-        //window.updateCardState(id, false);
     }
 };
 

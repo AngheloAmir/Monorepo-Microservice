@@ -148,18 +148,27 @@ window.TabTerminal = {
         document.getElementById('terminal-empty-state').classList.add('hidden');
     },
 
+    writeOnTerminal: function(id, text) {
+        if (text.trim() === '::HEARTBEAT::') return;
+        
+        const item      = window.tabTerminalItems [id];
+        const panel     = item.panelElement;
+        const formatted = window.TerminalModal ? window.TerminalModal.parseAnsi(text) : text;
+        const span      = document.createElement('span');
+        span.innerHTML  = formatted;
+        panel.appendChild(span);
+        if (window.tabTerminalActiveId === id) {
+            panel.scrollTop = panel.scrollHeight;
+        }
+
+        const totalText = panel.innerText;
+        if (totalText.length > 10000) {
+            panel.innerText = totalText.slice(-10000);
+        }
+    },
+
     closeTab: async function(id, name, stopCmd, path) {
-        const item  = window.tabTerminalItems [id];
-        const panel = item.panelElement;
-        const write = (text) => {
-            const formatted = window.TerminalModal ? window.TerminalModal.parseAnsi(text) : text;
-            const span      = document.createElement('span');
-            span.innerHTML  = formatted;
-            panel.appendChild(span);
-            if (window.tabTerminalActiveId === id) {
-                panel.scrollTop = panel.scrollHeight;
-            }
-        };
+        const item = window.tabTerminalItems[id];
 
         try {
             const response = await fetch('/api/runcmddev', {
@@ -180,7 +189,7 @@ window.TabTerminal = {
                 const { done, value } = await reader.read();
                 if (done) break;
                 const chunk = decoder.decode(value, { stream: true });
-                write(chunk);
+                this.writeOnTerminal(id, chunk);
             }
         } catch(e) { 
             console.error(e);
@@ -206,19 +215,8 @@ window.TabTerminal = {
     },
 
     startProcess: async function(id, data) {
-        const item  = window.tabTerminalItems[id];
-        const panel = item.panelElement;
-        const write = (text) => {
-            const formatted = window.TerminalModal ? window.TerminalModal.parseAnsi(text) : text;
-            const span      = document.createElement('span');
-            span.innerHTML  = formatted;
-            panel.appendChild(span);
-            if (window.tabTerminalActiveId === id) {
-                panel.scrollTop = panel.scrollHeight;
-            }
-        };
-
-        write(`> Starting ${data.startcmd} in ${data.path}...\n`);
+        const item = window.tabTerminalItems[id];
+        this.writeOnTerminal(id, `> Starting ${data.startcmd} in ${data.path}...\n`);
 
         try {
             const payload = {
@@ -236,9 +234,9 @@ window.TabTerminal = {
             });
 
             if(!response.ok) {
-                 const txt = await response.text();
-                 write(`\nError starting process: ${txt}\n`);
-                 return;
+                const txt = await response.text();
+                this.writeOnTerminal(id, `\nError starting process: ${txt}\n`);
+                return;
             }
 
             const reader  = response.body.getReader();
@@ -249,14 +247,11 @@ window.TabTerminal = {
                 const { done, value } = await reader.read();
                 if (done) break;
                 const chunk = decoder.decode(value, { stream: true });
-                write(chunk);
+                this.writeOnTerminal(id, chunk);
             }
-            
-            write('\n[Process Disconnected]\n');
-
+            this.writeOnTerminal(id, '\n[Process Disconnected]\n');
         } catch (e) {
-            write(`\nInternal Error: ${e.message}\n`);
+            this.writeOnTerminal(id, `\nInternal Error: ${e.message}\n`);
         }
     }
 };
-

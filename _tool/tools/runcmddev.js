@@ -97,18 +97,6 @@ function startDevCommand(res, { directory, basecmd, cmd, id }) {
         }
     }, 2000);
 
-    //This is comment because browser will often close the stream
-    //prematurely. Socket is that best solution but not use that
-    // const req = res.req;
-    // req.on('close', () => {
-    //     console.log('requested to close' + id )
-    //     if (activeProcesses.get(id) === child) {
-    //         console.log(`[RunCmdDev] Client disconnected for ${id}, killing process.`);
-    //         killProcess(id); 
-    //          clearInterval(heartbeat);
-    //     }
-    // });
-
     child.stdout.on('data', (data) => {
         if (!res.writableEnded && !res.destroyed) res.write(data);
     });
