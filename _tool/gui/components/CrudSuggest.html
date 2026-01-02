@@ -1,6 +1,6 @@
-<div class="flex flex-col h-full bg-black text-xs font-mono transition-all duration-300" id="suggest-container">
-    <div class="flex items-center justify-between px-2 py-1 flex-none border-b border-gray-900/50">
-        <span class="text-gray-500 font-bold uppercase tracking-wider text-[10px]">Suggested</span>
+<div class="flex flex-col h-full bg-transparent text-sm font-mono transition-all duration-300" id="suggest-container">
+    <div class="flex items-center justify-between px-3 h-9 flex-none border-b border-gray-900/50 bg-gray-800">
+        <span class="text-gray-400 font-bold uppercase tracking-wider text-xs">Suggested</span>
         <div class="flex gap-1" id="crud-suggest-controls">
              <button class="text-gray-600 hover:text-white transition-colors" id="btn-toggle-size" title="Toggle Size">
                 <i class="fas fa-expand-alt text-[10px]"></i>
@@ -8,6 +8,6 @@
         </div>
     </div>
     <div class="flex-1 overflow-auto custom-scrollbar p-2" id="suggest-content-wrapper">
-        <pre class="w-full text-white whitespace-pre-wrap" id="suggest-content"></pre>
+        <pre class="w-full text-white whitespace-pre-wrap leading-none text-[15px]" id="suggest-content"></pre>
     </div>
 </div>

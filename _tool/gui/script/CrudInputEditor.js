@@ -34,14 +34,24 @@ window.CrudInputEditor = {
 
         // Init Ace directly on element
         const aceEditor = ace.edit(editorElement);
-        aceEditor.setTheme("ace/theme/twilight");
+        aceEditor.setTheme("ace/theme/dracula"); // Better match for dark mode
         aceEditor.session.setMode("ace/mode/json");
         aceEditor.setValue(initialValue, -1);
-        aceEditor.setFontSize(14);
+        aceEditor.setFontSize(15);
         aceEditor.setShowPrintMargin(false);
         aceEditor.session.setUseWrapMode(true);
+        
+        // Make background transparent to match container
+        aceEditor.container.style.background = "transparent";
+        aceEditor.renderer.$gutter.style.backgroundColor = "transparent"; 
+        aceEditor.renderer.$gutter.style.borderRight = "none";
+        
         aceEditor.setOptions({
-            zIndex: 0 // Prevent styling conflict?
+            fixedWidthGutter: true,
+            showGutter: true,
+            highlightActiveLine: false, // Remove line background highlight
+            highlightGutterLine: false, // Remove gutter active line highlight
+            zIndex: 0
         });
         
         // Fix for Ace not resizing automatically if container changes
