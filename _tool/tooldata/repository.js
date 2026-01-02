@@ -1,5 +1,5 @@
 /**
- * Repository Data
+ * Repository Data. The mono repo tool use .js file so for quick setup
  */
 
 const repository = {
