@@ -3,6 +3,7 @@
   "version":     "1.0.0",
   "description": "A monorepo for microservices",
   "workspaces": [
+    "_tool",
     "backend/*",
     "database/*",
     "frontend/*",
