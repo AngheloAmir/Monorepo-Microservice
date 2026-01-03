@@ -1,24 +1,29 @@
-
+version: "3.9"
 
 services:
+  # ------------------------
+  # LocalStack (AWS cloud emulator)
+  # ------------------------
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
     image: localstack/localstack
     ports:
       - "127.0.0.1:4566:4566"            # LocalStack Gateway
-      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+      - "127.0.0.1:4510-4559:4510-4559"  # External services port range
     environment:
       - DEBUG=${DEBUG-}
       - SERVICES=s3,lambda,dynamodb,apigateway,sqs,sns,logs,cloudwatch
       - DOCKER_HOST=unix:///var/run/docker.sock
       - AWS_DEFAULT_REGION=us-east-1
     volumes:
-      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      - localstack-data:/var/lib/localstack   # <-- Docker-managed volume
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - cloud-net
 
-  # GUI for DynamoDB (Database) -> http://localhost:8001
+  # ------------------------
+  # DynamoDB GUI
+  # ------------------------
   dynamodb-admin:
     image: aaronshaf/dynamodb-admin
     ports:
@@ -33,7 +38,9 @@ services:
     networks:
       - cloud-net
 
-  # GUI for S3 (Storage) -> http://localhost:8002
+  # ------------------------
+  # S3 GUI / Manager
+  # ------------------------
   s3-manager:
     image: cloudlena/s3manager
     ports:
@@ -49,6 +56,12 @@ services:
     networks:
       - cloud-net
 
+# ------------------------
+# Named Volumes (Docker-managed, auto storage)
+# ------------------------
+volumes:
+  localstack-data: {}
+  
 networks:
   cloud-net:
     driver: bridge

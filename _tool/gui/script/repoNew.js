@@ -8,6 +8,7 @@ window.openAddModal = function() {
     document.getElementById('repo-name').value    = '';
     document.getElementById('repo-desc').value    = '';
     document.getElementById('repo-icon').value    = 'fa fa-cube';
+    document.getElementById('add-icon-preview').className = 'fa fa-cube';
     document.getElementById('repo-devurl').value  = 'localhost:3000';
     document.getElementById('repo-produrl').value = '';
     document.getElementById('repo-giturl').value    = '';
@@ -19,6 +20,7 @@ window.openAddModal = function() {
     document.getElementById('repo-build').value    = '';
     document.getElementById('repo-lint').value     = '';
     document.getElementById('repo-test').value     = '';
+    document.getElementById('repo-init').value     = '';
     
     // Default to service
     window.selectType('service');
