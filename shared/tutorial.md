@@ -50,11 +50,9 @@ fetch(`${apiUrl}/users`)
 Use this for shared Types (Interfaces) and Database Access (Prisma).
 
 **Backend Usage (Node.js)**
-*Use the Prisma Client to query the database.*
+*Use the Prisma Client instance (singleton).*
 ```typescript
-import { PrismaClient } from "@monorepo/models";
-
-const prisma = new PrismaClient();
+import { prisma } from "@monorepo/models";
 
 app.get('/users', async (req, res) => {
     const users = await prisma.user.findMany();
@@ -62,15 +60,14 @@ app.get('/users', async (req, res) => {
 });
 ```
 
-**Database Management**
-You can manage the database logic entirely from the shared folder using NPM workspace commands.
+**Database Management (Prisma)**
+You can manage the database logic entirely from the shared folder using NPM workspace commands. We use **Multi-File Schemas** located in `shared/models/prisma/schema/*.prisma`.
 
-*   **Migrate Changes (Create Tables)**:
-    `npm run db:migrate -w @monorepo/models`
-*   **Update Client (Refresh TS Types)**:
-    `npm run db:generate -w @monorepo/models`
-*   **Open Database UI**:
-    `npm run db:studio -w @monorepo/models`
+*   **Migrate Changes**: `npm run db:migrate -w @monorepo/models`
+*   **Update Client**:   `npm run db:generate -w @monorepo/models`
+*   **Open Studio UI**:  `npm run db:studio -w @monorepo/models`
+
+*Note: You can add new models by creating new `.prisma` files in the `shared/models/prisma/schema` directory.*
 
 **Frontend Usage (React)**
 *Use the Types to ensure type safety when fetching data.*
