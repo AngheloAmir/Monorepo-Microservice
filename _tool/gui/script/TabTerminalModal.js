@@ -210,6 +210,8 @@ window.TabTerminal = {
                 this.activeId = null;
                 document.getElementById('terminal-empty-state').classList.remove('hidden');
             }
+
+        //enable the button==========
             window.updateCardState(id, false);
             window.enableBtnRepo(id);
         }

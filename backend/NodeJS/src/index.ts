@@ -51,4 +51,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.listen(port, () => {
     console.log(`Node service listening at http://localhost:${port}`);
+    console.log(`Visit http://localhost:${port}/test `)
+    console.log(`Visit http://localhost:${port}/login `)
+    console.log(`Visit http://localhost:${port}/auth `)
 });

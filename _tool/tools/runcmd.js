@@ -57,7 +57,7 @@ function executeCommand(res, { directory, basecmd, cmd }) {
     const args = Array.isArray(cmd) ? cmd : [cmd];
 
     // Automate YES for npm install if not present (simple heuristic)
-    if (basecmd === 'npm' || basecmd === 'npx') {
+    if (basecmd === 'npm' || basecmd === 'npx' || basecmd === 'yarn' || basecmd === 'pnpm') {
         if (!args.includes('--yes')) args.push('--yes');
     }
 

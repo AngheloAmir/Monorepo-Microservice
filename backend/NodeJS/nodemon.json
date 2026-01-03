@@ -6,5 +6,7 @@
     "ignore": [
         "src/**/*.test.ts"
     ],
-    "exec": "npx ts-node src/index.ts"
+    "exec": "npx ts-node src/index.ts",
+    "stdout": true,
+    "stderr": true
 }

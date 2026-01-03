@@ -8,20 +8,20 @@ const repository = {
             "name": "NodeJS",
             "description": "The main server of the app",
             "icon": "fa-brands fa-node-js",
-            "type": "BACKEND",
+            "type": "backend",
             "path": "/backend/NodeJS",
             "devurl": "http://localhost:8000",
             "produrl": "",
             "startcmd": "npm run dev",
             "stopcmd": "npm run stop",
             "buildcmd": "npm run build",
-            "lintcmd": "npm run lint",
+            "lintcmd": "",
             "template": "node_ts_nodemon_jwt",
             "giturl": "",
             "gitorigin": "",
             "gitbranch": "",
-            "installcmd": "",
-            "testcmd": "npm run test"
+            "installcmd": "npm install",
+            "testcmd": ""
         }
     ],
     "frontend": [

@@ -107,7 +107,13 @@ window.startDevRepo = function(id) {
     const data = window.repoCache[id];
     if (data && window.TabTerminal) {
         window.TabTerminal.createTab(id, data);
-        window.updateCardState(id, true);
+        window.disableBtnRepo(id);
+
+    //prevent spamming of the button
+        setTimeout(() => {
+            window.enableBtnRepo(id);
+            window.updateCardState(id, true);
+        }, 1000);
     } else {
         console.error('Data or TabTerminal not found', id, data);
     }
@@ -116,8 +122,11 @@ window.startDevRepo = function(id) {
 window.stopDevRepo = function(id) {
     const data = window.repoCache[id];
     if (data && window.TabTerminal) {
+
     //before closing we need to disable the button to prevent spamming
         window.disableBtnRepo(id);
+
+    //the function closeTab will enable the button again
         window.TabTerminal.closeTab(id, data.name, data.stopcmd, data.path);
     }
 };
@@ -126,13 +135,13 @@ window.enableBtnRepo = function(id) {
     const btn = document.getElementById(`btn-action-${id}`);
     btn.disabled = false;
     btn.style.cursor = "pointer";
-    btn.style.opacity = "1";
+    btn.style.opacity   = "1";
 }
 
 window.disableBtnRepo = function(id) {
-    const btn = document.getElementById(`btn-action-${id}`);
-    btn.disabled = true;
-    btn.style.cursor = "not-allowed";
-    btn.style.opacity = "0.6";
+    const btn          = document.getElementById(`btn-action-${id}`);
+    btn.disabled        = true;
+    btn.style.cursor    = "not-allowed";
+    btn.style.opacity   = "0.6";
 }
 

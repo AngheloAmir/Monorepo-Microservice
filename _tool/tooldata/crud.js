@@ -20,9 +20,9 @@ const crud = [
                 "sampleInput": "{\n   \"data\": \"test\",\n   \"message\": \"test\"\n}",
                 "suggested": [
                     {
-                        "name": "CusRaRa",
+                        "name": "Customer Data",
                         "urlparams": "",
-                        "content": "{\n    \"name\": \"Cus Ra Ramana\",\n    \"email\": \"CusRaRa@customer.com\",\n    \"phone1\": \"11111111111\",\n    \"phone2\": \"11111111111\",\n    \"city\": \"randomw1\",\n    \"state\": \"ultra state\",\n    \"zip\": \"12345\",\n    \"country\": \"mega country\",\n    \"icon\": \"test icon\",\n    \"gender\": \"female\",\n    \"delivery_notes\": \"Make sure that it is packed correctly\"\n}"
+                        "content": "{\n    \"name\": \"Demo Customer\",\n    \"email\": \"CusRaRa@customer.com\",\n    \"phone1\": \"123456789\",\n    \"phone2\": \"987654321\",\n    \"city\": \"randomw1\",\n    \"state\": \"ultra state\",\n    \"zip\": \"12345\",\n    \"country\": \"mega country\",\n    \"icon\": \"test icon\",\n    \"gender\": \"female\",\n    \"delivery_notes\": \"Make sure that it is packed correctly\"\n}"
                     }
                 ],
                 "expectedOutcome": "# Note \nYou should see the mirror of your inputs",
@@ -48,16 +48,6 @@ const crud = [
                 ],
                 "expectedOutcome": "# Note \nYou should see the stream of words asdasd",
                 "availableFor": "public"
-            },
-            {
-                "label": "New Route",
-                "route": "/new-route",
-                "methods": "GET",
-                "description": "1213",
-                "sampleInput": "{\n    \"name\": \"marichan\"\n}",
-                "suggested": [],
-                "expectedOutcome": "",
-                "availableFor": "authenticated"
             }
         ]
     },
@@ -69,7 +59,7 @@ const crud = [
                 "route": "/new-route",
                 "methods": "GET",
                 "description": "",
-                "sampleInput": "{}",
+                "sampleInput": "{ \"data\": \"adasdasd\" }",
                 "suggested": [],
                 "expectedOutcome": "",
                 "availableFor": "public"
