@@ -3,6 +3,7 @@ const pidusage = require('pidusage');
 const { getActiveProcessCount, getActiveProcesses } = require('./runcmddev');
 const { getActiveJobs } = require('./runcmdjob');
 const repositoryData = require('../tooldata/repository.js');
+const { getDockerContainers } = require('./apidocker');
 
 let peakMemory = 0;
 
@@ -63,6 +64,7 @@ async function getStats() {
     
     // 1. Build Process Tree Map (One generic PS call)
     const parentMap = await getProcessTree();
+    const dockerData = await getDockerContainers();
     
     // 2. Resolve Service Groups (Service ID -> List of PIDs)
     const distinctPids = [];
@@ -149,7 +151,9 @@ async function getStats() {
         uptime: os.uptime(),
         repoCount: totalRepos,
         activeCount: activeDevMap.size + activeJobMap.size,
-        processes: processList
+        processes: processList,
+        dockerContainers: dockerData.containers,
+        dockerTotalMem: dockerData.totalMem
     };
 }
 

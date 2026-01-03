@@ -80,6 +80,60 @@
                     listContainer.innerHTML = html;
                 }
 
+                // 3. Update Docker List
+                const dockerContainer = document.getElementById('docker-list-container');
+                if (dockerContainer && data.dockerContainers) {
+                     document.getElementById('docker-count').innerText = `${data.dockerContainers.length} Active`;
+                     
+                     // Format total memory
+                     if (data.dockerTotalMem !== undefined) {
+                         const memMB = (data.dockerTotalMem / (1024 * 1024)).toFixed(1);
+                         const memGB = (data.dockerTotalMem / (1024 * 1024 * 1024)).toFixed(2);
+                         const display = data.dockerTotalMem > 1073741824 ? `${memGB} GB` : `${memMB} MB`;
+                         const memEl = document.getElementById('docker-mem-total');
+                         if (memEl) memEl.innerText = display;
+                     }
+
+                     let html = '';
+                     if (data.dockerContainers.length === 0) {
+                        html = '<div class="text-center text-xs text-gray-500 py-4">No active containers</div>';
+                        const stopAll = document.getElementById('docker-stop-all-btn');
+                        if (stopAll) stopAll.classList.add('hidden');
+                     } else {
+                         const stopAll = document.getElementById('docker-stop-all-btn');
+                         if (stopAll) stopAll.classList.remove('hidden');
+
+                         data.dockerContainers.forEach(c => {
+                             let statusColor = 'text-green-400';
+                             if (c.status.includes('Exited')) statusColor = 'text-gray-500';
+                             if (c.status.includes('Restarting')) statusColor = 'text-orange-400';
+                             
+                             html += `
+                            <div class="flex items-center justify-between p-2 rounded bg-gray-900/40 border border-gray-700/30 text-xs">
+                                <div class="flex flex-col gap-0.5 overflow-hidden">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fab fa-docker text-blue-500"></i>
+                                        <span class="text-gray-200 font-bold truncate" title="${c.name}">${c.name}</span>
+                                    </div>
+                                    <span class="text-gray-500 text-[10px] truncate" title="${c.image}">${c.image}</span>
+                                </div>
+                                <div class="flex items-center gap-3 flex-none ml-2">
+                                    <div class="flex flex-col items-end gap-0.5">
+                                        <span class="text-[10px] text-gray-400 font-mono">${c.memoryStr}</span>
+                                        <span class="${statusColor} text-[10px] font-medium">${c.status}</span>
+                                    </div>
+                                    <button onclick="window.stopDockerContainer('${c.id}', '${c.name}')" 
+                                        class="p-1 rounded hover:bg-red-500/20 text-gray-500 hover:text-red-400 transition-colors" title="Stop Container">
+                                        <i class="fas fa-power-off"></i>
+                                    </button>
+                                </div>
+                            </div>
+                             `;
+                         });
+                     }
+                     dockerContainer.innerHTML = html;
+                }
+
             } catch (e) {
                 console.error("Error parsing SSE data", e);
             }
@@ -131,10 +185,61 @@
             };
         }
     };
+    
+    // --- DOCKER STOP LOGIC ---
+    window.stopDockerContainer = async (id, name) => {
+        if (!window.openConfirmModal) {
+             const ok = confirm(`Stop container ${name} (${id})?`);
+             if (!ok) return;
+        } else {
+             const ok = await window.openConfirmModal('Confirm Stop', `Are you sure you want to stop container ${name}?`);
+             if (!ok) return;
+        }
+        
+        try {
+            const res = await fetch('/api/docker/stop', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            });
+            const data = await res.json();
+            if (!data.success) {
+                if (window.openAlertModal) await window.openAlertModal('Error', data.error || 'Failed to stop', 'error');
+                else alert(data.error || 'Failed to stop');
+            }
+            // No need to alert success, the list will update
+        } catch(e) {
+            console.error(e);
+        }
+    };
+
+    const setupDockerStopAll = () => {
+        const btn = document.getElementById('docker-stop-all-btn');
+        if (btn) {
+            btn.onclick = async () => {
+                 if (!window.openConfirmModal) {
+                     if (!confirm('Stop ALL running docker containers?')) return;
+                 } else {
+                     if (!await window.openConfirmModal('STOP ALL', 'Are you sure you want to stop ALL active containers?')) return;
+                 }
+                 
+                 try {
+                    const res = await fetch('/api/docker/stop-all', { method: 'POST' });
+                    const data = await res.json();
+                    if (!data.success) {
+                         if (window.openAlertModal) await window.openAlertModal('Error', data.error || 'Failed to stop all', 'error');
+                    }
+                 } catch(e) {
+                     console.error(e);
+                 }
+            };
+        }
+    }
 
     setTimeout(() => {
         startStream();
         setupPortRemover();
+        setupDockerStopAll();
     }, 100);
 
 })();

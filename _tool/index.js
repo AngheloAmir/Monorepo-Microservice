@@ -83,6 +83,12 @@ const server = http.createServer((req, res) => {
     case '/api/kill-port':
         const { handleKillPort } = require('./tools/homestats');
         return handleKillPort(req, res);
+    
+    // Docker management routes
+    case '/api/docker/stop':
+    case '/api/docker/stop-all':
+        const { handleDockerRequest } = require('./tools/apidocker');
+        return handleDockerRequest(req, res);
 
     //internal CRUD testing routes===========================================
     case '/pingme':
