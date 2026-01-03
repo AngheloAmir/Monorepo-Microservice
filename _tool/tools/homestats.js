@@ -98,6 +98,56 @@ async function getStats() {
 
 
 
+const { exec } = require('child_process');
+
+function killPort(port) {
+    return new Promise((resolve, reject) => {
+        // Find PID occupying the port
+        exec(`lsof -t -i:${port}`, (err, stdout) => {
+            if (err) {
+                // If lsof fails, it might mean no process is using the port or lsof is missing.
+                // Try fuser as backup or just resolve false (nothing to kill)
+                if (err.code === 1) return resolve(false); // No process found
+                // return reject(err); 
+                return resolve(false);
+            }
+
+            const pids = stdout.trim().split('\n').filter(p => p);
+            if (pids.length === 0) return resolve(false);
+
+            // Kill the PIDs
+            const pidList = pids.join(' ');
+            exec(`kill -9 ${pidList}`, (kErr) => {
+                if (kErr) return reject(kErr);
+                resolve(true);
+            });
+        });
+    });
+}
+
+function handleKillPort(req, res) {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', async () => {
+        try {
+            const { port } = JSON.parse(body);
+            if (!port) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Port required' }));
+                return;
+            }
+
+            const killed = await killPort(port);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true, killed }));
+        } catch (e) {
+            console.error('Kill Port Error:', e);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: e.message }));
+        }
+    });
+}
+
 function streamSystemStatus(req, res) {
     // Set headers for Server-Sent Events
     res.writeHead(200, {
@@ -129,4 +179,4 @@ function streamSystemStatus(req, res) {
     });
 }
 
-module.exports = { streamSystemStatus };
+module.exports = { streamSystemStatus, handleKillPort };

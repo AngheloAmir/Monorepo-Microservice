@@ -158,7 +158,11 @@ window.CrudEditor = {
     },
 
     delete: async function() {
-        if (!confirm("Delete method can only be reverse by GIT, continue?")) return;
+        const confirmed = await window.openConfirmModal(
+            "Warning", 
+            "Delete method can only be reverse by GIT, continue?"
+        );
+        if (!confirmed) return;
 
         //clear selections
         if (window.AccordionNav) window.AccordionNav.deselectAll();
@@ -187,11 +191,11 @@ window.CrudEditor = {
                     window.location.reload();
                 }
             } else {
-                alert('Error deleting: ' + result.error);
+                await window.openAlertModal('Error', 'Error deleting: ' + result.error, 'error');
             }
         } catch(e) {
             console.error(e);
-            alert('Network Error deleting data');
+            await window.openAlertModal('Error', 'Network Error deleting data', 'error');
         }
     },
 
@@ -266,11 +270,11 @@ window.CrudEditor = {
                     window.location.reload();
                 }
             } else {
-                alert('Error saving: ' + result.error);
+                await window.openAlertModal('Error', 'Error saving: ' + result.error, 'error');
             }
         } catch(e) {
             console.error(e);
-            alert('Network Error saving data');
+            await window.openAlertModal('Error', 'Network Error saving data', 'error');
         }
     },
 

@@ -90,7 +90,12 @@ window.ManageCategories = {
             
             // Delete Logic
             deleteBtn.onclick = async () => {
-                if (confirm("The delete method can only be reverse by GIT, continue?")) {
+                const confirmed = await window.openConfirmModal(
+                    "Warning", 
+                    "The delete method can only be reverse by GIT, continue?"
+                );
+                
+                if (confirmed) {
                     await this.deleteCategory(index);
                 }
             };
@@ -118,11 +123,11 @@ window.ManageCategories = {
                 input.value = '';
                 await this.refresh();
             } else {
-                alert('Error: ' + result.error);
+                await window.openAlertModal('Error', result.error, 'error');
             }
         } catch(e) {
             console.error(e);
-            alert("Network error");
+            await window.openAlertModal('Error', 'Network error', 'error');
         }
     },
 
@@ -141,11 +146,11 @@ window.ManageCategories = {
             if (result.success) {
                 await this.refresh();
             } else {
-                alert('Error: ' + result.error);
+                await window.openAlertModal('Error', result.error, 'error');
             }
         } catch(e) {
             console.error(e);
-            alert("Network error");
+            await window.openAlertModal('Error', 'Network error', 'error');
         }
     },
 
@@ -163,11 +168,11 @@ window.ManageCategories = {
             if (result.success) {
                 await this.refresh();
             } else {
-                alert('Error: ' + result.error);
+                await window.openAlertModal('Error', result.error, 'error');
             }
         } catch(e) {
             console.error(e);
-            alert("Network error");
+            await window.openAlertModal('Error', 'Network error', 'error');
         }
     },
 

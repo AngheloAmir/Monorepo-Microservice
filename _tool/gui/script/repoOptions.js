@@ -88,10 +88,10 @@ window.saveRepo = async function() {
             await window.loadRepositoryData();
             window.closeSettingsModal();
         } else {
-            alert('Failed to save: ' + (json.error || 'Unknown error'));
+            await window.openAlertModal('Error', 'Failed to save: ' + (json.error || 'Unknown error'), 'error');
         }
     } catch (e) {
-        alert('Error saving: ' + e.message);
+        await window.openAlertModal('Error', 'Error saving: ' + e.message, 'error');
     }
 };
 
@@ -99,7 +99,12 @@ window.deleteRepo = async function() {
     const id = window.activeSettingsId;
     if (!id) return;
 
-    if (confirm("Delete method can also by reverse by GIT, continue?")) {
+    const confirmed = await window.openConfirmModal(
+        "Warning", 
+        "Delete method can also by reverse by GIT, continue?"
+    );
+
+    if (confirmed) {
         try {
             const res = await fetch('/api/repository/delete', {
                 method: 'POST',
@@ -111,10 +116,10 @@ window.deleteRepo = async function() {
                 await window.loadRepositoryData();
                 window.closeSettingsModal();
             } else {
-                alert('Failed to delete: ' + (json.error || 'Unknown error'));
+                await window.openAlertModal('Error', 'Failed to delete: ' + (json.error || 'Unknown error'), 'error');
             }
         } catch (e) {
-            alert('Error deleting: ' + e.message);
+            await window.openAlertModal('Error', 'Error deleting: ' + e.message, 'error');
         }
     }
 };

@@ -79,6 +79,10 @@ const server = http.createServer((req, res) => {
         const { streamSystemStatus } = require('./tools/homestats');
         return streamSystemStatus(req, res);
 
+    case '/api/kill-port':
+        const { handleKillPort } = require('./tools/homestats');
+        return handleKillPort(req, res);
+
     //internal CRUD testing routes===========================================
     case '/pingme':
        return internalCrudTester.pingMe(req, res);

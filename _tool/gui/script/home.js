@@ -89,6 +89,50 @@
         };
     };
 
-    setTimeout(startStream, 100);
+    // --- PORT REMOVER LOGIC ---
+    const setupPortRemover = () => {
+        // Find the button (heuristic: contains 'Port Remover')
+        const buttons = Array.from(document.querySelectorAll('button'));
+        const portBtn = buttons.find(b => b.innerText.includes('Port Remover'));
+        
+        if (portBtn) {
+            portBtn.onclick = async () => {
+                if (!window.openInputModal || !window.openAlertModal) {
+                    console.error('Modal scripts not loaded');
+                    return;
+                }
+
+                const port = await window.openInputModal(
+                    'STOP PORT', 
+                    'Enter the port number you want to force terminate (kill -9):', 
+                    '3000'
+                );
+
+                if (port) {
+                    try {
+                        const res = await fetch('/api/kill-port', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ port: port })
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            if (data.killed) await window.openAlertModal('Success', `Port ${port} killed successfully.`, 'success');
+                            else await window.openAlertModal('Info', `No process found on port ${port}.`, 'info');
+                        } else {
+                            await window.openAlertModal('Error', data.error, 'error');
+                        }
+                    } catch (e) {
+                         await window.openAlertModal('Error', 'Request failed', 'error');
+                    }
+                }
+            };
+        }
+    };
+
+    setTimeout(() => {
+        startStream();
+        setupPortRemover();
+    }, 100);
 
 })();
