@@ -1,0 +1,21 @@
+{
+  "name": "@monorepo/components",
+  "version": "0.0.0",
+  "main": "./index.tsx",
+  "types": "./index.tsx",
+  "exports": {
+    ".": "./index.tsx"
+  },
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "react": "^19.2.0",
+    "typescript": "^5.0.0",
+    "@types/react": "^19.2.5"
+  }
+}

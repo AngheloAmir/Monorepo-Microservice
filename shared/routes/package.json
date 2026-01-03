@@ -1,0 +1,13 @@
+{
+  "name": "@monorepo/routes",
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "echo 'no tests yet'"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

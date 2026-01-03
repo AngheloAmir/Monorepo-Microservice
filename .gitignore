@@ -14,5 +14,5 @@ package-lock.json
 app/node_modules
 app/
 
-deployments/build/**
-deployments/bundle/**
+_build/build/**
+_build/bundle/**

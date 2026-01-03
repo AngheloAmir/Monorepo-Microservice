@@ -2,16 +2,30 @@
   "name":        "monorepo-microservice",
   "version":     "1.0.0",
   "description": "A monorepo for microservices",
+  "workspaces": [
+    "backend/*",
+    "database/*",
+    "frontend/*",
+    "service/*",
+    "shared/*"
+  ],
   "scripts": {
     "installtool": "cd _tool && npm install",
     "starttool":   "cd _tool && npm run start",
     "devtool":     "cd _tool && npm run boot",
-    "stoptool":    "cd _tool && npm run stop"
+    "stoptool":    "cd _tool && npm run stop",
+    "build":       "turbo run build",
+    "dev":         "turbo run dev",
+    "lint":        "turbo run lint",
+    "test":        "turbo run test"
   },
   "keywords": [
     "monorepo",
     "microservices"
   ],
-  "author":  "anghelo amir",
-  "license": "ISC"
+  "author": "anghelo amir",
+  "license": "ISC",
+  "devDependencies": {
+    "turbo": "latest"
+  }
 }
