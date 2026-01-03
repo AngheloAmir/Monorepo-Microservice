@@ -1,11 +1,12 @@
-const http     = require('http')
+const http     = require('http');
 const path     = require('path');
+const { Server } = require("socket.io"); // Import Socket.IO
 const PORT     = process.env.PORT || 3200;
 const { serveFile, serveGUIFile } = require('./tools/serveGUIFile');
 const { serveRepositoryData }     = require('./tools/apiRespository');
 const { generateTemplate }        = require('./tools/templateGenerator');
 const { runCmdHandler }           = require('./tools/runcmd');
-const { runCmdDevHandler }        = require('./tools/runcmddev');
+const { runCmdDevHandler, initSocket } = require('./tools/runcmddev'); // Import initSocket
 const internalCrudTester          = require('./tools/_internalCrudTester');
 
 const server = http.createServer((req, res) => {
@@ -114,6 +115,17 @@ const server = http.createServer((req, res) => {
       return;
   }
 });
+
+// Initialize Socket.IO
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+
+// Pass IO to runCmdDev functionality
+initSocket(io);
 
 server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/`);

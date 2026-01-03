@@ -6,11 +6,11 @@
   "scripts": {
     "start": "node dist/index.js",
     "start:ts": "ts-node src/index.ts",
-    "dev": "nodemon",
+    "dev": "PORT=8080 nodemon",
     "build": "tsc",
     "test": "jest",
-    "docker": "docker build -t node-service . && docker run -p 8000:8000 node-service",
-    "stop": "npx -y kill-port 8000"
+    "docker": "docker build -t node-service . && docker run -p 8080:8080 node-service",
+    "stop": "npx -y kill-port 8080"
   },
   "dependencies": {
     "cookie-parser": "^1.4.7",

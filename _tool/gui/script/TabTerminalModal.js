@@ -173,11 +173,34 @@ window.TabTerminal = {
         }
     },
 
+    initSocket: function() {
+        if (window.repoSocket) return;
+        
+        // Initialize Socket.io connection
+        window.repoSocket = io();
+        
+        window.repoSocket.on('connect', () => {
+            // Re-join channels on reconnect
+            if (window.tabTerminalItems) {
+                Object.keys(window.tabTerminalItems).forEach(id => {
+                    window.repoSocket.emit('join-log', id);
+                });
+            }
+        });
+
+        window.repoSocket.on('log', (data) => {
+             if (data && data.id && data.text) {
+                 this.writeOnTerminal(data.id, data.text);
+             }
+        });
+    },
+
     closeTab: async function(id, name, stopCmd, path) {
         const item = window.tabTerminalItems[id];
 
         try {
-            const response = await fetch('/api/runcmddev', {
+            // Just send the stop command, logs will come via socket
+            await fetch('/api/runcmddev', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
@@ -187,16 +210,10 @@ window.TabTerminal = {
                     directory:  path 
                 })
             });
-
-            const reader  = response.body.getReader();
-            item.reader   = reader;
-            const decoder = new TextDecoder("utf-8");
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                const chunk = decoder.decode(value, { stream: true });
-                this.writeOnTerminal(id, chunk);
-            }
+            
+            // Wait a moment for final logs to arrive via socket before removing UI
+            await new Promise(r => setTimeout(r, 1000));
+            
         } catch(e) { 
             console.error(e);
         }   
@@ -212,13 +229,13 @@ window.TabTerminal = {
             if (keys.length > 0) {
                 this.selectTab(keys[keys.length - 1]);
             } else {
-                this.activeId = null;
+                window.tabTerminalActiveId = null;
                 document.getElementById('terminal-empty-state').classList.remove('hidden');
             }
 
-        //enable the button==========
-            window.updateCardState(id, false);
-            window.enableBtnRepo(id);
+            //enable the button
+            if(window.updateCardState) window.updateCardState(id, false);
+            if(window.enableBtnRepo) window.enableBtnRepo(id);
         }
     },
 
@@ -226,12 +243,16 @@ window.TabTerminal = {
         const item = window.tabTerminalItems[id];
         this.writeOnTerminal(id, `> Starting ${data.startcmd} in ${data.path}...\n`);
 
+        // Ensure socket is ready and join channel immediately
+        this.initSocket(); 
+        window.repoSocket.emit('join-log', id);
+
         try {
             const payload = {
                 id:         id,
                 name:       data.name,
                 directory:  data.path,
-                basecmd:    data.startcmd.split(' ')[0], // Simplistic parsing
+                basecmd:    data.startcmd.split(' ')[0], 
                 cmd:        data.startcmd.split(' ').slice(1)
             };
             
@@ -242,26 +263,15 @@ window.TabTerminal = {
             });
 
             if(!response.ok) {
-                const txt = await response.text();
-                this.writeOnTerminal(id, `\nError starting process: ${txt}\n`);
+                const json = await response.json();
+                this.writeOnTerminal(id, `\nError starting process: ${json.error || 'Unknown'}\n`);
                 return;
             }
-
-            const reader  = response.body.getReader();
-            item.reader   = reader;
-            const decoder = new TextDecoder("utf-8");
-
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                const chunk = decoder.decode(value, { stream: true });
-                this.writeOnTerminal(id, chunk);
-            }
-            this.writeOnTerminal(id, '\n[Process Disconnected]\n');
+            // Success - logs will arrive via socket
+            
         } catch (e) {
             this.writeOnTerminal(id, `\n\n[ERROR]`)
-            this.writeOnTerminal(id, `\nThe monorepo tool server ended due to restart or closure.`);
-            this.writeOnTerminal(id, `\nPlease restart the tool or start again the repository.`);
+            this.writeOnTerminal(id, `\nThe monorepo tool server ended or network failed.`);
             this.writeOnTerminal(id, `\n${e.message}\n`);
         }
     }
