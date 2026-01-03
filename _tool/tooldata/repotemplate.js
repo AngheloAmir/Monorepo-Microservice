@@ -26,6 +26,19 @@ const repotemplate = [
         icon:         "fa-brands fa-node-js",
     },
     {
+        templatename: "[Backend] Node TS Socket",
+        templatepath: "node_socket_ts",
+        type:         "backend",
+        installcmd:   "npm install",
+        startcmd:     "npm run dev",
+        stopcmd:      "npm run stop",
+        buildcmd:     "npm run build",
+        lintcmd:      "",
+        testcmd:      "",
+        devurl:       "http://localhost:8081",
+        icon:         "fa-brands fa-node-js",
+    },
+    {
         templatename: "[Backend] PHP Docker",
         templatepath: "php_docker",
         type:         "backend",
@@ -76,19 +89,6 @@ const repotemplate = [
         testcmd:      "",
         devurl:       "",
         icon:         "fas fa-database",
-    },
-    {
-        templatename: "[Backend] Node TS Socket",
-        templatepath: "node_socket_ts",
-        type:         "backend",
-        installcmd:   "npm install",
-        startcmd:     "npm run dev",
-        stopcmd:      "npm run stop",
-        buildcmd:     "npm run build",
-        lintcmd:      "",
-        testcmd:      "",
-        devurl:       "http://localhost:8081",
-        icon:         "fa-brands fa-node-js",
     }
 ];
 
