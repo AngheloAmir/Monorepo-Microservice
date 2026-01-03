@@ -38,13 +38,13 @@
                     // But if server restarts, client peak persists.
                     // Let's display the max of both.
                     const displayPeak = Math.max(peakMB, window.homeState.peakMemory);
-                    document.getElementById('metric-ram-peak').innerText = `${displayPeak.toFixed(1)} MB`;
+                    document.getElementById('metric-ram-peak').innerText = `${displayPeak.toFixed(0)} MB`;
                 } else {
-                     document.getElementById('metric-ram-peak').innerText = `${peakMB.toFixed(1)} MB`;
+                     document.getElementById('metric-ram-peak').innerText = `${peakMB.toFixed(0)} MB`;
                 }
 
                 // 1. Update Key Metrics
-                document.getElementById('metric-ram-current').innerText = `${usedMB.toFixed(1)} MB`;
+                document.getElementById('metric-ram-current').innerText = `${usedMB.toFixed(0)} MB`;
                 document.getElementById('metric-proc-count').innerText = `${data.processes ? data.processes.length : 0} Active`;
 
                 // 2. Update Map/List
@@ -55,7 +55,7 @@
                     
                     let html = '';
                     sorted.forEach(p => {
-                        const mem = (p.memory / (1024 * 1024)).toFixed(1);
+                        const mem = (p.memory / (1024 * 1024)).toFixed(0);
                         // Icon based on type
                         let icon = 'fa-cog';
                         let color = 'text-gray-400';
@@ -64,14 +64,16 @@
                         if (p.type === 'Job') { icon = 'fa-tasks'; color = 'text-purple-400'; }
 
                         html += `
-                        <div class="flex items-center justify-between p-2 rounded bg-gray-900/40 hover:bg-gray-800/60 border border-transparent hover:border-gray-700 transition-colors text-xs">
+                        <div class="flex items-center justify-between p-1 rounded bg-gray-900/40 hover:bg-gray-800/60 border border-transparent hover:border-gray-700 transition-colors text-xs">
                             <div class="flex items-center gap-2 overflow-hidden">
                                 <i class="fas ${icon} ${color} w-4 text-center"></i>
                                 <span class="text-gray-300 font-mono truncate" title="${p.name}">${p.name}</span>
                             </div>
                             <div class="flex items-center gap-3 flex-none">
                                 <span class="px-1.5 py-0.5 rounded bg-gray-800 text-[10px] text-gray-500">${p.pid}</span>
-                                <span class="font-mono text-white w-14 text-right">${mem} MB</span>
+                                <span class="font-mono text-white w-20 text-right">
+                                    <span class="text-orange-500">${mem}</span> MB
+                                </span>
                             </div>
                         </div>`;
                     });

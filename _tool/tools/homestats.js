@@ -6,6 +6,51 @@ const repositoryData = require('../tooldata/repository.js');
 
 let peakMemory = 0;
 
+// Helper to get all processes and build a parent-child map
+function getProcessTree() {
+    return new Promise((resolve) => {
+        // ps -A -o pid,ppid returns all processes. 
+        exec('ps -A -o pid,ppid', (err, stdout) => {
+            if (err) return resolve(new Map()); // Fail safe
+
+            const parentMap = new Map(); // ppid -> [pid, pid]
+            const lines = stdout.trim().split('\n');
+            // Skip header (PID PPID)
+            for (let i = 1; i < lines.length; i++) {
+                const parts = lines[i].trim().split(/\s+/);
+                // parts might have empty strings if spaces handled poorly, but regex split handles it
+                if (parts.length >= 2) {
+                    const pid = parseInt(parts[0]);
+                    const ppid = parseInt(parts[1]);
+                    if (!isNaN(pid) && !isNaN(ppid)) {
+                        if (!parentMap.has(ppid)) parentMap.set(ppid, []);
+                        parentMap.get(ppid).push(pid);
+                    }
+                }
+            }
+            resolve(parentMap);
+        });
+    });
+}
+
+// Recursively find all descendants
+function getAllDescendants(rootPid, parentMap) {
+    const results = [rootPid];
+    const queue = [rootPid];
+    
+    while (queue.length > 0) {
+        const current = queue.shift();
+        const children = parentMap.get(current);
+        if (children) {
+            children.forEach(child => {
+                results.push(child);
+                queue.push(child);
+            });
+        }
+    }
+    return results;
+}
+
 async function getStats() {
     // Calculate total repos
     let totalRepos = 0;
@@ -16,72 +61,84 @@ async function getStats() {
     const activeDevMap = getActiveProcesses();
     const activeJobMap = getActiveJobs();
     
-    // Combined list of PIDs to query
-    const pidsToQuery = [];
-    const pidToInfo = new Map(); // pid -> { name, type, id }
+    // 1. Build Process Tree Map (One generic PS call)
+    const parentMap = await getProcessTree();
+    
+    // 2. Resolve Service Groups (Service ID -> List of PIDs)
+    const distinctPids = [];
+    const serviceGroups = []; // { name, type, pids: [] }
 
-    // 1. Dev Processes
-    activeDevMap.forEach((entry, id) => {
-        if (entry.child && entry.child.pid) {
-            pidsToQuery.push(entry.child.pid);
-            pidToInfo.set(entry.child.pid, { 
-                name: `${entry.config.basecmd} ${entry.config.directory}`, 
-                type: 'Service', 
-                id 
-            });
-        }
-    });
+    // Helper to add group
+    const addGroup = (entry, type) => {
+        if (!entry.child || !entry.child.pid) return;
+        const rootPid = entry.child.pid;
+        const children = getAllDescendants(rootPid, parentMap);
+        
+        children.forEach(p => distinctPids.push(p));
+        
+        serviceGroups.push({
+            name: `${entry.config.basecmd} ${entry.config.directory}`,
+            type: type,
+            rootPid: rootPid,
+            pids: children
+        });
+    };
 
-    // 2. Job Processes
-    activeJobMap.forEach((entry, id) => {
-        if (entry.child && entry.child.pid) {
-            pidsToQuery.push(entry.child.pid);
-            pidToInfo.set(entry.child.pid, { 
-                name: `${entry.config.basecmd} ${entry.config.directory}`, 
-                type: 'Job', 
-                id 
-            });
-        }
-    });
+    activeDevMap.forEach((entry) => addGroup(entry, 'Service'));
+    activeJobMap.forEach((entry) => addGroup(entry, 'Job'));
+    
+    // Also track the Main Tool process (and its children/workers if any)
+    const mainPid = process.pid;
+    const mainChildren = getAllDescendants(mainPid, parentMap);
+    mainChildren.forEach(p => distinctPids.push(p));
 
-    const mainProcessMem = process.memoryUsage().rss;
-    let childrenMem = 0;
+    // 3. PidUsage Query
     const processList = [];
+    let mainToolMem = 0;
 
-    // Add Main Process to list
-    processList.push({
-        pid: process.pid,
-        name: 'Tool Server',
-        type: 'System',
-        memory: mainProcessMem
-    });
-
-    if (pidsToQuery.length > 0) {
+    // We only query if we have PIDs
+    if (distinctPids.length > 0) {
         try {
-            const stats = await pidusage(pidsToQuery);
-            Object.keys(stats).forEach(pidStr => {
-                const s = stats[pidStr];
-                const pid = parseInt(pidStr);
-                if (s && s.memory) {
-                    childrenMem += s.memory;
-                    
-                    const info = pidToInfo.get(pid);
-                    if (info) {
-                        processList.push({
-                            pid: pid,
-                            name: info.name,
-                            type: info.type,
-                            memory: s.memory
-                        });
-                    }
-                }
+            // pidusage handles duplicates gracefully usually, but Set is safer
+            const uniquePids = [...new Set(distinctPids)];
+            const stats = await pidusage(uniquePids);
+            
+            // A. Aggregate Services
+            serviceGroups.forEach(group => {
+                let total = 0;
+                group.pids.forEach(pid => {
+                    if (stats[pid] && stats[pid].memory) total += stats[pid].memory;
+                });
+                
+                processList.push({
+                    pid: group.rootPid,
+                    name: group.name,
+                    type: group.type,
+                    memory: total
+                });
             });
+
+            // B. Aggregate Main Tool
+            mainChildren.forEach(pid => {
+               if (stats[pid] && stats[pid].memory) mainToolMem += stats[pid].memory;
+            });
+
         } catch (e) {
-            // silent fail
+            console.error('PidUsage Error:', e.message);
         }
     }
 
-    const totalServerMem = mainProcessMem + childrenMem;
+    // Add System Entry
+    processList.push({
+        pid: mainPid,
+        name: 'Tool Server (Tree)',
+        type: 'System',
+        memory: mainToolMem || process.memoryUsage().rss
+    });
+
+    // Calculate Total Server Used
+    let totalServerMem = processList.reduce((acc, curr) => acc + curr.memory, 0);
+
     if (totalServerMem > peakMemory) peakMemory = totalServerMem;
 
     return {
@@ -91,7 +148,7 @@ async function getStats() {
         cpus: os.cpus().length,
         uptime: os.uptime(),
         repoCount: totalRepos,
-        activeCount: activeDevMap.size + activeJobMap.size, // Total active things
+        activeCount: activeDevMap.size + activeJobMap.size,
         processes: processList
     };
 }
