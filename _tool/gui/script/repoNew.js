@@ -79,8 +79,14 @@ function renderTemplates(templates) {
     templates.forEach(t => {
         const div = document.createElement('div');
         div.className = 'p-2 hover:bg-gray-700 cursor-pointer border-b border-gray-700/50 last:border-0 transition-colors flex flex-col gap-0.5';
+        let displayName = t.templatename;
+        const match = displayName.match(/^\[(.*?)\]\s*(.*)$/);
+        if (match) {
+            displayName = `<span class="text-orange-400">${match[1]}</span> ${match[2]}`;
+        }
+
         div.innerHTML = `
-            <div class="text-[16px] text-white font-bold">${t.templatename}</div>
+            <div class="text-[16px] text-white font-bold">${displayName}</div>
             <div class="text-[14px] text-gray-500 font-mono truncate">${t.templatepath}</div>
         `;
         div.onclick = () => {

@@ -1,7 +1,7 @@
 const repotemplate = [
     {
         templatename: "[Frontend] React TS Tailwind Radix Jan2026",
-        templatepath: "react_ts_tailwind_radix",
+        templatepath: "reactapp",
         type:         "frontend",
         installcmd:   "npm install",
         startcmd:     "npm run dev",
@@ -14,7 +14,7 @@ const repotemplate = [
     },
     {
         templatename: "[Backend] Node TS Nodemon Jan2026",
-        templatepath: "node_ts_nodemon_jwt",
+        templatepath: "nodemon",
         type:         "backend",
         installcmd:   "npm install",
         startcmd:     "npm run dev",
@@ -26,8 +26,8 @@ const repotemplate = [
         icon:         "fa-brands fa-node-js",
     },
     {
-        templatename: "[Backend] PHP Vanilla",
-        templatepath: "php_vanilla",
+        templatename: "[Backend] PHP Docker",
+        templatepath: "php_docker",
         type:         "backend",
         installcmd:   "",
         startcmd:     "docker compose up -d",
