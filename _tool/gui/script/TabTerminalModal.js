@@ -149,22 +149,27 @@ window.TabTerminal = {
     },
 
     writeOnTerminal: function(id, text) {
-        if (text.trim() === '::HEARTBEAT::') return;
-        const item      = window.tabTerminalItems [id];
-        const panel     = item.panelElement;
+        try{
+            if (text.trim() === '::HEARTBEAT::') return;
+            const item      = window.tabTerminalItems [id];
+            const panel     = item.panelElement;
 
-        if( !panel ) return;
-        const formatted = window.TerminalModal ? window.TerminalModal.parseAnsi(text) : text;
-        const span      = document.createElement('span');
-        span.innerHTML  = formatted;
-        panel.appendChild(span);
-        if (window.tabTerminalActiveId === id) {
-            panel.scrollTop = panel.scrollHeight;
+            if( !panel ) return;
+            const formatted = window.TerminalModal ? window.TerminalModal.parseAnsi(text) : text;
+            const span      = document.createElement('span');
+            span.innerHTML  = formatted;
+            panel.appendChild(span);
+            if (window.tabTerminalActiveId === id) {
+                panel.scrollTop = panel.scrollHeight;
+            }
+
+            const totalText = panel.innerText;
+            if (totalText.length > 10000) {
+                panel.innerText = totalText.slice(-10000);
+            }
         }
-
-        const totalText = panel.innerText;
-        if (totalText.length > 10000) {
-            panel.innerText = totalText.slice(-10000);
+        catch (error) {
+            console.error('Error writing to terminal:', error);
         }
     },
 
@@ -254,7 +259,10 @@ window.TabTerminal = {
             }
             this.writeOnTerminal(id, '\n[Process Disconnected]\n');
         } catch (e) {
-            this.writeOnTerminal(id, `\nInternal Error: ${e.message}\n`);
+            this.writeOnTerminal(id, `\n\n[ERROR]`)
+            this.writeOnTerminal(id, `\nThe monorepo tool server ended due to restart or closure.`);
+            this.writeOnTerminal(id, `\nPlease restart the tool or start again the repository.`);
+            this.writeOnTerminal(id, `\n${e.message}\n`);
         }
     }
 };

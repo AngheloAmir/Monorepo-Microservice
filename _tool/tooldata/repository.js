@@ -46,7 +46,27 @@ const repository = {
         }
     ],
     "database": [],
-    "service": []
+    "service": [
+        {
+            "name": "empty",
+            "description": "",
+            "icon": "fa fa-cube",
+            "type": "service",
+            "path": "/service/empty",
+            "devurl": "localhost:3000",
+            "produrl": "",
+            "installcmd": "",
+            "startcmd": "npm run dev",
+            "stopcmd": "",
+            "buildcmd": "",
+            "lintcmd": "",
+            "testcmd": "",
+            "template": "None",
+            "giturl": "",
+            "gitorigin": "origin",
+            "gitbranch": "master"
+        }
+    ]
 }
 
 module.exports = repository;
