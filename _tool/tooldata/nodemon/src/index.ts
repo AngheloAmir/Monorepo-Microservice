@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8080;
 
 import authRoutes from './routes/test.route';
 import cookieParser from 'cookie-parser';

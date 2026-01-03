@@ -1,6 +1,7 @@
 const { spawn, execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const { getIO } = require('./runcmddev_shared');
 
 /**
  * Global store for active job processes
@@ -39,7 +40,8 @@ function executeJob(res, config) {
     const { directory, basecmd, cmd, id } = config;
 
     if (!directory || !basecmd) {
-        res.writeHead(400).end('Missing directory, basecmd');
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Missing directory, basecmd' }));
         return;
     }
 
@@ -48,17 +50,19 @@ function executeJob(res, config) {
     const targetDir = path.join(rootDir, directory);
 
     if (!isCommandAvailable(basecmd)) {
-         res.writeHead(400, { 'Content-Type': 'text/plain' });
-         res.end(`${basecmd} is not installed.`);
+         res.writeHead(400, { 'Content-Type': 'application/json' });
+         res.end(JSON.stringify({ error: `${basecmd} is not installed.` }));
          return;
     }
 
-    // --- STREAM HEADERS ---
-    res.writeHead(200, {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Transfer-Encoding': 'chunked',
-        'X-Content-Type-Options': 'nosniff' 
-    });
+    const io = getIO();
+    const safeEmit = (text) => {
+        if(io) io.emit('job-log', { id: jobId, text });
+    };
+
+    // Return Success immediately
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ success: true, jobId }));
 
     const env = { 
         ...process.env, 
@@ -84,32 +88,20 @@ function executeJob(res, config) {
         config: config,
         startTime: Date.now()
     });
+    
+    safeEmit(`> Starting Job ${jobId}: ${basecmd} ${args.join(' ')}\n`);
 
-    // Heartbeat
-    const heartbeat = setInterval(() => {
-        res.write('::HEARTBEAT::\n');
-    }, 2000);
-
-    child.stdout.on('data', (data) => {
-        res.write(data);
-    });
-
-    child.stderr.on('data', (data) => {
-        res.write(data);
-    });
+    child.stdout.on('data', (data) => safeEmit(data.toString()));
+    child.stderr.on('data', (data) => safeEmit(data.toString()));
 
     child.on('close', (code) => {
-        clearInterval(heartbeat);
         activeJobs.delete(jobId); // Cleanup from map
-        res.write(`\n Process exited with code: ${code}\n`);
-        res.end();
+        safeEmit(`\nJob exited with code: ${code}\n`);
     });
 
     child.on('error', (err) => {
-        clearInterval(heartbeat);
         activeJobs.delete(jobId);
-        res.write(`\nERROR: ${err.message}\n`);
-        res.end();
+        safeEmit(`\nERROR: ${err.message}\n`);
     });
 }
 

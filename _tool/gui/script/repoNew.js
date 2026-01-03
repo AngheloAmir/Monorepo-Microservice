@@ -203,6 +203,13 @@ async function runCommandStream(payload) {
         return;
     }
 
+    // Ensure socket init
+    if (window.TabTerminal && window.TabTerminal.initSocket) {
+        window.TabTerminal.initSocket();
+    } else if (!window.repoSocket && window.io) {
+        window.repoSocket = io();
+    }
+
     await window.TerminalModal.open();
     window.TerminalModal.write(`Starting command: ${payload.basecmd} ${payload.cmd.join(' ')}\n`);
     window.TerminalModal.write(`Directory: ${payload.directory}\n\n`);
@@ -214,18 +221,32 @@ async function runCommandStream(payload) {
             body: JSON.stringify(payload)
         });
 
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder("utf-8");
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            const chunk = decoder.decode(value, { stream: true });
-            window.TerminalModal.write(chunk);
+        if (!response.ok) {
+            const err = await response.text();
+            throw new Error(err);
         }
-        
-        window.TerminalModal.setRunning(false);
-        window.TerminalModal.write('\n\n--- Process Completed ---\n');
+
+        const data = await response.json();
+        const runId = data.runId;
+
+        // Listen for logs
+        const logHandler = (msg) => {
+            if (msg && msg.id === runId) {
+                if (msg.text === '::DONE::') {
+                    window.TerminalModal.setRunning(false);
+                    window.TerminalModal.write('\n\n--- Process Completed ---\n');
+                    window.repoSocket.off('runcmd-log', logHandler);
+                } else {
+                    window.TerminalModal.write(msg.text);
+                }
+            }
+        };
+
+        if(window.repoSocket) {
+            window.repoSocket.on('runcmd-log', logHandler);
+        } else {
+             window.TerminalModal.write('\nError: Socket connection unavailable.\n');
+        }
 
     } catch (e) {
         window.TerminalModal.write(`\nError: ${e.message}\n`);
