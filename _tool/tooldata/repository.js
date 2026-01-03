@@ -48,15 +48,15 @@ const repository = {
     "database": [],
     "service": [
         {
-            "name": "empty",
+            "name": "temp",
             "description": "",
             "icon": "fa fa-cube",
             "type": "service",
-            "path": "/service/empty",
+            "path": "/service/temp",
             "devurl": "localhost:3000",
             "produrl": "",
             "installcmd": "",
-            "startcmd": "npm run dev",
+            "startcmd": "npm run start",
             "stopcmd": "",
             "buildcmd": "",
             "lintcmd": "",

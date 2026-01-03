@@ -9,7 +9,7 @@ const crud = [
                 "description": "Ping the tool server to check if it is running.",
                 "sampleInput": "{}",
                 "suggested": [],
-                "expectedOutcome": "# You should see the word \"pong\" as a message \n\n{\n  \"message\": \"pong\"\n}",
+                "expectedOutcome": "# Please set the root url to localhost:3200 first\n\n# You should see the word \"pong\" as a message \n\n{\n  \"message\": \"pong\"\n}",
                 "availableFor": "public"
             },
             {
@@ -25,7 +25,7 @@ const crud = [
                         "content": "{\n    \"name\": \"Demo Customer\",\n    \"email\": \"CusRaRa@customer.com\",\n    \"phone1\": \"123456789\",\n    \"phone2\": \"987654321\",\n    \"city\": \"randomw1\",\n    \"state\": \"ultra state\",\n    \"zip\": \"12345\",\n    \"country\": \"mega country\",\n    \"icon\": \"test icon\",\n    \"gender\": \"female\",\n    \"delivery_notes\": \"Make sure that it is packed correctly\"\n}"
                     }
                 ],
-                "expectedOutcome": "# Note \nYou should see the mirror of your inputs",
+                "expectedOutcome": "# Please set the root url to localhost:3200 first\n\n# Note \nYou should see the mirror of your inputs",
                 "availableFor": "public"
             },
             {
@@ -46,22 +46,7 @@ const crud = [
                         "content": "{}"
                     }
                 ],
-                "expectedOutcome": "# Note \nYou should see the stream of words asdasd",
-                "availableFor": "public"
-            }
-        ]
-    },
-    {
-        "category": "yeap",
-        "items": [
-            {
-                "label": "New Route",
-                "route": "/new-route",
-                "methods": "GET",
-                "description": "",
-                "sampleInput": "{ \"data\": \"adasdasd\" }",
-                "suggested": [],
-                "expectedOutcome": "",
+                "expectedOutcome": "# Please set the root url to localhost:3200 first\n\n# Note \nYou should see the stream of words asdasd",
                 "availableFor": "public"
             }
         ]
