@@ -13,19 +13,12 @@ window.CrudEditor = {
         }
     },
 
-
-
     open: async function(catIndex, itemIndex) {
         if (!document.getElementById('crud-editor-modal')) await this.init();
         const modal = document.getElementById('crud-editor-modal');
         if (!modal) return;
         
         modal.classList.remove('hidden');
-
-        // Deselect in Nav
-        if (window.AccordionNav) window.AccordionNav.deselectAll();
-        // Reset Tester UI to Empty State
-        if (window.CrudTest && window.CrudTest.resetSelection) window.CrudTest.resetSelection();
 
         // Update Title
         const titleEl = document.getElementById('crud-editor-title');
@@ -79,7 +72,6 @@ window.CrudEditor = {
 
         // Deselect in Nav
         if (window.AccordionNav) window.AccordionNav.deselectAll();
-        // Reset Tester UI to Empty State
         if (window.CrudTest && window.CrudTest.resetSelection) window.CrudTest.resetSelection();
         
         // Update Title
@@ -168,6 +160,10 @@ window.CrudEditor = {
     delete: async function() {
         if (!confirm("Delete method can only be reverse by GIT, continue?")) return;
 
+        //clear selections
+        if (window.AccordionNav) window.AccordionNav.deselectAll();
+        if (window.CrudTest && window.CrudTest.resetSelection) window.CrudTest.resetSelection();
+
         const catIndex = parseInt(document.getElementById('edit-cat-index').value);
         const itemIndex = parseInt(document.getElementById('edit-item-index').value);
 
@@ -200,6 +196,10 @@ window.CrudEditor = {
     },
 
     save: async function() {
+        // Deselect in Nav
+        if (window.AccordionNav) window.AccordionNav.deselectAll();
+        if (window.CrudTest && window.CrudTest.resetSelection) window.CrudTest.resetSelection();
+
         // Collect Data
         const catIndex = parseInt(document.getElementById('edit-cat-index').value);
         const itemIndex = parseInt(document.getElementById('edit-item-index').value);
