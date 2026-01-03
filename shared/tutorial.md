@@ -62,6 +62,16 @@ app.get('/users', async (req, res) => {
 });
 ```
 
+**Database Management**
+You can manage the database logic entirely from the shared folder using NPM workspace commands.
+
+*   **Migrate Changes (Create Tables)**:
+    `npm run db:migrate -w @monorepo/models`
+*   **Update Client (Refresh TS Types)**:
+    `npm run db:generate -w @monorepo/models`
+*   **Open Database UI**:
+    `npm run db:studio -w @monorepo/models`
+
 **Frontend Usage (React)**
 *Use the Types to ensure type safety when fetching data.*
 ```typescript
