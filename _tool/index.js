@@ -56,6 +56,10 @@ const server = http.createServer((req, res) => {
     case '/api/runcmd':
         return runCmdHandler(req, res);
         
+    case '/api/runcmdjob':
+        const { runCmdJobHandler } = require('./tools/runcmdjob');
+        return runCmdJobHandler(req, res);
+
     case '/api/repository/update':
         const { updateRepositoryData } = require('./tools/apiRespository');
         return updateRepositoryData(req, res);

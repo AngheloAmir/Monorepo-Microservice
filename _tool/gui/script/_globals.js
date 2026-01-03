@@ -24,3 +24,9 @@ window.crudState = {       // Persistent state
     paramValue: '',
     expandedCategories: new Set() // Store indices of open categories
 };
+
+// Home/Dashboard State
+window.homeState = {
+    peakMemory: 0,
+    eventSource: null
+};

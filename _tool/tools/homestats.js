@@ -1,7 +1,10 @@
 const os = require('os');
 const pidusage = require('pidusage');
 const { getActiveProcessCount, getActiveProcesses } = require('./runcmddev');
+const { getActiveJobs } = require('./runcmdjob');
 const repositoryData = require('../tooldata/repository.js');
+
+let peakMemory = 0;
 
 async function getStats() {
     // Calculate total repos
@@ -10,41 +13,89 @@ async function getStats() {
         if (Array.isArray(list)) totalRepos += list.length;
     });
 
-    const activeCount = getActiveProcessCount();
-    const activeProcs = getActiveProcesses();
-    const mainProcessMem = process.memoryUsage().rss;
+    const activeDevMap = getActiveProcesses();
+    const activeJobMap = getActiveJobs();
+    
+    // Combined list of PIDs to query
+    const pidsToQuery = [];
+    const pidToInfo = new Map(); // pid -> { name, type, id }
 
-    // Collect PIDs of all spawned children
-    const pids = [];
-    activeProcs.forEach(entry => {
+    // 1. Dev Processes
+    activeDevMap.forEach((entry, id) => {
         if (entry.child && entry.child.pid) {
-            pids.push(entry.child.pid);
+            pidsToQuery.push(entry.child.pid);
+            pidToInfo.set(entry.child.pid, { 
+                name: `${entry.config.basecmd} ${entry.config.directory}`, 
+                type: 'Service', 
+                id 
+            });
         }
     });
 
+    // 2. Job Processes
+    activeJobMap.forEach((entry, id) => {
+        if (entry.child && entry.child.pid) {
+            pidsToQuery.push(entry.child.pid);
+            pidToInfo.set(entry.child.pid, { 
+                name: `${entry.config.basecmd} ${entry.config.directory}`, 
+                type: 'Job', 
+                id 
+            });
+        }
+    });
+
+    const mainProcessMem = process.memoryUsage().rss;
     let childrenMem = 0;
-    if (pids.length > 0) {
+    const processList = [];
+
+    // Add Main Process to list
+    processList.push({
+        pid: process.pid,
+        name: 'Tool Server',
+        type: 'System',
+        memory: mainProcessMem
+    });
+
+    if (pidsToQuery.length > 0) {
         try {
-            const stats = await pidusage(pids); // Returns object { pid: { memory: bytes, ... } }
-            // Some pids might fail or exit quickly, handle safely
-            Object.values(stats).forEach(s => {
-                if (s && s.memory) childrenMem += s.memory;
+            const stats = await pidusage(pidsToQuery);
+            Object.keys(stats).forEach(pidStr => {
+                const s = stats[pidStr];
+                const pid = parseInt(pidStr);
+                if (s && s.memory) {
+                    childrenMem += s.memory;
+                    
+                    const info = pidToInfo.get(pid);
+                    if (info) {
+                        processList.push({
+                            pid: pid,
+                            name: info.name,
+                            type: info.type,
+                            memory: s.memory
+                        });
+                    }
+                }
             });
         } catch (e) {
-            // Some process might have exited between check and measurement
-            // console.error('PID usage error', e);
+            // silent fail
         }
     }
 
+    const totalServerMem = mainProcessMem + childrenMem;
+    if (totalServerMem > peakMemory) peakMemory = totalServerMem;
+
     return {
         systemTotalMem: os.totalmem(),
-        serverUsedMem: mainProcessMem + childrenMem, // Combined Tool + Children
+        serverUsedMem: totalServerMem, 
+        peakMem: peakMemory,
         cpus: os.cpus().length,
         uptime: os.uptime(),
         repoCount: totalRepos,
-        activeCount: activeCount
+        activeCount: activeDevMap.size + activeJobMap.size, // Total active things
+        processes: processList
     };
 }
+
 
 
 function streamSystemStatus(req, res) {
@@ -69,7 +120,7 @@ function streamSystemStatus(req, res) {
         } catch(e) {
             console.error('Error streaming stats:', e);
         }
-    }, 3000);
+    }, 10000);
 
     // Cleanup on client disconnect
     req.on('close', () => {
