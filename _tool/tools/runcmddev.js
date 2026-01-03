@@ -259,4 +259,12 @@ process.on('exit', () => {
     }
 });
 
-module.exports = { runCmdDevHandler };
+function getActiveProcesses() {
+    return activeProcesses;
+}
+
+function getActiveProcessCount() {
+    return activeProcesses.size;
+}
+
+module.exports = { runCmdDevHandler, getActiveProcessCount, getActiveProcesses };

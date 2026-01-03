@@ -1,101 +1,146 @@
-<div class="p-8 space-y-8 animate-fade-in max-w-7xl mx-auto">
-    <!-- Hero Section -->
-    <div class="text-center space-y-4 py-10">
-        <h1 class="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-500 tracking-tight">
-            Monorepo Microservice
-        </h1>
-        <p class="text-xl text-gray-400 max-w-2xl mx-auto font-light">
-            Your central command unit for managing cloud environments, deployments, and testing suites.
-        </p>
-    </div>
-    
-    <!-- Dashboard Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Status Card -->
-        <div class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-2xl border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 group cursor-pointer relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <i class="fas fa-server text-8xl text-blue-500"></i>
-            </div>
-            <div class="flex items-center justify-between mb-6 relative z-10">
-                <div class="p-3 bg-blue-500/10 rounded-xl group-hover:bg-blue-500/20 transition-colors">
-                    <i class="fas fa-microchip text-blue-400 text-xl"></i>
-                </div>
-                <span class="flex items-center gap-2 text-xs font-mono text-green-400 bg-green-400/10 px-2 py-1 rounded-full border border-green-400/20">
-                    <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
-                    Online
-                </span>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2 relative z-10">System Status</h3>
-            <div class="space-y-2 relative z-10">
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-400">Node Service</span>
-                    <span class="text-white">Active</span>
-                </div>
-                <div class="w-full bg-gray-700 rounded-full h-1.5">
-                    <div class="bg-blue-500 h-1.5 rounded-full" style="width: 100%"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Database Card -->
-        <div class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-2xl border border-gray-700/50 hover:border-purple-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 group cursor-pointer relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <i class="fas fa-database text-8xl text-purple-500"></i>
-            </div>
-            <div class="flex items-center justify-between mb-6 relative z-10">
-                <div class="p-3 bg-purple-500/10 rounded-xl group-hover:bg-purple-500/20 transition-colors">
-                    <i class="fas fa-database text-purple-400 text-xl"></i>
-                </div>
-                <span class="text-xs font-mono text-gray-400 bg-gray-700/50 px-2 py-1 rounded-full border border-gray-600">
-                    v16.4
-                </span>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2 relative z-10">Database</h3>
-            <p class="text-gray-400 text-sm mb-4 relative z-10">Local PostgreSQL instance connected and verified.</p>
-                <div class="flex -space-x-2 relative z-10">
-                    <div class="w-8 h-8 rounded-full bg-gray-700 border-2 border-gray-800 flex items-center justify-center text-xs text-white">DB</div>
-                    <div class="w-8 h-8 rounded-full bg-gray-700 border-2 border-gray-800 flex items-center justify-center text-xs text-white">RLS</div>
-                </div>
-        </div>
-
-        <!-- CI/CD Card -->
-        <div class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-2xl border border-gray-700/50 hover:border-pink-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/10 group cursor-pointer relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <i class="fas fa-rocket text-8xl text-pink-500"></i>
-            </div>
-            <div class="flex items-center justify-between mb-6 relative z-10">
-                <div class="p-3 bg-pink-500/10 rounded-xl group-hover:bg-pink-500/20 transition-colors">
-                    <i class="fas fa-check-circle text-pink-400 text-xl"></i>
-                </div>
-                <span class="text-xs font-mono text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full border border-emerald-400/20">
-                    Passing
-                </span>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2 relative z-10">Pipeline</h3>
-            <p class="text-gray-400 text-sm relative z-10">Last build successfully deployed to local environment.</p>
-        </div>
-    </div>
-    
-    <!-- Quick Actions -->
-    <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-8 border border-gray-700 relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-            <div class="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
+<div class="px-6 py-8 space-y-8 animate-fade-in max-w-[1600px] mx-auto">
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        <div class="relative z-10">
-            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                <i class="fas fa-bolt text-yellow-400"></i> Quick Actions
-            </h2>
-            <div class="flex flex-wrap gap-4">
-                <button class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-semibold transition-all shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 flex items-center gap-2 transform hover:-translate-y-0.5">
-                        <i class="fas fa-play"></i> Launch All
-                </button>
-                    <button class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-xl font-semibold transition-all border border-gray-600 hover:border-gray-500 flex items-center gap-2 transform hover:-translate-y-0.5">
-                        <i class="fas fa-sync"></i> Sync Repos
-                </button>
-                <button class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-xl font-semibold transition-all border border-gray-600 hover:border-gray-500 flex items-center gap-2 transform hover:-translate-y-0.5">
-                        <i class="fas fa-terminal"></i> Terminal
-                </button>
+        <!-- Left Column: Actions (Span 8) -->
+        <div class="lg:col-span-8 flex flex-col gap-6">
+            
+            <!-- Hero / Welcome -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-gray-900 to-gray-800 border border-gray-700/50 p-10 md:p-14 text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-10 shadow-2xl shadow-black/50">
+                
+                <!-- Background Effects -->
+                <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+                <div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-purple-600/10 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
+
+                <div class="space-y-6 max-w-2xl relative z-10">
+                    <div>
+                        <h2 class="text-blue-400 font-mono text-sm tracking-wider uppercase mb-2">Central Command</h2>
+                        <h1 class="text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
+                            Monorepo <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Mastery</span>
+                        </h1>
+                    </div>
+                    <p class="text-lg text-gray-300 leading-relaxed font-light">
+                        Orchestrate your microservices, manage deployments, and monitor system health from a unified, high-performance interface.
+                    </p>
+                </div>
+                
+                <!-- Decorative Icon -->
+                <div class="relative flex-shrink-0 animate-float">
+                    <div class="w-32 h-32 md:w-40 md:h-40 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-white/10 flex items-center justify-center shadow-xl transform rotate-3">
+                        <i class="fas fa-layer-group text-6xl md:text-7xl text-white/90 drop-shadow-lg"></i>
+                    </div>
+                    <!-- Back element for depth -->
+                    <div class="absolute inset-0 bg-blue-500/20 blur-xl -z-10"></div>
+                </div>
+            </div>
+
+            <!-- First Steps Card -->
+            <div class="bg-gray-800/40 backdrop-blur-md border border-gray-700/50 rounded-2xl p-8 hover:border-blue-500/20 transition-all duration-300 relative overflow-hidden group">
+                 <div class="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+                    <i class="fas fa-flag-checkered text-8xl text-white"></i>
+                 </div>
+
+                 <div class="relative z-10">
+                    <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                        <i class="fas fa-bolt text-yellow-400"></i> Your First Steps
+                    </h2>
+                    <p class="text-gray-400 mb-8 max-w-xl">Get your environment up and running quickly with these essential tasks.</p>
+                    
+                    <div class="flex flex-wrap gap-4">
+                        <button id="home-btn-install-all" class="flex items-center gap-4 px-6 py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition-all shadow-lg shadow-blue-900/30 hover:shadow-blue-600/40 group/btn text-left border border-white/10">
+                            <div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center shadow-inner">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-lg">Install All</div>
+                                <div class="text-xs text-blue-100 font-medium">Dependencies & Tools</div>
+                            </div>
+                            <i class="fas fa-arrow-right ml-2 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Access Grid -->
+            <!-- <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <a href="#" class="p-5 rounded-xl bg-gray-800/30 border border-gray-700/30 hover:bg-gray-700/50 hover:border-gray-500/50 transition-all group flex flex-col items-center justify-center gap-3 text-center h-32 hover:-translate-y-1 hover:shadow-lg">
+                    <div class="w-12 h-12 rounded-full bg-orange-500/10 flex items-center justify-center group-hover:bg-orange-500/20 transition-colors">
+                        <i class="fas fa-cube text-2xl text-orange-400"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-gray-300 group-hover:text-white">New Service</span>
+                </a>
+                 <a href="#" class="p-5 rounded-xl bg-gray-800/30 border border-gray-700/30 hover:bg-gray-700/50 hover:border-gray-500/50 transition-all group flex flex-col items-center justify-center gap-3 text-center h-32 hover:-translate-y-1 hover:shadow-lg">
+                    <div class="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center group-hover:bg-green-500/20 transition-colors">
+                        <i class="fas fa-terminal text-2xl text-green-400"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-gray-300 group-hover:text-white">Terminal</span>
+                </a>
+                 <a href="#" class="p-5 rounded-xl bg-gray-800/30 border border-gray-700/30 hover:bg-gray-700/50 hover:border-gray-500/50 transition-all group flex flex-col items-center justify-center gap-3 text-center h-32 hover:-translate-y-1 hover:shadow-lg">
+                    <div class="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
+                         <i class="fas fa-scroll text-2xl text-purple-400"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-gray-300 group-hover:text-white">Logs</span>
+                </a>
+                 <a href="#" class="p-5 rounded-xl bg-gray-800/30 border border-gray-700/30 hover:bg-gray-700/50 hover:border-gray-500/50 transition-all group flex flex-col items-center justify-center gap-3 text-center h-32 hover:-translate-y-1 hover:shadow-lg">
+                    <div class="w-12 h-12 rounded-full bg-gray-500/10 flex items-center justify-center group-hover:bg-gray-500/20 transition-colors">
+                         <i class="fas fa-cog text-2xl text-gray-400"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-gray-300 group-hover:text-white">Settings</span>
+                </a>
+            </div> -->
+        </div>
+
+        <!-- Right Column: Status (Span 4) -->
+        <div class="lg:col-span-4 space-y-6">
+            
+            <!-- System Status -->
+             <div class="bg-gray-800/40 backdrop-blur-md border border-gray-700/50 rounded-2xl p-6">
+                 <h2 class="text-lg font-bold text-white mb-6 flex items-center justify-between">
+                    <span class="flex items-center gap-2"><i class="fas fa-heartbeat text-pink-500"></i> System Status</span>
+                    <span class="text-xs px-2 py-1 bg-green-900/30 text-green-400 border border-green-500/20 rounded-full animate-pulse">Live</span>
+                 </h2>
+                 
+                 <div class="space-y-4">
+                    <!-- Stat Row: Memory -->
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-400">Memory Usage</span>
+                            <span id="sys-mem-val" class="text-white font-mono">...</span>
+                        </div>
+                        <div class="w-full bg-gray-700/50 rounded-full h-1.5 overflow-hidden">
+                            <div id="sys-mem-bar" class="bg-gradient-to-r from-blue-500 to-cyan-400 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                     <!-- Stat Row: CPU -->
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-400">CPU Load (Avg)</span>
+                            <span id="sys-cpu-val" class="text-white font-mono">...</span>
+                        </div>
+                        <div class="w-full bg-gray-700/50 rounded-full h-1.5 overflow-hidden">
+                            <div id="sys-cpu-bar" class="bg-gradient-to-r from-green-500 to-emerald-400 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="h-px bg-gray-700/50 my-4"></div>
+
+                     <div class="grid grid-cols-2 gap-2">
+                        <div class="p-3 bg-gray-900/40 rounded-lg border border-gray-700/30 text-center">
+                            <div id="stat-repos-count" class="text-2xl font-bold text-white">...</div>
+                            <div class="text-[10px] text-gray-500 uppercase tracking-wider">Repos</div>
+                        </div>
+                         <div class="p-3 bg-gray-900/40 rounded-lg border border-gray-700/30 text-center">
+                            <div id="stat-active-count" class="text-2xl font-bold text-white">...</div>
+                            <div class="text-[10px] text-gray-500 uppercase tracking-wider">Active</div>
+                        </div>
+                    </div>
+                 </div>
             </div>
         </div>
+
     </div>
 </div>
+
+<script src="/gui/script/home.js"></script>

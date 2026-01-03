@@ -46,7 +46,7 @@ const crud = [
                         "content": "{}"
                     }
                 ],
-                "expectedOutcome": "# Please set the root url to localhost:3200 first\n\n# Note \nYou should see the stream of words asdasd",
+                "expectedOutcome": "# Please set the root url to localhost:3200 first\n\n# Note \nYou should see the stream of words",
                 "availableFor": "public"
             }
         ]

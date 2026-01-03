@@ -3,9 +3,10 @@
   "version":     "1.0.0",
   "description": "A monorepo for microservices",
   "scripts": {
-    "start": "cd _tool && npm run start",
-    "dev":   "cd _tool && npm run boot",
-    "stop":  "cd _tool && npm run stop"
+    "installtool": "cd _tool && npm install",
+    "starttool":   "cd _tool && npm run start",
+    "devtool":     "cd _tool && npm run boot",
+    "stoptool":    "cd _tool && npm run stop"
   },
   "keywords": [
     "monorepo",

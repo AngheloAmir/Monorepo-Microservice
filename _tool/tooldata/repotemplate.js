@@ -52,7 +52,7 @@ const repotemplate = [
         icon:         "fas fa-database",
     },
     {
-        templatename: "[AWS] Localstack Jan2026",
+        templatename: "[Service] Localstack Jan2026",
         templatepath: "aws",
         type:         "service",
         installcmd:   "",
@@ -65,7 +65,7 @@ const repotemplate = [
         icon:         "fa-brands fa-aws",
     },
     {
-        templatename: "[Redis] Localstack Jan2026",
+        templatename: "[Service] Redis Jan2026",
         templatepath: "redis",
         type:         "service",
         installcmd:   "",

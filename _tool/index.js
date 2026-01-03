@@ -71,6 +71,10 @@ const server = http.createServer((req, res) => {
         const { saveCrudData } = require('./tools/apiCrud');
         return saveCrudData(req, res);
 
+    case '/api/system-status':
+        const { streamSystemStatus } = require('./tools/homestats');
+        return streamSystemStatus(req, res);
+
     //internal CRUD testing routes===========================================
     case '/pingme':
        return internalCrudTester.pingMe(req, res);
