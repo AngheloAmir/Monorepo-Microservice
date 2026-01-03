@@ -1,6 +1,6 @@
 const repotemplate = [
     {
-        templatename: "[Frontend] React TS Tailwind Radix Jan2026",
+        templatename: "[Frontend] React TS Tailwind Radix",
         templatepath: "reactapp",
         type:         "frontend",
         installcmd:   "npm install",
@@ -13,7 +13,7 @@ const repotemplate = [
         icon:         "fa-brands fa-react",
     },
     {
-        templatename: "[Backend] Node TS Nodemon Jan2026",
+        templatename: "[Backend] Node TS Nodemon",
         templatepath: "nodemon",
         type:         "backend",
         installcmd:   "npm install",
@@ -39,7 +39,7 @@ const repotemplate = [
         icon:         "fa-brands fa-php",
     },
     {
-        templatename: "[Database] Supabase Jan2026",
+        templatename: "[Database] Supabase",
         templatepath: "supabase",
         type:         "database",
         installcmd:   "npm install",
@@ -52,7 +52,7 @@ const repotemplate = [
         icon:         "fas fa-database",
     },
     {
-        templatename: "[Service] Localstack Jan2026",
+        templatename: "[Service] Localstack",
         templatepath: "aws",
         type:         "service",
         installcmd:   "",
@@ -65,7 +65,7 @@ const repotemplate = [
         icon:         "fa-brands fa-aws",
     },
     {
-        templatename: "[Service] Redis Jan2026",
+        templatename: "[Service] Redis",
         templatepath: "redis",
         type:         "service",
         installcmd:   "",
@@ -76,6 +76,19 @@ const repotemplate = [
         testcmd:      "",
         devurl:       "",
         icon:         "fas fa-database",
+    },
+    {
+        templatename: "[Backend] Node TS Socket",
+        templatepath: "node_socket_ts",
+        type:         "backend",
+        installcmd:   "npm install",
+        startcmd:     "npm run dev",
+        stopcmd:      "npm run stop",
+        buildcmd:     "npm run build",
+        lintcmd:      "",
+        testcmd:      "",
+        devurl:       "http://localhost:8081",
+        icon:         "fa-brands fa-node-js",
     }
 ];
 
