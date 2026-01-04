@@ -15,6 +15,7 @@ window.openAddModal = function() {
     document.getElementById('workspace-gitorigin').value = '';
     document.getElementById('workspace-gitbranch').value = '';
     document.getElementById('workspace-install').value  = '';
+    document.getElementById('workspace-dev').value      = '';
     document.getElementById('workspace-start').value    = '';
     document.getElementById('workspace-stop').value     = '';
     document.getElementById('workspace-build').value    = '';
@@ -113,6 +114,7 @@ function selectTemplate(template) {
     // Auto-fill URLs
     document.getElementById('workspace-devurl').value  = template.devurl || 'http://localhost:3000';
     document.getElementById('workspace-install').value = template.installcmd || '';
+    document.getElementById('workspace-dev').value     = template.devcmd || '';
     document.getElementById('workspace-start').value   = template.startcmd || '';
     document.getElementById('workspace-stop').value    = template.stopcmd || '';
     document.getElementById('workspace-build').value   = template.buildcmd || '';
@@ -142,6 +144,7 @@ window.createWorkspace = async function() {
         devurl: document.getElementById('workspace-devurl').value,
         produrl: document.getElementById('workspace-produrl').value,
         installcmd: document.getElementById('workspace-install').value,
+        devcmd: document.getElementById('workspace-dev').value,
         startcmd: document.getElementById('workspace-start').value,
         stopcmd: document.getElementById('workspace-stop').value,
         buildcmd: document.getElementById('workspace-build').value,

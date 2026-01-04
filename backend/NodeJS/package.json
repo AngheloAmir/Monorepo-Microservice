@@ -1,17 +1,20 @@
 {
-  "name": "node-service",
+  "name": "NodeJS",
   "version": "1.0.0",
   "description": "Node.js with TypeScript",
-  "main": "src/index.ts",
   "scripts": {
     "start": "node dist/index.js",
     "start:ts": "ts-node src/index.ts",
-    "dev": "PORT=8080 nodemon",
+    "dev": "ts-node src/index.ts",
     "build": "tsc",
     "test": "jest",
-    "docker": "docker build -t node-service . && docker run -p 8080:8080 node-service",
+    "docker": "docker build -t node-service . && docker run -p 8000:8000 node-service",
     "stop": "npx -y kill-port 8080"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "main": "src/index.ts",
   "dependencies": {
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

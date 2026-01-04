@@ -47,13 +47,14 @@ async function stopDevCommand(res, { id, stopcmd, directory }) {
                     safeEmit(id, `> Shutdown command error: ${err.message}\n`);
                     resolve();
                 });
-                setTimeout(() => {
-                    safeEmit(id, `> Shutdown command timed out after 15s\n`);
-                    if(sc.pid) {
-                         try { process.kill(sc.pid); } catch(e){}
-                    }
-                    resolve();
-                }, 15000); 
+                
+                // setTimeout(() => {
+                //     safeEmit(id, `> Shutdown command timed out after 15s\n`);
+                //     if(sc.pid) {
+                //          try { process.kill(sc.pid); } catch(e){}
+                //     }
+                //     resolve();
+                // }, 15000); 
             });
         }
     }

@@ -82,8 +82,8 @@ function spawnAndMonitor(id) {
     const entry = activeProcesses.get(id);
     if (!entry || !entry.shouldRun) return;
 
-    // Safety: prevent infinite crash loop (max 5 rapid restarts)
-    if (entry.restartCount > 5) {
+    // Safety: prevent infinite crash loop
+    if (entry.restartCount > 2) {
         const msg = `\n[System] CRITICAL: Process ${id} crashed too many times. Auto-restart disabled.\n`;
         safeEmit(id, msg);
         entry.shouldRun = false;

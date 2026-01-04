@@ -17,7 +17,10 @@ class WorkspaceCard {
         
         let btnHtml = '';
 
-        if( data.startcmd && data.startcmd.length > 0 ) {
+        // Use devcmd for the "Start Dev" button decision and execution
+        const devCommand = data.devcmd || '';
+        
+        if( devCommand && devCommand.length > 0 ) {
             if (isRunning) {
                 btnHtml = `<button id="btn-action-${uniqueID}" onclick="window.stopDevRepo('${uniqueID}')" class="flex-1 py-2 px-3 rounded-lg bg-red-600 text-white hover:bg-red-500 transition-colors shadow-lg shadow-red-600/20 text-sm font-medium flex items-center justify-center gap-2">
                     <i class="fas fa-stop text-xs"></i> Stop
@@ -103,10 +106,14 @@ window.updateCardState = function(id, isRunning) {
     }
 };
 
-window.startDevRepo = function(id) {
+    window.startDevRepo = function(id) {
     const data = window.repoCache[id];
     if (data && window.TabTerminal) {
-        window.TabTerminal.createTab(id, data);
+        // Force startcmd to be the dev command for execution context
+        const runtimeData = { ...data };
+        runtimeData.startcmd = runtimeData.devcmd || 'npm run dev';
+
+        window.TabTerminal.createTab(id, runtimeData);
         window.disableBtnRepo(id);
 
     //prevent spamming of the button

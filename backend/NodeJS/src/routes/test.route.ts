@@ -3,7 +3,6 @@ import AuthMiddleware   from '../middleware/auth.middleware';
 import { generateToken } from '../utils/token';
 
 const router = Router();
-
 router.get('/test', (req, res) => {
     console.log('I have been visited')
     res.json({ message: 'Test' });

@@ -100,6 +100,7 @@ async function registerWorkspace(data) {
         devurl:      data.devurl || '',
         produrl:     "",
         installcmd:  data.installcmd || '',
+        devcmd:      data.devcmd || '',
         startcmd:    data.startcmd || '',
         stopcmd:     data.stopcmd || '',
         buildcmd:    data.buildcmd || '',
@@ -160,7 +161,7 @@ async function updatePackageJson(targetDir, data) {
 
     // Map fields to scripts
     const scriptMap = {
-        'install': data.installcmd,
+        'dev': data.devcmd,
         'start': data.startcmd,
         'stop': data.stopcmd,
         'build': data.buildcmd,
