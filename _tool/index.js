@@ -98,6 +98,10 @@ const server = http.createServer((req, res) => {
         const { apiCdHandler } = require('./tools/apiCd');
         return apiCdHandler(req, res);
 
+    case '/api/turborepo':
+        const { handleTurboRequest } = require('./tools/turborepohelper');
+        return handleTurboRequest(req, res);
+
     //internal CRUD testing routes===========================================
     case '/pingme':
        return internalCrudTester.pingMe(req, res);
