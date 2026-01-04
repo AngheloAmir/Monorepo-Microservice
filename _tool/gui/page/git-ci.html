@@ -1,0 +1,133 @@
+<div class="h-full flex flex-col bg-gray-900 overflow-hidden relative">
+    
+    <!-- Page Header -->
+    <div class="flex-none px-6 py-4 border-b border-gray-800 bg-gray-900/95 backdrop-blur-md z-40 flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-bold text-white flex items-center gap-3">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500">
+                    <i class="fab fa-git-alt"></i> Git
+                </span>
+                Integration (CI)
+            </h1>
+            <p class="text-gray-400 text-sm mt-1">Visualize affected workspaces and CI scope based on git changes.</p>
+        </div>
+        <div class="flex gap-3">
+             <button onclick="window.gitCi.openSettings()" class="px-3 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 transition-colors border border-gray-700 font-medium text-sm flex items-center gap-2">
+                <i class="fas fa-cog"></i> Settings
+            </button>
+            <button onclick="window.checkAffected()" class="px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition-colors shadow-lg shadow-blue-600/20 font-medium text-sm flex items-center gap-2">
+                <i class="fas fa-sync-alt"></i> Re-Check Scope
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-gray-700">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Git Context Card -->
+            <div class="lg:col-span-1 bg-gray-800/50 border border-gray-700/50 rounded-xl p-5 hover:border-blue-500/30 transition-colors group relative overflow-hidden">
+                 <div class="absolute right-0 top-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <i class="fab fa-git-alt text-8xl text-orange-500"></i>
+                </div>
+                
+                <h3 class="text-sm font-bold text-gray-300 uppercase tracking-wide mb-4 flex items-center gap-2">
+                    <i class="fas fa-code-branch text-orange-500"></i> Git Context
+                </h3>
+                
+                <div class="space-y-4 relative z-10">
+                    <div>
+                        <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-1">Current Branch</div>
+                        <div class="flex items-center gap-2 text-white font-mono bg-gray-900/50 p-2 rounded border border-gray-700">
+                             <i class="fas fa-code-branch text-blue-400"></i>
+                             <span id="git-ci-current-branch">feature/user-auth-v2</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                         <div class="flex-1">
+                            <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-1">Base Branch</div>
+                            <div class="flex items-center gap-2 text-gray-400 font-mono bg-gray-900/50 p-2 rounded border border-gray-700 text-xs">
+                                <i class="fas fa-code-branch"></i> <span id="git-ci-base-branch">origin/main</span>
+                            </div>
+                        </div>
+                         <div class="flex-1">
+                            <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-1">Comparing</div>
+                            <div class="flex items-center gap-2 text-yellow-400 font-mono bg-gray-900/50 p-2 rounded border border-gray-700 text-xs">
+                                <i class="fas fa-exchange-alt"></i> 12 Files
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Affected Workspaces Visualizer -->
+            <div class="lg:col-span-2 bg-gray-800/50 border border-gray-700/50 rounded-xl p-5 transition-colors group relative">
+                 <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-sm font-bold text-gray-300 uppercase tracking-wide flex items-center gap-2">
+                        <i class="fas fa-bullseye text-red-500"></i> Affected Workspaces (CI Scope)
+                    </h3>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="git-ci-affected-list">
+                    <!-- Populated by JS -->
+                    <div class="col-span-4 text-center py-8 text-gray-500 italic">
+                        <i class="fas fa-circle-notch fa-spin mr-2"></i> Analyzing repository...
+                    </div>
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-gray-700/50 flex items-center gap-4 text-xs text-gray-400">
+                    <i class="fas fa-info-circle text-blue-400"></i>
+                    <span>Only these workspaces will run tests/builds in the next Pipeline execution. Unchanged workspaces use <span class="text-green-400 font-bold">Remote Cache</span>.</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Settings Slide Over (Hidden by default) -->
+    <div id="git-ci-settings" class="absolute inset-0 z-50 transform translate-x-full transition-transform duration-300 flex justify-end">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="window.gitCi.closeSettings()"></div>
+        <div class="relative w-96 bg-gray-900 border-l border-gray-800 h-full shadow-2xl flex flex-col">
+            <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+                <h2 class="text-lg font-bold text-white"><i class="fas fa-cog text-gray-400 mr-2"></i> CI Configuration</h2>
+                <button onclick="window.gitCi.closeSettings()" class="text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-6 flex-1 overflow-y-auto">
+                
+                <!-- Remote Repo -->
+                <div>
+                     <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Remote Repository URL</label>
+                     <div class="relative">
+                        <i class="fas fa-globe absolute left-3 top-3 text-gray-500"></i>
+                        <input type="text" id="setting-remote-url" class="w-full bg-gray-800 border border-gray-700 rounded-lg py-2.5 pl-10 pr-4 text-sm text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-600" placeholder="git@github.com:..." />
+                     </div>
+                     <p class="text-[10px] text-gray-500 mt-1.5">The upstream repository for comparisons.</p>
+                </div>
+
+                <!-- Base Branch -->
+                <div>
+                     <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Base Branch</label>
+                     <div class="relative">
+                        <i class="fas fa-code-branch absolute left-3 top-3 text-gray-500"></i>
+                        <input type="text" id="setting-base-branch" class="w-full bg-gray-800 border border-gray-700 rounded-lg py-2.5 pl-10 pr-4 text-sm text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-600" placeholder="main or master" />
+                     </div>
+                     <p class="text-[10px] text-gray-500 mt-1.5">The default branch to compare changes against (e.g. `origin/main`).</p>
+                </div>
+
+            </div>
+            
+            <div class="p-6 border-t border-gray-800 bg-gray-900/50">
+                <button onclick="window.gitCi.saveSettings()" class="w-full py-2.5 bg-green-600 hover:bg-green-500 text-white rounded-lg font-bold shadow-lg shadow-green-600/20 transition-all flex items-center justify-center gap-2">
+                    <i class="fas fa-save"></i> Save Configuration
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Load Script -->
+<script src="/gui/script/git-ci.js"></script>
