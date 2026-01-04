@@ -3,10 +3,9 @@ const path = require('path');
 const fs = require('fs');
 
 /**
- * Handles CI/CD specific command executions.
- * It is designated to run 'git' and 'turbo' commands that are non-interactive.
+ * Handles Changes/CI specific command executions.
  */
-function apiCiHandler(req, res) {
+function apiChangesHandler(req, res) {
     if (req.method !== 'POST') {
         res.writeHead(405);
         res.end('Method Not Allowed');
@@ -20,45 +19,52 @@ function apiCiHandler(req, res) {
             const payload = JSON.parse(body);
             await processRequest(res, payload);
         } catch (e) {
-            console.error('API CI Parse Error:', e);
+            console.error('API Changes Parse Error:', e);
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: e.message }));
         }
     });
 }
 
-async function processRequest(res, { action }) {
-    // 1. Load CICD Config
-    // In a real app, we might want to reload this every time, or cache it.
-    // The user's file is at _tool/tooldata/cicd.js
-    let cicdConfig = {};
+const CONFIG_PATH = path.resolve(__dirname, '../tooldata/baserepo.js');
+
+async function processRequest(res, { action, data }) {
+    // 1. Load Config from baserepo.js
+    let repoConfig = {};
     try {
-        const configPath = path.resolve(__dirname, '../tooldata/cicd.js');
-        delete require.cache[require.resolve(configPath)]; // Ensure fresh load
-        cicdConfig = require(configPath);
+        delete require.cache[require.resolve(CONFIG_PATH)]; // Ensure fresh load
+        repoConfig = require(CONFIG_PATH);
     } catch (e) {
-        console.warn("Could not load tooldata/cicd.js, using defaults", e);
-        cicdConfig = { baseBranch: 'origin/main', remoteRepositoryUrl: '' };
+        console.warn("Could not load tooldata/baserepo.js, using defaults", e);
+        repoConfig = { baseBranch: 'origin/master', remoteRepositoryUrl: '' };
     }
 
-    const { baseBranch } = cicdConfig;
+    const { baseBranch } = repoConfig;
     const rootDir = path.resolve(__dirname, '../../'); // Project Root
 
     // 2. Dispatch Action
     switch(action) {
         case 'get-config':
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(cicdConfig));
+            res.end(JSON.stringify(repoConfig));
             break;
 
-        case 'save-config': 
-            // NOTE: This usually requires a separate 'save' method that writes to file.
-            // For now, we return 501 or just success if we assume the client saves via another API? 
-            // The user asked for "real", so let's allow saving if data is passed.
-            // But we didn't implement a generic 'writeJsFile' utility yet. 
-            // Let's implement a basic write for now if requested in payload.
-            res.writeHead(501, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Save config not fully implemented in backend yet' }));
+        case 'save-config':
+            try {
+                // Update config object
+                const newConfig = { ...repoConfig, ...data };
+                
+                // Construct JS file content
+                const fileContent = `const baserepo = ${JSON.stringify(newConfig, null, 4)}\n\nmodule.exports = baserepo;`;
+                
+                fs.writeFileSync(CONFIG_PATH, fileContent);
+                
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true, config: newConfig }));
+            } catch (e) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Failed to save config: ' + e.message }));
+            }
             break;
 
         case 'check-status':
@@ -74,30 +80,33 @@ async function processRequest(res, { action }) {
 
                 const currentBranch = (await runExec(rootDir, 'git', ['rev-parse', '--abbrev-ref', 'HEAD'])).trim();
                 
-                // Get list of changed files compared to base branch
-                // git diff --name-only origin/main...HEAD
-                
-                // Check if we are checking against just "master" or "main" and if we are ON that branch.
-                // If baseBranch is "master" and current is "master", comparisons are empty.
-                // We typically want to compare against the *upstream* version if we are on the main branch.
-                // Or user should configure baseBranch as 'origin/master'.
-                
-                let actualBase = baseBranch;
-                if (!baseBranch.includes('/') && currentBranch === baseBranch) {
-                    // If we are on 'master' and base is 'master', we likely want 'origin/master'
-                    actualBase = `origin/${baseBranch}`;
+                // Smart Base Branch Logic
+                let actualBase = baseBranch || 'origin/master';
+                // If config says 'master' but we are ON 'master', auto-switch to 'origin/master'
+                if (!actualBase.includes('/') && currentBranch === actualBase) {
+                    actualBase = `origin/${actualBase}`;
                 }
 
-                const diffFiles = await runExec(rootDir, 'git', ['diff', '--name-only', `${actualBase}...HEAD`]);
+                // Check diff
+                const diffFilesOutput = await runExec(rootDir, 'git', ['diff', '--name-only', `${actualBase}...HEAD`]);
+                const diffFiles = diffFilesOutput.split('\n').filter(Boolean);
 
                 // Dry run turbo to see what would happen
-                // npx turbo run build --filter=[origin/main...HEAD] --dry=json
-                
                 let dryJson = null;
                 let turboError = null;
                 try {
-                     // Use the sensitive actualBase
-                     const turboOutput = await runExec(rootDir, 'npx', ['turbo', 'run', 'build', `--filter=[${actualBase}...HEAD]`, '--dry=json']);
+                     // Prepare Turbo Args
+                     const turboArgs = ['turbo', 'run', 'build', `--filter=[${actualBase}...HEAD]`, '--dry=json'];
+                     
+                     // Apply Configured Settings
+                     if (repoConfig.turboRemoteCache === false) {
+                         turboArgs.push('--no-remote-cache');
+                     }
+                     if (repoConfig.turboTeam) {
+                         turboArgs.push(`--team=${repoConfig.turboTeam}`);
+                     }
+
+                     const turboOutput = await runExec(rootDir, 'npx', turboArgs);
                      dryJson = JSON.parse(turboOutput); 
                 } catch(e) {
                     turboError = e.message;
@@ -107,7 +116,7 @@ async function processRequest(res, { action }) {
                 res.end(JSON.stringify({
                     currentBranch: currentBranch,
                     baseBranch: actualBase, // Return the one we actually used
-                    changedFiles: diffFiles.split('\n').filter(Boolean),
+                    changedFiles: diffFiles,
                     turboPlan: dryJson,
                     turboError
                 }));
@@ -126,7 +135,6 @@ async function processRequest(res, { action }) {
 
 /**
  * Helper to run a command and return stdout as string.
- * This is "synchronous-like" but async await.
  */
 function runExec(cwd, command, args) {
     return new Promise((resolve, reject) => {
@@ -154,4 +162,4 @@ function runExec(cwd, command, args) {
     });
 }
 
-module.exports = { apiCiHandler };
+module.exports = { apiChangesHandler };

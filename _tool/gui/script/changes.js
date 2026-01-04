@@ -14,7 +14,7 @@
 
         loadConfig: async function() {
             try {
-                const res = await fetch('/api/ci', {
+                const res = await fetch('/api/changes', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'get-config' })
@@ -27,43 +27,59 @@
                 
                 this.updateUiWithConfig();
             } catch (e) {
-                console.error("Failed to load CI config", e);
+                console.error("Failed to load changes config", e);
             }
         },
 
         updateUiWithConfig: function() {
-            // Update Base Branch Display
-            const baseBranchEl = document.getElementById('git-ci-base-branch');
-            if(baseBranchEl) baseBranchEl.textContent = this.config.baseBranch || 'master';
-
             // Update Header Inputs
             const inputRemote = document.getElementById('setting-remote-url');
             const inputBranch = document.getElementById('setting-base-branch');
+            const inputTeam   = document.getElementById('setting-turbo-team');
+            const inputCache  = document.getElementById('setting-turbo-cache');
+
             if(inputRemote) inputRemote.value = this.config.remoteRepositoryUrl || '';
             if(inputBranch) inputBranch.value = this.config.baseBranch || 'master';
+            if(inputTeam)   inputTeam.value   = this.config.turboTeam || '';
+            if(inputCache)  inputCache.checked = this.config.turboRemoteCache !== false; // Default true if undefined
         },
 
-        saveSettings: function() {
+        saveSettings: async function() {
             const inputRemote = document.getElementById('setting-remote-url');
             const inputBranch = document.getElementById('setting-base-branch');
+            const inputTeam   = document.getElementById('setting-turbo-team');
+            const inputCache  = document.getElementById('setting-turbo-cache');
             
-            if(inputRemote) this.config.remoteRepositoryUrl = inputRemote.value;
-            if(inputBranch) this.config.baseBranch = inputBranch.value;
+            this.config.remoteRepositoryUrl = inputRemote ? inputRemote.value : '';
+            this.config.baseBranch = inputBranch ? inputBranch.value : 'master';
+            this.config.turboTeam = inputTeam ? inputTeam.value : '';
+            this.config.turboRemoteCache = inputCache ? inputCache.checked : false;
             
-            // Note: Server save implementation is pending, so we update UI locally for now.
-            
-            this.updateUiWithConfig();
-            
-            // Visual feedback on the save button if needed, but since it's inline, just a flash
-            const btn = document.querySelector('button[title="Save Configuration"] i');
-            if(btn) {
-                const original = btn.className;
-                btn.className = "fas fa-check text-green-400";
-                setTimeout(() => btn.className = original, 1000);
+            try {
+                await fetch('/api/changes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        action: 'save-config',
+                        data: this.config
+                    })
+                });
+                
+                // Visual feedback
+                const btn = document.querySelector('button[title="Save Configuration"] i');
+                if(btn) {
+                    const original = btn.className;
+                    btn.className = "fas fa-check text-green-400";
+                    setTimeout(() => btn.className = original, 1000);
+                }
+                
+                // Re-run checks with new config
+                window.checkAffected();
+                
+            } catch (e) {
+                console.error("Failed to save settings", e);
+                alert("Failed to save settings: " + e.message);
             }
-            
-            // Re-run checks with new config
-            window.checkAffected();
         }
     };
 
@@ -83,7 +99,7 @@
         
         try {
             // Fetch real status from server
-            const res = await fetch('/api/ci', {
+            const res = await fetch('/api/changes', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'check-status' })
@@ -94,10 +110,7 @@
 
             // Update UI with Real Data
             if (branchEl) branchEl.textContent = data.currentBranch;
-            const baseBranchEl = document.getElementById('git-ci-base-branch');
             const diffCountEl = document.getElementById('git-ci-diff-count');
-            
-            if (baseBranchEl) baseBranchEl.textContent = data.baseBranch;
             
             let html = '';
             let affectedWorkspaces = [];
