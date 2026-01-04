@@ -24,6 +24,8 @@ const config = {
             dbUrl:   process.env.DATABASE_URL
         }
     },
+
+    test: "This message is from /shared/config/index.ts"
 }   
 
 export default config;

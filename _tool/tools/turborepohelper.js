@@ -42,10 +42,13 @@ function startTurboProcess(res, action, manualCommand) {
     const workspaceRoot = path.resolve(__dirname, '../../');
     
     let args = [];
-    const baseCmd = 'npx'; // Use npx to ensure we use local turbo or download it
+    let baseCmd = 'npx'; // Use npx to ensure we use local turbo or download it
     
     if (manualCommand && Array.isArray(manualCommand)) {
         args = ['--yes', ...manualCommand];
+    } else if (action === 'install') {
+        baseCmd = 'npm';
+        args = ['install'];
     } else if (action) {
         args = ['--yes', 'turbo', 'run', action]; // "npx --yes turbo run dev"
     } else {

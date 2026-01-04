@@ -7,6 +7,7 @@ class ConsoleDiv {
         
         this.outputEl = null;
         this.isReady = false;
+        this.messageQueue = [];
         
         this.init();
     }
@@ -36,16 +37,36 @@ class ConsoleDiv {
             }
 
             this.isReady = true;
-            this.log("Console ready.", true);
+            this.flushQueue();
+            
+            // Remove the "Checking Console..." placeholder if it exists and we have real logs
+            const placeholder = this.outputEl.querySelector('.italic');
+            if(placeholder) placeholder.remove();
+            
+            // this.log("Console ready.", true); // Removed per user request
         } catch (e) {
             console.error("ConsoleDiv Init Error:", e);
             if(this.container) this.container.textContent = "Error loading console component.";
         }
     }
 
+    flushQueue() {
+        while(this.messageQueue.length > 0) {
+            const { text, isSystem } = this.messageQueue.shift();
+            this.log(text, isSystem);
+        }
+    }
+
     log(text, isSystem = false) {
-        if (!this.outputEl) return;
+        if (!this.isReady || !this.outputEl) {
+            this.messageQueue.push({ text, isSystem });
+            return;
+        }
         
+        // Smart Scroll: Check if we are at the bottom before adding content
+        // buffer of 50px to account for padding/margins
+        const isAtBottom = this.outputEl.scrollHeight - this.outputEl.scrollTop <= this.outputEl.clientHeight + 50;
+
         let html = text;
         // Parse ANSI if not system message (system messages usually plaintext)
         // or parse anyway.
@@ -61,7 +82,10 @@ class ConsoleDiv {
         div.innerHTML = html;
         this.outputEl.appendChild(div);
         
-        this.scrollToBottom();
+        // Only scroll to bottom if we were already there
+        if (isAtBottom) {
+            this.scrollToBottom();
+        }
     }
     
     clear() {

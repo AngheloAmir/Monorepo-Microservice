@@ -37,19 +37,23 @@ window.TabTerminal = {
     },
 
     toggleMinimize: function() {
-        if(!this.container) return;
-        if (this.container.classList.contains('h-48')) {
-            this.container.classList.remove('h-48');
-            this.container.classList.add('h-8');
-            this.container.classList.add('terminal-minimized');
+        if(!this.container) return; // container undefined? this.container vs window.tabTerminalContainer
+        // Fix usage of this.container vs window.tabTerminalContainer
+        const container = window.tabTerminalContainer; 
+        if (!container) return;
+
+        if (container.classList.contains('h-48')) {
+            container.classList.remove('h-48');
+            container.classList.add('h-8');
+            container.classList.add('terminal-minimized');
         } else {
-            this.container.classList.add('h-48');
-            this.container.classList.remove('h-8');
-            this.container.classList.remove('terminal-minimized');
+            container.classList.add('h-48');
+            container.classList.remove('h-8');
+            container.classList.remove('terminal-minimized');
         }
         const icon = document.getElementById('terminal-toggle-icon');
         if(icon) {
-            if (this.container.classList.contains('terminal-minimized')) {
+            if (container.classList.contains('terminal-minimized')) {
                 icon.className = 'fas fa-chevron-up text-xs';
             } else {
                 icon.className = 'fas fa-chevron-down text-xs';
@@ -83,7 +87,7 @@ window.TabTerminal = {
 
         // Create Tab UI
         const headerContainer = document.getElementById('terminal-tabs-header');
-        if (!headerContainer) return; // robustness check
+        if (!headerContainer) return; 
 
         const tabEl = document.createElement('div');
         tabEl.className = 'w-[150px] px-1 border border-gray-700 rounded flex tab-item group transition-colors';
@@ -110,16 +114,28 @@ window.TabTerminal = {
 
         headerContainer.appendChild(tabEl);
 
-        // Create Panel UI
+        // Create Panel UI (Using ConsoleDiv)
         const panelsContainer = document.getElementById('terminal-panels-container');
         const panelEl = document.createElement('div');
-        panelEl.className = 'w-full h-full p-2 overflow-y-auto font-mono text-xs text-gray-300 whitespace-pre-wrap hidden scrollbar-thin scrollbar-thumb-gray-700';
+        // The panel is just a container for ConsoleDiv to live in.
+        // It must be full height relative to panelsContainer which is h-full.
+        panelEl.className = 'w-full h-full hidden';
         panelsContainer.appendChild(panelEl);
+
+        // Instantiate ConsoleDiv
+        let consoleInstance = null;
+        if (window.ConsoleDiv) {
+            consoleInstance = new window.ConsoleDiv(panelEl);
+        } else {
+            console.error('ConsoleDiv not found. Ensure ConsoleDiv.js is loaded.');
+            panelEl.innerHTML = '<div class="text-red-500">Error: Console Component Missing</div>';
+        }
 
         window.tabTerminalItems[id] = {
             data: repoData,
             tabElement: tabEl,
             panelElement: panelEl,
+            consoleInstance: consoleInstance,
             reader: null
         };
 
@@ -136,8 +152,8 @@ window.TabTerminal = {
             if (key === id) {
                 item.tabElement.classList.add('active');
                 item.panelElement.classList.remove('hidden');
-                // Scroll to bottom
-                item.panelElement.scrollTop = item.panelElement.scrollHeight;
+                // Scroll to bottom just in case
+                if(item.consoleInstance) item.consoleInstance.scrollToBottom();
             } else {
                 item.tabElement.classList.remove('active');
                 item.panelElement.classList.add('hidden');
@@ -151,21 +167,14 @@ window.TabTerminal = {
     writeOnTerminal: function(id, text) {
         try{
             if (text.trim() === '::HEARTBEAT::') return;
-            const item      = window.tabTerminalItems [id];
-            const panel     = item.panelElement;
+            const item = window.tabTerminalItems[id];
+            if(!item) return;
 
-            if( !panel ) return;
-            const formatted = window.TerminalModal ? window.TerminalModal.parseAnsi(text) : text;
-            const span      = document.createElement('span');
-            span.innerHTML  = formatted;
-            panel.appendChild(span);
-            if (window.tabTerminalActiveId === id) {
-                panel.scrollTop = panel.scrollHeight;
-            }
-
-            const totalText = panel.innerText;
-            if (totalText.length > 10000) {
-                panel.innerText = totalText.slice(-10000);
+            if (item.consoleInstance) {
+                item.consoleInstance.log(text);
+            } else {
+                // Fallback (should not happen if ConsoleDiv loaded)
+                console.log(`[Term ${id}]:`, text);
             }
         }
         catch (error) {
@@ -180,7 +189,7 @@ window.TabTerminal = {
         window.repoSocket = io();
         
         window.repoSocket.on('connect', () => {
-            // Re-join channels on reconnect
+             // Re-join channels on reconnect
             if (window.tabTerminalItems) {
                 Object.keys(window.tabTerminalItems).forEach(id => {
                     window.repoSocket.emit('join-log', id);
@@ -197,6 +206,7 @@ window.TabTerminal = {
 
     closeTab: async function(id, name, stopCmd, path) {
         const item = window.tabTerminalItems[id];
+        if(!item) return;
 
         try {
             // Just send the stop command, logs will come via socket
@@ -211,7 +221,7 @@ window.TabTerminal = {
                 })
             });
             
-            // Wait a moment for final logs to arrive via socket before removing UI
+            // Wait a moment for final logs
             await new Promise(r => setTimeout(r, 1000));
             
         } catch(e) { 
@@ -222,6 +232,10 @@ window.TabTerminal = {
             if (item.reader) try { await item.reader.cancel(); } catch(e) {}
             item.tabElement.remove();
             item.panelElement.remove();
+            
+            // Explicitly clear refs
+            item.consoleInstance = null;
+            
             delete window.tabTerminalItems[id];
 
             // Select another tab if needed
@@ -240,8 +254,7 @@ window.TabTerminal = {
     },
 
     startProcess: async function(id, data) {
-        const item = window.tabTerminalItems[id];
-        this.writeOnTerminal(id, `> Starting ${data.startcmd} in ${data.path}...\n`);
+        // this.writeOnTerminal(id, `> Starting ${data.startcmd} in ${data.path}...\n`, true); // Removed per user request
 
         // Ensure socket is ready and join channel immediately
         this.initSocket(); 
@@ -264,15 +277,14 @@ window.TabTerminal = {
 
             if(!response.ok) {
                 const json = await response.json();
-                this.writeOnTerminal(id, `\nError starting process: ${json.error || 'Unknown'}\n`);
+                this.writeOnTerminal(id, `\nError starting process: ${json.error || 'Unknown'}\n`, true);
                 return;
             }
             // Success - logs will arrive via socket
             
         } catch (e) {
-            this.writeOnTerminal(id, `\n\n[ERROR]`)
-            this.writeOnTerminal(id, `\nThe monorepo tool server ended or network failed.`);
-            this.writeOnTerminal(id, `\n${e.message}\n`);
+            this.writeOnTerminal(id, `\n\n[ERROR] Network or Server Failure\n`, true);
+            this.writeOnTerminal(id, `\n${e.message}\n`, true);
         }
     }
 };

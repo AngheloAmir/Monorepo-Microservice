@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Theme, Container, Text } from '@radix-ui/themes';
 import { Header, Card, Button } from '@monorepo/components';
+import config from '@monorepo/config';
 
 function App() {
   const [appearance] = useState<'light' | 'dark'>('dark');
@@ -23,6 +24,8 @@ function App() {
                     <Card title="Shared UI Library">
                         <Text as="p">
                             This application is now consuming components from <code>packages/ui</code> (aliased as shared/components).
+
+                            { config.test }
                         </Text>
                     </Card>
                 </div>

@@ -97,7 +97,7 @@ function spawnAndMonitor(id) {
         ...process.env,
         TERM: 'dumb',
         CI: 'true',
-        FORCE_COLOR: '0',
+        FORCE_COLOR: '1',
         NPM_CONFIG_PROGRESS: 'false'
     };
 

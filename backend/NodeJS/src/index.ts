@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import path from 'path';
 import dotenv from 'dotenv';
+import config from '@monorepo/config';
 dotenv.config();
 
 const app = express();
@@ -54,5 +55,6 @@ app.listen(port, () => {
     console.log(`Visit http://localhost:${port}/test `)
     console.log(`Visit http://localhost:${port}/login `)
     console.log(`Visit http://localhost:${port}/auth `);
+    console.log(config.test);
     console.log("Done")
 });
