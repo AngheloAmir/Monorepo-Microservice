@@ -15,10 +15,10 @@
     "starttool":   "cd _tool && npm run start",
     "devtool":     "cd _tool && npm run boot",
     "stoptool":    "cd _tool && npm run stop",
-    "build":       "turbo run build",
-    "dev":         "turbo run dev",
-    "lint":        "turbo run lint",
-    "test":        "turbo run test"
+    "build":       "turbo run build --cache-dir=./_tool/turborepo/.turbo",
+    "dev":         "turbo run dev --cache-dir=./_tool/turborepo/.turbo",
+    "lint":        "turbo run lint --cache-dir=./_tool/turborepo/.turbo",
+    "test":        "turbo run test --cache-dir=./_tool/turborepo/.turbo"
   },
   "keywords": [
     "monorepo",
