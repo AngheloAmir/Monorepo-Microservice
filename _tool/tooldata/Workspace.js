@@ -12,17 +12,10 @@ const workspace = {
             "path": "/backend/NodeJS",
             "devurl": "http://localhost:8080",
             "produrl": "",
-            "installcmd": "npm install",
-            "devcmd": "ts-node src/index.ts",
-            "startcmd": "node dist/index.js",
-            "stopcmd": "npx -y kill-port 8080",
-            "buildcmd": "tsc",
-            "lintcmd": "",
-            "testcmd": "",
-            "template": "nodemon",
             "giturl": "",
             "gitorigin": "origin",
-            "gitbranch": "master"
+            "gitbranch": "master",
+            "template": "None"
         }
     ],
     "frontend": [],

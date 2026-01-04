@@ -11,6 +11,37 @@ const serveWorkspaceData = (res, req, directory) => {
             delete require.cache[require.resolve(fullPath)];
         }
         const workspaceData = require(fullPath);
+
+        // Augment workspace data with scripts from package.json
+        const rootDir = path.resolve(__dirname, '../../');
+        
+        const augmentItem = (item) => {
+            if (!item.path) return item;
+            try {
+                const pkgPath = path.join(rootDir, item.path, 'package.json');
+                if (fs.existsSync(pkgPath)) {
+                    const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+                    const scripts = pkg.scripts || {};
+                    
+                    item.devcmd   = scripts.dev || '';
+                    item.startcmd = scripts.start || '';
+                    item.stopcmd  = scripts.stop || '';
+                    item.buildcmd = scripts.build || '';
+                    item.lintcmd  = scripts.lint || '';
+                    item.testcmd  = scripts.test || '';
+                }
+            } catch (e) {
+                console.error(`Error reading package.json for ${item.name}:`, e);
+            }
+            return item;
+        };
+
+        Object.keys(workspaceData).forEach(key => {
+            if (Array.isArray(workspaceData[key])) {
+                workspaceData[key] = workspaceData[key].map(augmentItem);
+            }
+        });
+
         res.end(JSON.stringify(workspaceData));
     } catch (e) {
         console.error(e);
@@ -50,18 +81,26 @@ const updateWorkspaceData = (req, res) => {
             const index = workspaceData[section] ? workspaceData[section].findIndex(item => item.name === name) : -1;
 
             if (index !== -1) {
-                // Merge updates
-                workspaceData[section][index] = { ...workspaceData[section][index], ...data };
+                const existingItem = workspaceData[section][index];
+                
+                // Prepare object for storage (exclude commands that now live in package.json)
+                const storageItem = { ...existingItem, ...data };
+                const commandFields = ['devcmd', 'startcmd', 'stopcmd', 'buildcmd', 'lintcmd', 'testcmd', 'installcmd'];
+                commandFields.forEach(field => delete storageItem[field]);
+
+                // Update storage data
+                workspaceData[section][index] = storageItem;
                 writeWorkspaceFile(workspaceData);
                 
+                // Update package.json scripts (using full data including commands)
+                const scriptUpdateItem = { ...existingItem, ...data };
+                updateWorkspaceScripts(scriptUpdateItem);
+
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: true }));
             } else {
                 throw new Error('Workspace not found: ' + section + ' ' + name);
             }
-
-            //update the package.json scripts
-            updateWorkspaceScripts(workspaceData[section][index]);
         } catch (e) {
             console.error(e);
             res.writeHead(500, { 'Content-Type': 'application/json' });
