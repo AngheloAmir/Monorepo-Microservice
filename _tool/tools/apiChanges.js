@@ -67,6 +67,27 @@ async function processRequest(res, { action, data }) {
             }
             break;
 
+        case 'get-graph':
+            try {
+                 // Run turbo without filter to get full graph
+                 // Note: this assumes 'build' task exists in most packages, or turbo graph works
+                 // 'turbo graph --json' is not standard in all versions, sticking to dry run of build
+                 const turboArgs = ['turbo', 'run', 'build', '--dry=json'];
+                 
+                 // Apply settings if desirable (remote cache doesn't affect graph structure but might affect output format if it tries to connect)
+                 // We just want structural graph.
+                 
+                 const turboOutput = await runExec(rootDir, 'npx', turboArgs);
+                 const graphJson = JSON.parse(turboOutput);
+                 
+                 res.writeHead(200, { 'Content-Type': 'application/json' });
+                 res.end(JSON.stringify({ graph: graphJson }));
+            } catch(e) {
+                 res.writeHead(500, { 'Content-Type': 'application/json' });
+                 res.end(JSON.stringify({ error: 'Graph generation failed: ' + e.message }));
+            }
+            break;
+
         case 'check-status':
             // Run Git and Turbo analysis
             try {
