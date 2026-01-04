@@ -1,19 +1,8 @@
 window.dependencyGraph = {
-    state: {
-        nodes: [],
-        links: [],
-        pan: { x: 0, y: 0 },
-        scale: 1, // Prepare for future zooming
-        isPanning: false,
-        dragNode: null,
-        lastMouse: { x: 0, y: 0 },
-        width: 0,
-        height: 0,
-        viewport: null 
-    },
-
+    network: null,
+    
     init: function() {
-        console.log("Initializing Static Dependency Graph...");
+        console.log("Initializing Vis.js Dependency Graph...");
         this.render();
     },
 
@@ -24,8 +13,6 @@ window.dependencyGraph = {
             return;
         }
 
-        container.innerHTML = '<div class="text-gray-500 text-xs italic flex items-center justify-center h-full"><i class="fas fa-circle-notch fa-spin mr-2"></i> Loading Graph...</div>';
-
         try {
             const res = await fetch('/api/changes', {
                 method: 'POST',
@@ -35,7 +22,7 @@ window.dependencyGraph = {
             const data = await res.json();
             if(data.error) throw new Error(data.error);
 
-            this.setupGraph(container, data.graph);
+            this.buildNetwork(container, data.graph);
 
         } catch (e) {
             console.error("Graph Error", e);
@@ -43,290 +30,135 @@ window.dependencyGraph = {
         }
     },
 
-    setupGraph: function(container, graphData) {
-        container.innerHTML = '';
-        this.state.width = container.clientWidth || 800;
-        this.state.height = container.clientHeight || 400;
-        this.state.pan = { x: this.state.width / 2, y: this.state.height / 2 };
+    buildNetwork: function(container, graphData) {
+        // 1. Process Nodes and Edges
+        const nodes = [];
+        const edges = [];
+        const excluded = ['monorepo-tool', 'monorepo-turborepo'];
         
-        // 1. Process Data
-        const nodesMap = new Map();
-        const links = [];
+        // Track unique nodes to prevent duplications
+        const nodeSet = new Set();
+        // Calculate degrees to filter unconnected
+        const degrees = new Map(); 
 
         if (graphData && graphData.tasks) {
+            // First pass: Collect all potential edges to calculate degrees
+            const rawEdges = [];
             graphData.tasks.forEach(task => {
                 const pkg = task.taskId.split('#')[0];
-                if(pkg === 'monorepo-tool') return;
+                if(excluded.includes(pkg)) return;
 
-                if (!nodesMap.has(pkg)) {
-                    nodesMap.set(pkg, { 
-                        name: pkg, 
-                        x: (Math.random() - 0.5) * 50, 
-                        y: (Math.random() - 0.5) * 50,
-                        vx: 0, vy: 0 
-                    });
-                }
-                
-                if (task.dependencies) {
-                    task.dependencies.forEach(dep => {
+                if(task.dependencies) {
+                     task.dependencies.forEach(dep => {
                         const depPkg = dep.split('#')[0];
-                        if(depPkg === 'monorepo-tool' || depPkg === pkg) return;
+                        if(excluded.includes(depPkg) || depPkg === pkg) return;
+                        
+                        rawEdges.push({ from: pkg, to: depPkg });
+                        degrees.set(pkg, (degrees.get(pkg)||0) + 1);
+                        degrees.set(depPkg, (degrees.get(depPkg)||0) + 1);
+                     });
+                }
+            });
 
-                        if (!nodesMap.has(depPkg)) {
-                            nodesMap.set(depPkg, { 
-                                name: depPkg, 
-                                x: (Math.random() - 0.5) * 50, 
-                                y: (Math.random() - 0.5) * 50, 
-                                vx: 0, vy: 0 
-                            });
+            // Second pass: Build Node list
+            graphData.tasks.forEach(task => {
+                const pkg = task.taskId.split('#')[0];
+                if(excluded.includes(pkg)) return;
+
+                // Filter unconnected
+                if(!degrees.has(pkg) || degrees.get(pkg) === 0) return;
+
+                if (!nodeSet.has(pkg)) {
+                    nodeSet.add(pkg);
+                    
+                    const isPackage = pkg.startsWith('@');
+                    const label = pkg.replace(/^@monorepo\//, '');
+                    
+                    nodes.push({
+                        id: pkg,
+                        label: label,
+                        shape: 'icon',
+                        icon: {
+                            face: '"Font Awesome 5 Free"',
+                            code: isPackage ? '\uf1b2' : getIconCode(pkg), // cube vs others
+                            weight: '900',
+                            size: 35,
+                            color: isPackage ? '#34d399' : '#60a5fa' 
+                        },
+                        font: {
+                            color: '#e5e7eb',
+                            size: 14,
+                            vadjust: 5
                         }
-                        links.push({ source: pkg, target: depPkg });
                     });
                 }
             });
-        }
-        
-        this.state.nodes = Array.from(nodesMap.values());
-        this.state.links = links.map(l => ({
-            source: nodesMap.get(l.source),
-            target: nodesMap.get(l.target)
-        })).filter(l => l.source && l.target);
 
-        if(this.state.nodes.length === 0) {
-            container.innerHTML = '<div class="text-gray-500 text-xs flex items-center justify-center h-full">No graph data found.</div>';
+            // Build Unique Edges
+            const edgeSet = new Set();
+            rawEdges.forEach(edge => {
+                if(nodeSet.has(edge.from) && nodeSet.has(edge.to)) {
+                    const id = `${edge.from}-${edge.to}`;
+                    if(!edgeSet.has(id)) {
+                        edgeSet.add(id);
+                        edges.push({
+                            from: edge.from,
+                            to: edge.to,
+                            arrows: 'to',
+                            color: { color: '#4b5563', opacity: 0.5 },
+                            width: 1.5,
+                            length: 200 // spring length
+                        });
+                    }
+                }
+            });
+        }
+
+        if(nodes.length === 0) {
+            container.innerHTML = '<div class="text-gray-500 text-xs flex items-center justify-center h-full">No connected nodes found.</div>';
             return;
         }
 
-        // 2. Pre-calculate Layout (Static Physics)
-        console.log("Pre-calculating layout...");
-        // Tighter constants
-        const iterations = 300; 
-        const k = 80;   // Ideal spring length (smaller = closer)
-        const repel = 300; // Repulsion force (smaller = less push)
-        
-        for(let i=0; i<iterations; i++) {
-            this.runPhysicsStep(k, repel);
-        }
-        console.log("Layout settled.");
-
-        // 3. Build SVG
-        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        svg.setAttribute("width", "100%");
-        svg.setAttribute("height", "100%");
-        svg.style.cursor = "grab";
-        svg.style.userSelect = "none";
-        
-        // Definitions
-        const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-        defs.innerHTML = `
-            <marker id="arrow" markerWidth="10" markerHeight="10" refX="22" refY="3" orient="auto" markerUnits="strokeWidth">
-              <path d="M0,0 L0,6 L9,3 z" fill="#6b7280" />
-            </marker>
-             <filter id="glow">
-                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-        `;
-        svg.appendChild(defs);
-
-        const viewport = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        viewport.setAttribute("transform", `translate(${this.state.pan.x}, ${this.state.pan.y})`);
-        svg.appendChild(viewport);
-        this.state.viewport = viewport;
-
-        const linkGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        const nodeGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        viewport.appendChild(linkGroup);
-        viewport.appendChild(nodeGroup);
-
-        container.appendChild(svg);
-
-        // 4. Create DOM Elements
-        this.state.links.forEach(link => {
-            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            line.setAttribute("stroke", "#4b5563");
-            line.setAttribute("stroke-width", "1.5");
-            line.setAttribute("opacity", "0.6");
-            line.setAttribute("marker-end", "url(#arrow)");
-            
-            // Initial position
-            line.setAttribute("x1", link.source.x);
-            line.setAttribute("y1", link.source.y);
-            line.setAttribute("x2", link.target.x);
-            line.setAttribute("y2", link.target.y);
-
-            linkGroup.appendChild(line);
-            link.el = line;
-        });
-
-        this.state.nodes.forEach(node => {
-            const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-            g.style.cursor = "pointer";
-            g.setAttribute("transform", `translate(${node.x}, ${node.y})`);
-
-            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            circle.setAttribute("r", "18");
-            circle.setAttribute("fill", "#1f2937"); 
-            circle.setAttribute("fill-opacity", "0.95");
-            circle.setAttribute("stroke", "#3b82f6"); 
-            circle.setAttribute("stroke-width", "2");
-            circle.setAttribute("filter", "url(#glow)");
-            
-            const iconText = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            iconText.setAttribute("dy", "5");
-            iconText.setAttribute("text-anchor", "middle");
-            iconText.setAttribute("fill", "#60a5fa");
-            iconText.setAttribute("font-family", "FontAwesome");
-            iconText.setAttribute("font-size", "14");
-            
-            if(node.name.includes('ui') || node.name.includes('shared')) iconText.textContent = '\uf5fd'; 
-            else if(node.name.includes('api') || node.name.includes('backend')) iconText.textContent = '\uf1c0'; 
-            else if(node.name.includes('web') || node.name.includes('app') || node.name.includes('admin')) iconText.textContent = '\uf108'; 
-            else iconText.textContent = '\uf07b'; 
-
-            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            text.setAttribute("dy", "32");
-            text.setAttribute("text-anchor", "middle");
-            text.setAttribute("fill", "#e5e7eb");
-            text.setAttribute("font-size", "11");
-            text.setAttribute("font-weight", "bold");
-            text.style.pointerEvents = "none";
-            text.textContent = node.name;
-
-            g.appendChild(circle);
-            g.appendChild(iconText);
-            g.appendChild(text);
-            nodeGroup.appendChild(g);
-            node.el = g;
-
-            // Drag Start
-            g.addEventListener('mousedown', (e) => {
-                e.stopPropagation(); 
-                this.state.dragNode = node;
-                this.state.lastMouse = { x: e.clientX, y: e.clientY };
-            });
-        });
-
-        // 5. Global Interactio (Panning & Moving Dragged Node)
-        
-        // We attach to window/document to catch mouseup outside
-        if(!this._hasListeners) {
-            
-            // PAN START
-            svg.addEventListener('mousedown', (e) => {
-                // Only left click
-                if(e.button !== 0) return;
-                this.state.isPanning = true;
-                this.state.lastMouse = { x: e.clientX, y: e.clientY };
-                svg.style.cursor = "grabbing";
-            });
-
-            // MOVE
-            window.addEventListener('mousemove', (e) => {
-                const dx = e.clientX - this.state.lastMouse.x;
-                const dy = e.clientY - this.state.lastMouse.y;
-                this.state.lastMouse = { x: e.clientX, y: e.clientY };
-
-                if (this.state.dragNode) {
-                    // Manual Move Node
-                    this.state.dragNode.x += dx;
-                    this.state.dragNode.y += dy;
-                    this.updateVisualsSingle(this.state.dragNode);
-                } else if (this.state.isPanning && this.state.viewport) {
-                    // Manual Pan Viewport
-                    this.state.pan.x += dx;
-                    this.state.pan.y += dy;
-                    this.state.viewport.setAttribute("transform", `translate(${this.state.pan.x}, ${this.state.pan.y})`);
+        // 2. Vis.js Options
+        const options = {
+            nodes: {
+                shadow: {
+                    enabled: true,
+                    color: 'rgba(0,0,0,0.5)',
+                    size: 10,
+                    x: 5,
+                    y: 5
                 }
-            });
-
-            // STOP
-            window.addEventListener('mouseup', () => {
-                this.state.isPanning = false;
-                this.state.dragNode = null;
-                // Re-find svg if we lost ref? Or just assume existing ref is ok logic-wise.
-                // We update cursor on the svg element from state.
-                const currentSvg = document.querySelector('#dependency-graph-container svg');
-                if(currentSvg) currentSvg.style.cursor = "grab";
-            });
-
-            this._hasListeners = true;
-        }
-    },
-
-    runPhysicsStep: function(k, repel) {
-        const nodes = this.state.nodes;
-        const links = this.state.links;
-
-        // Repulsion
-        for(let i=0; i<nodes.length; i++) {
-            for(let j=i+1; j<nodes.length; j++) {
-                const u = nodes[i];
-                const v = nodes[j];
-                const dx = v.x - u.x;
-                const dy = v.y - u.y;
-                let distSq = dx*dx + dy*dy || 1;
-                const dist = Math.sqrt(distSq);
-                
-                const force = (repel * repel) / distSq;
-                const fx = (dx/dist) * force * 0.1;
-                const fy = (dy/dist) * force * 0.1;
-
-                u.vx -= fx; u.vy -= fy;
-                v.vx += fx; v.vy += fy;
+            },
+            physics: {
+                enabled: false, // Disabled active physics
+                stabilization: {
+                    enabled: true,
+                    iterations: 1000, // Still stabilize at start to find positions
+                    fit: true
+                }
+            },
+            interaction: {
+                dragNodes: true,
+                dragView: true,
+                zoomView: true
             }
-        }
+        };
 
-        // Springs
-        links.forEach(l => {
-            const u = l.source;
-            const v = l.target;
-            const dx = v.x - u.x;
-            const dy = v.y - u.y;
-            const dist = Math.sqrt(dx*dx + dy*dy) || 1;
-            
-            const force = (dist - k) * 0.05; 
-            const fx = (dx/dist) * force;
-            const fy = (dy/dist) * force;
-
-            u.vx += fx; u.vy += fy;
-            v.vx -= fx; v.vy -= fy;
-        });
-
-        // Center Gravity (To keep them in view)
-        nodes.forEach(n => {
-             n.vx -= n.x * 0.02;
-             n.vy -= n.y * 0.02;
-        });
-
-        // Apply
-        nodes.forEach(n => {
-            n.vx *= 0.6; // Heavy damping for stability
-            n.vy *= 0.6;
-            n.x += n.vx;
-            n.y += n.vy;
-        });
-    },
-
-    updateVisualsSingle: function(node) {
-        // Update just the dragged node and its connected links
-        if(node.el) {
-            node.el.setAttribute("transform", `translate(${node.x}, ${node.y})`);
-        }
-        // Find links
-        this.state.links.forEach(l => {
-            if(l.source === node || l.target === node) {
-                 if(l.el) {
-                    l.el.setAttribute("x1", l.source.x);
-                    l.el.setAttribute("y1", l.source.y);
-                    l.el.setAttribute("x2", l.target.x);
-                    l.el.setAttribute("y2", l.target.y);
-                 }
-            }
-        });
+        // 3. Create Network
+        const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
+        this.network = new vis.Network(container, data, options);
     }
 };
 
+// Helper for icons
+function getIconCode(name) {
+    if(name.includes('api') || name.includes('backend')) return '\uf1c0'; // database
+    if(name.includes('web') || name.includes('app') || name.includes('admin')) return '\uf108'; // desktop
+    return '\uf07b'; // folder
+}
+
+// Initialize
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
     window.dependencyGraph.init();
 } else {

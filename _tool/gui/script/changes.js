@@ -90,7 +90,7 @@
         if (!container) return;
         
         container.innerHTML = `
-            <div class="col-span-4 text-center py-8 text-gray-500 italic">
+            <div class="col-span-8 text-center py-2 text-gray-500 italic">
                 <div class="mb-2"><i class="fas fa-circle-notch fa-spin text-2xl"></i></div>
                 <div>Analyzing changes via Turbo against <span class="font-bold text-gray-400">${window.changes.config.baseBranch}</span>...</div>
                 <div class="text-[10px] text-gray-600 mt-1">Checking git diff & turbo graph...</div>
@@ -150,14 +150,14 @@
                 });
             } else if (data.changedFiles && data.changedFiles.length === 0) {
                  html = `
-                    <div class="col-span-4 text-center py-8 text-gray-500">
+                    <div class="col-span-8 text-center py-2 text-gray-500">
                         <i class="fas fa-check-circle text-green-500 text-2xl mb-2"></i>
                         <div>No changes detected against base branch.</div>
                     </div>
                 `;
             } else if (affectedWorkspaces.length === 0 && data.changedFiles.length > 0) {
                  html += `
-                    <div class="col-span-4 text-center py-8 text-gray-500">
+                    <div class="col-span-8 text-center py-2 text-gray-500">
                         <i class="fas fa-info-circle text-blue-500 text-2xl mb-2"></i>
                         <div>Changes detected but no workspaces affected (root files only?).</div>
                     </div>
