@@ -4,10 +4,10 @@
   "description": "",
   "main": "toolServer.js",
   "scripts": {
-    "start": "node bootserve.js",
-    "boot": "node boot.js",
-    "dev": "nodemon index.js --ignore tooldata/ --ignore gui/",
-    "stop": "npx -y kill-port 3200"
+    "starttool": "node bootserve.js",
+    "boottool":  "node boot.js",
+    "devtool":   "nodemon index.js --ignore tooldata/ --ignore gui/",
+    "stoptool":  "npx -y kill-port 3200"
   },
   "keywords": [],
   "author": "",

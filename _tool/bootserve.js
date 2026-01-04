@@ -48,7 +48,7 @@ function openBrowser(url) {
 
 console.log("Starting tools server…");
 
-const server = spawn("npm", ["run", "start"], {
+const server = spawn("npm", ["run", "starttool"], {
   stdio: "inherit",
   cwd: process.cwd()
 });

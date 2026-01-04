@@ -12,9 +12,9 @@
     "shared/*"
   ],
   "scripts": {
-    "starttool":   "cd _tool && npm run start",
-    "devtool":     "cd _tool && npm run boot",
-    "stoptool":    "cd _tool && npm run stop",
+    "starttool":   "cd _tool && npm run starttool",
+    "devtool":     "cd _tool && npm run boottool",
+    "stoptool":    "cd _tool && npm run stoptool",
     "build":       "turbo run build --cache-dir=./_tool/turborepo/.turbo",
     "dev":         "turbo run dev --cache-dir=./_tool/turborepo/.turbo",
     "lint":        "turbo run lint --cache-dir=./_tool/turborepo/.turbo",
