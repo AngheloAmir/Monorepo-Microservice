@@ -1,18 +1,21 @@
 {
     // Namespace for Changes Logic
     window.changes = {
-        config: {
-            remoteRepositoryUrl: "",
-            baseBranch: "master"
-        },
+        // Removed local config object to use window.changesConfig
 
         init: function() {
-            this.loadConfig();  // Load config first
+            this.loadConfig(); // Load config first
             // Initial check
             setTimeout(() => window.checkAffected(), 500);
         },
 
         loadConfig: async function() {
+            // Check global cache first
+            if (window.changesConfig) {
+                this.updateUiWithConfig();
+                return;
+            }
+
             try {
                 const res = await fetch('/api/changes', {
                     method: 'POST',
@@ -22,7 +25,13 @@
                 const data = await res.json();
                 
                 if (data && !data.error) {
-                    this.config = data;
+                    window.changesConfig = data; // Store in global
+                } else {
+                    // Fallback defaults if fetch fails or returns error
+                    window.changesConfig = {
+                        remoteRepositoryUrl: "",
+                        baseBranch: "master"
+                    };
                 }
                 
                 this.updateUiWithConfig();
@@ -32,16 +41,18 @@
         },
 
         updateUiWithConfig: function() {
+            if (!window.changesConfig) return;
+
             // Update Header Inputs
             const inputRemote = document.getElementById('setting-remote-url');
             const inputBranch = document.getElementById('setting-base-branch');
             const inputTeam   = document.getElementById('setting-turbo-team');
             const inputCache  = document.getElementById('setting-turbo-cache');
 
-            if(inputRemote) inputRemote.value = this.config.remoteRepositoryUrl || '';
-            if(inputBranch) inputBranch.value = this.config.baseBranch || 'master';
-            if(inputTeam)   inputTeam.value   = this.config.turboTeam || '';
-            if(inputCache)  inputCache.checked = this.config.turboRemoteCache !== false; // Default true if undefined
+            if(inputRemote) inputRemote.value = window.changesConfig.remoteRepositoryUrl || '';
+            if(inputBranch) inputBranch.value = window.changesConfig.baseBranch || 'master';
+            if(inputTeam)   inputTeam.value   = window.changesConfig.turboTeam || '';
+            if(inputCache)  inputCache.checked = window.changesConfig.turboRemoteCache !== false; // Default true if undefined
         },
 
         saveSettings: async function() {
@@ -50,10 +61,12 @@
             const inputTeam   = document.getElementById('setting-turbo-team');
             const inputCache  = document.getElementById('setting-turbo-cache');
             
-            this.config.remoteRepositoryUrl = inputRemote ? inputRemote.value : '';
-            this.config.baseBranch = inputBranch ? inputBranch.value : 'master';
-            this.config.turboTeam = inputTeam ? inputTeam.value : '';
-            this.config.turboRemoteCache = inputCache ? inputCache.checked : false;
+            // Update Global Cache
+            if (!window.changesConfig) window.changesConfig = {};
+            window.changesConfig.remoteRepositoryUrl = inputRemote ? inputRemote.value : '';
+            window.changesConfig.baseBranch = inputBranch ? inputBranch.value : 'master';
+            window.changesConfig.turboTeam = inputTeam ? inputTeam.value : '';
+            window.changesConfig.turboRemoteCache = inputCache ? inputCache.checked : false;
             
             try {
                 await fetch('/api/changes', {
@@ -61,7 +74,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         action: 'save-config',
-                        data: this.config
+                        data: window.changesConfig
                     })
                 });
                 
@@ -92,7 +105,7 @@
         container.innerHTML = `
             <div class="col-span-8 text-center py-2 text-gray-500 italic">
                 <div class="mb-2"><i class="fas fa-circle-notch fa-spin text-2xl"></i></div>
-                <div>Analyzing changes via Turbo against <span class="font-bold text-gray-400">${window.changes.config.baseBranch}</span>...</div>
+                <div>Analyzing changes via Turbo against <span class="font-bold text-gray-400">${window.changesConfig ? window.changesConfig.baseBranch : 'master'}</span>...</div>
                 <div class="text-[10px] text-gray-600 mt-1">Checking git diff & turbo graph...</div>
             </div>
         `;
