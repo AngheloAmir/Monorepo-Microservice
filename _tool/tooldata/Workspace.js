@@ -18,7 +18,34 @@ const workspace = {
             "template": "None"
         }
     ],
-    "frontend": [],
+    "frontend": [
+        {
+            "name": "FoodShop",
+            "description": "Frontend for customer",
+            "icon": "fa-solid fa-user",
+            "type": "frontend",
+            "path": "/frontend/FoodShop",
+            "devurl": "http://localhost:3001",
+            "produrl": "",
+            "template": "reactapp",
+            "giturl": "",
+            "gitorigin": "origin",
+            "gitbranch": "master"
+        },
+        {
+            "name": "AdminPanel",
+            "description": "Private App",
+            "icon": "fa-brands fa-react",
+            "type": "frontend",
+            "path": "/frontend/AdminPanel",
+            "devurl": "http://localhost:3002",
+            "produrl": "",
+            "template": "reactapp",
+            "giturl": "",
+            "gitorigin": "origin",
+            "gitbranch": "master"
+        }
+    ],
     "database": [],
     "service": []
 }
