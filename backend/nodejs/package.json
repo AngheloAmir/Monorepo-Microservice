@@ -4,6 +4,7 @@
   "description": "Node.js with TypeScript",
   "scripts": {
     "start": "node dist/index.js",
+    "clean": "rm -rf dist node_modules",
     "start:ts": "ts-node src/index.ts",
     "build": "tsc",
     "docker": "docker build -t node-service . && docker run -p 8000:8000 node-service",

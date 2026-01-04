@@ -27,6 +27,7 @@ const serveWorkspaceData = (res, req, directory) => {
                     item.startcmd = scripts.start || '';
                     item.stopcmd  = scripts.stop || '';
                     item.buildcmd = scripts.build || '';
+                    item.cleancmd = scripts.clean || '';
                     item.lintcmd  = scripts.lint || '';
                     item.testcmd  = scripts.test || '';
                 }
@@ -85,7 +86,7 @@ const updateWorkspaceData = (req, res) => {
                 
                 // Prepare object for storage (exclude commands that now live in package.json)
                 const storageItem = { ...existingItem, ...data };
-                const commandFields = ['devcmd', 'startcmd', 'stopcmd', 'buildcmd', 'lintcmd', 'testcmd', 'installcmd'];
+                const commandFields = ['devcmd', 'startcmd', 'stopcmd', 'buildcmd', 'cleancmd', 'lintcmd', 'testcmd', 'installcmd'];
                 commandFields.forEach(field => delete storageItem[field]);
 
                 // Update storage data
@@ -174,6 +175,7 @@ const updateWorkspaceScripts = (item) => {
             'start': item.startcmd,
             'stop':  item.stopcmd,
             'build': item.buildcmd,
+            'clean': item.cleancmd,
             'lint':  item.lintcmd,
             'test':  item.testcmd
         };

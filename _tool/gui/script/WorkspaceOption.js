@@ -38,6 +38,7 @@ window.openSettingsModal = function(id) {
     document.getElementById('modal-input-start').value = data.startcmd !== undefined ? data.startcmd : '';
     document.getElementById('modal-input-stop').value = data.stopcmd !== undefined ? data.stopcmd : '';
     document.getElementById('modal-input-build').value = data.buildcmd !== undefined ? data.buildcmd : '';
+    document.getElementById('modal-input-clean').value = data.cleancmd !== undefined ? data.cleancmd : '';
     document.getElementById('modal-input-lint').value = data.lintcmd !== undefined ? data.lintcmd : 'npm run lint';
     document.getElementById('modal-input-test').value = data.testcmd !== undefined ? data.testcmd : 'npm run test';
 
@@ -71,6 +72,7 @@ window.saveRepo = async function() {
         startcmd: document.getElementById('modal-input-start').value,
         stopcmd: document.getElementById('modal-input-stop').value,
         buildcmd: document.getElementById('modal-input-build').value,
+        cleancmd: document.getElementById('modal-input-clean').value,
         lintcmd: document.getElementById('modal-input-lint').value,
         testcmd: document.getElementById('modal-input-test').value,
         giturl: document.getElementById('modal-input-giturl').value,

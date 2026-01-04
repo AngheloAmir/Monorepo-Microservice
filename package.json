@@ -18,7 +18,8 @@
     "build":       "turbo run build --cache-dir=./_tool/turborepo/.turbo",
     "dev":         "turbo run dev --cache-dir=./_tool/turborepo/.turbo",
     "lint":        "turbo run lint --cache-dir=./_tool/turborepo/.turbo",
-    "test":        "turbo run test --cache-dir=./_tool/turborepo/.turbo"
+    "test":        "turbo run test --cache-dir=./_tool/turborepo/.turbo",
+    "clean":       "turbo run clean --cache-dir=./_tool/turborepo/.turbo"
   },
   "keywords": [
     "monorepo",

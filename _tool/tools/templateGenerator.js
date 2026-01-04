@@ -105,6 +105,7 @@ async function registerWorkspace(data) {
         startcmd:    data.startcmd || '',
         stopcmd:     data.stopcmd || '',
         buildcmd:    data.buildcmd || '',
+        cleancmd:    data.cleancmd || '',
         lintcmd:     data.lintcmd || '',
         testcmd:     data.testcmd || '',
         template:    data.template || '',
@@ -166,6 +167,7 @@ async function updatePackageJson(targetDir, data) {
         'start': data.startcmd,
         'stop': data.stopcmd,
         'build': data.buildcmd,
+        'clean': data.cleancmd,
         'lint': data.lintcmd,
         'test': data.testcmd
     };

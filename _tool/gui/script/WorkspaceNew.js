@@ -19,6 +19,7 @@ window.openAddModal = function() {
     document.getElementById('workspace-start').value    = '';
     document.getElementById('workspace-stop').value     = '';
     document.getElementById('workspace-build').value    = '';
+    document.getElementById('workspace-clean').value    = '';
     document.getElementById('workspace-lint').value     = '';
     document.getElementById('workspace-test').value     = '';
     document.getElementById('workspace-init').value     = '';
@@ -118,6 +119,7 @@ function selectTemplate(template) {
     document.getElementById('workspace-start').value   = template.startcmd || '';
     document.getElementById('workspace-stop').value    = template.stopcmd || '';
     document.getElementById('workspace-build').value   = template.buildcmd || '';
+    document.getElementById('workspace-clean').value   = template.cleancmd || '';
     document.getElementById('workspace-lint').value    = template.lintcmd || '';
     document.getElementById('workspace-test').value    = template.testcmd || '';
     document.getElementById('workspace-icon').value    = template.icon;
@@ -148,6 +150,7 @@ window.createWorkspace = async function() {
         startcmd: document.getElementById('workspace-start').value,
         stopcmd: document.getElementById('workspace-stop').value,
         buildcmd: document.getElementById('workspace-build').value,
+        cleancmd: document.getElementById('workspace-clean').value,
         lintcmd: document.getElementById('workspace-lint').value,
         testcmd: document.getElementById('workspace-test').value,
         template: document.getElementById('workspace-init').value, 
