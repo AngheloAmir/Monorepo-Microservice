@@ -64,7 +64,7 @@
                         if (p.type === 'Job') { icon = 'fa-tasks'; color = 'text-purple-400'; }
 
                         html += `
-                        <div class="flex items-center justify-between p-1 rounded bg-gray-900/40 hover:bg-gray-800/60 border border-transparent hover:border-gray-700 transition-colors text-xs">
+                        <div data-type="${p.type}" class="flex items-center justify-between p-1 rounded bg-gray-900/40 hover:bg-gray-800/60 border border-transparent hover:border-gray-700 transition-colors text-xs">
                             <div class="flex items-center gap-2 overflow-hidden">
                                 <i class="fas ${icon} ${color} w-4 text-center"></i>
                                 <span class="text-gray-300 font-mono truncate" title="${p.name}">${p.name}</span>

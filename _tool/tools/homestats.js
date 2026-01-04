@@ -132,7 +132,11 @@ async function getStats() {
             }
 
             // --- Main Tool ---
-            for (const pid of mainChildren) {
+            // Filter out pids that are already identified as Services or Jobs
+            const servicePidSet = new Set(distinctPids);
+            const toolCorePids = mainChildren.filter(pid => !servicePidSet.has(pid));
+            
+            for (const pid of toolCorePids) {
                 mainToolMem += getPSS(pid);
             }
 
@@ -143,7 +147,7 @@ async function getStats() {
 
     processList.push({
         pid: mainPid,
-        name: 'Tool Server (Tree)',
+        name: 'Tool Server (Core)',
         type: 'System',
         memory: mainToolMem || process.memoryUsage().rss
     });
