@@ -56,6 +56,11 @@ function App() {
                           This is a Vite Template (Jan 2026 version) with Typescript, TailwindCSS and Radix UI.
                         </Text>
                         
+                        asdasdasd
+                        ad
+                        asdasdasd
+                        asd
+                        Hello Master
                         <Flex gap="3" mt="4">
                              <Button size="3" variant="solid" color="indigo" highContrast>
                                 Get Started

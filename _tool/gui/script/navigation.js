@@ -1,11 +1,14 @@
 window.Navigation = {
     items: [
         { id: 'home',       label: 'Home', icon: 'fa-home', component: 'home' },
+        { id: 'workspace',  label: 'Workspace', icon: 'fa fa-cube', component: 'workspace' },
         { id: 'turborepo',  label: 'Turborepo', icon: 'fa-solid fa-truck-fast', component: 'turborepo' },
-        { id: 'crudtester', label: 'CRUD Tester', icon: 'fa-microscope', component: 'crudtester' },
 
         { id: 'changes',     label: 'Changes', icon: 'fas fa-code-branch', component: 'changes' },
         { id: 'deployments', label: 'Deployments', icon: 'fa-rocket', component: 'deployments' },
+
+        { id: 'crudtester', label: 'CRUD Tester', icon: 'fa-microscope', component: 'crudtester' },
+
     ],
     settingsItem: { id: 'settings', label: 'Setting', icon: 'fa-cog', component: 'settings' },
     activeId: null, // Start null so first navigation always triggers load
