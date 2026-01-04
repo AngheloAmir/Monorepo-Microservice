@@ -59,6 +59,9 @@ const updateWorkspaceData = (req, res) => {
             } else {
                 throw new Error('Workspace not found: ' + section + ' ' + name);
             }
+
+            //update the package.json scripts
+            updateWorkspaceScripts(workspaceData[section][index]);
         } catch (e) {
             console.error(e);
             res.writeHead(500, { 'Content-Type': 'application/json' });
@@ -114,6 +117,49 @@ const deleteWorkspaceData = (req, res) => {
             res.end(JSON.stringify({ success: false, error: e.message }));
         }
     });
+}
+
+const updateWorkspaceScripts = (item) => {
+    if (!item.path) return;
+    try {
+        const rootDir = path.resolve(__dirname, '../../');
+        const pkgPath = path.join(rootDir, item.path, 'package.json');
+        
+        if (!fs.existsSync(pkgPath)) return;
+        
+        const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+        if (!pkg.scripts) pkg.scripts = {};
+
+        const map = {
+            'dev':   item.devcmd,
+            'start': item.startcmd,
+            'stop':  item.stopcmd,
+            'build': item.buildcmd,
+            'lint':  item.lintcmd,
+            'test':  item.testcmd
+        };
+
+        for (const [key, val] of Object.entries(map)) {
+             if (val === undefined) continue; 
+             
+             const cmd = val.trim();
+             
+             if (cmd === '') {
+                 if (pkg.scripts[key]) delete pkg.scripts[key];
+                 continue;
+             }
+
+             // Safety checks for recursion
+             if (cmd.match(new RegExp(`^npm\\s+(run|run-script)\\s+${key}\\b`))) continue; 
+             if (cmd.match(new RegExp(`^npm\\s+${key}\\b`))) continue;
+
+             pkg.scripts[key] = cmd;
+        }
+
+        fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
+    } catch (e) {
+        console.error('Error updating package.json scripts:', e);
+    }
 }
 
 module.exports = {

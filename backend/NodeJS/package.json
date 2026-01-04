@@ -7,7 +7,6 @@
     "start:ts": "ts-node src/index.ts",
     "dev": "ts-node src/index.ts",
     "build": "tsc",
-    "test": "jest",
     "docker": "docker build -t node-service . && docker run -p 8000:8000 node-service",
     "stop": "npx -y kill-port 8080"
   },

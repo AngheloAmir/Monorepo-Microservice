@@ -23,7 +23,7 @@ const repotemplate = [
         stopcmd:      "npx -y kill-port 8080",
         buildcmd:     "tsc",
         lintcmd:      "",
-        testcmd:      "jest",
+        testcmd:      "",
         devurl:       "http://localhost:8080",
         icon:         "fa-brands fa-node-js",
     },
