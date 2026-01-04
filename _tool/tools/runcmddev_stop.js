@@ -1,6 +1,7 @@
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const chalk = require('chalk');
 const { activeProcesses, safeEmit } = require('./runcmddev_shared');
 
 async function stopDevCommand(res, { id, stopcmd, directory }) {
@@ -10,7 +11,7 @@ async function stopDevCommand(res, { id, stopcmd, directory }) {
         entry.shouldRun = false; 
         
         if (entry.child && entry.child.pid) {
-            safeEmit(id, `> Terminating process tree for ${id}...\n`);
+            safeEmit(id, chalk.green(`[System] Terminating process tree for ${id}...`));
             try {
                 if (process.platform === 'win32') {
                     spawn('taskkill', ['/pid', entry.child.pid, '/T', '/F']);
@@ -28,7 +29,7 @@ async function stopDevCommand(res, { id, stopcmd, directory }) {
         const rootDir = path.resolve(__dirname, '../../');
         const targetDir = path.join(rootDir, directory);
         if (fs.existsSync(targetDir)) {
-            safeEmit(id, `> Running shutdown command: ${stopcmd}\n`);
+            safeEmit(id, chalk.green(`[System] Running shutdown command: ${stopcmd}`));
             await new Promise(resolve => {
                 const sc = spawn(stopcmd, { 
                     cwd: targetDir, 
@@ -40,26 +41,19 @@ async function stopDevCommand(res, { id, stopcmd, directory }) {
                 sc.stderr.on('data', (d) => safeEmit(id, d.toString()));
 
                 sc.on('close', (code) => {
-                    safeEmit(id, `> Shutdown command finished with code ${code}\n`);
+                    safeEmit(id, chalk.green(`[System] Shutdown command finished with code ${code}`));
                     resolve();
                 });
                 sc.on('error', (err) => {
-                    safeEmit(id, `> Shutdown command error: ${err.message}\n`);
+                    safeEmit(id, chalk.red(`[System] Shutdown command error: ${err.message}`));
                     resolve();
                 });
-                
-                // setTimeout(() => {
-                //     safeEmit(id, `> Shutdown command timed out after 15s\n`);
-                //     if(sc.pid) {
-                //          try { process.kill(sc.pid); } catch(e){}
-                //     }
-                //     resolve();
-                // }, 15000); 
             });
         }
     }
     
-    safeEmit(id, `> Process ${id} is stopped.\n`);
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    safeEmit(id, chalk.green(`[System] Process ${id} is stopped.`));
     
     // Return standard JSON success
     res.writeHead(200, { 'Content-Type': 'application/json' });

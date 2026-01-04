@@ -9,7 +9,7 @@
     "build": "tsc",
     "docker": "docker build -t node-service . && docker run -p 8000:8000 node-service",
     "stop": "npx -y kill-port 8080",
-    "dev": "ts-node src/index.ts"
+    "dev": "nodemon"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "@monorepo/config": "*",
+    "chalk": "^4.1.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",

@@ -19,7 +19,7 @@ const repotemplate = [
         type:         "backend",
         installcmd:   "npm install",
         startcmd:     "node dist/index.js",
-        devcmd:       "ts-node src/index.ts",
+        devcmd:       "nodemon",
         stopcmd:      "npx -y kill-port 8080",
         buildcmd:     "tsc",
         lintcmd:      "",

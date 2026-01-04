@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "pidusage": "^4.0.1",
-    "socket.io": "^4.8.3"
+    "socket.io": "^4.8.3",
+    "chalk": "^4.1.2"
   }
 }

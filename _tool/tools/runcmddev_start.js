@@ -1,6 +1,7 @@
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const chalk = require('chalk');
 const { activeProcesses, safeEmit, isCommandAvailable } = require('./runcmddev_shared');
 
 function startDevCommand(res, config) {
@@ -121,6 +122,8 @@ function spawnAndMonitor(id) {
     entry.child = child;
     const startTime = Date.now();
 
+    safeEmit(id, chalk.blue(`[System] Process ${id} started at ${new Date().toLocaleString()}\n`));
+
     child.stdout.on('data', (data) => safeEmit(id, data.toString()));
     child.stderr.on('data', (data) => safeEmit(id, data.toString()));
 
@@ -128,12 +131,12 @@ function spawnAndMonitor(id) {
         const currentEntry = activeProcesses.get(id);
         const uptime = Date.now() - startTime;
 
-        safeEmit(id, `\n[System] Process ${id} exited with code ${code}\n`);
+        safeEmit(id, chalk.red(`\n[System] Process ${id} exited with code ${code}`));
 
         // If sucessful exit (0), do not restart
         if (code === 0) {
             if (currentEntry) currentEntry.shouldRun = false;
-            safeEmit(id, `[System] Process completed successfully.\n`);
+            safeEmit(id, chalk.green(`\n[System] Process completed successfully.`));
             return;
         }
 
@@ -146,19 +149,19 @@ function spawnAndMonitor(id) {
             }
 
             const delay = 5000;
-            safeEmit(id, `[System] Attempting restart ${currentEntry.restartCount}/5 in ${delay/1000}s...\n`);
+            safeEmit(id, chalk.red(`\n[System] Attempting restart ${currentEntry.restartCount}/5 in ${delay/1000}s...`));
             
             setTimeout(() => {
                 if (currentEntry.shouldRun) spawnAndMonitor(id);
             }, delay);
         } else {
             // Process ended intentionally or naturally
-            safeEmit(id, `[System] Process finished.\n`);
+            safeEmit(id, chalk.green(`\n[System] Process finished.\n`));
         }
-    });
+    }); 
 
     child.on('error', (err) => {
-        safeEmit(id, `\n[System Error] Launch failed: ${err.message}\n`);
+        safeEmit(id, chalk.red(`\n[System Error] Launch failed: ${err.message}`));
     });
 }
 
