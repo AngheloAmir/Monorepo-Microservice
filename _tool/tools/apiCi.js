@@ -64,33 +64,49 @@ async function processRequest(res, { action }) {
         case 'check-status':
             // Run Git and Turbo analysis
             try {
-                const currentBranch = await runExec(rootDir, 'git', ['rev-parse', '--abbrev-ref', 'HEAD']);
+                // 1. Fetch latest changes from remote to ensure comparisons against origin/... are valid
+                // We ignore errors here in case offline or no remote
+                try {
+                     await runExec(rootDir, 'git', ['fetch']);
+                } catch (e) {
+                    console.warn("Git fetch failed (offline?):", e.message);
+                }
+
+                const currentBranch = (await runExec(rootDir, 'git', ['rev-parse', '--abbrev-ref', 'HEAD'])).trim();
                 
                 // Get list of changed files compared to base branch
                 // git diff --name-only origin/main...HEAD
-                // Note: If origin/main doesn't exist locally, this might fail.
-                const diffFiles = await runExec(rootDir, 'git', ['diff', '--name-only', `${baseBranch}...HEAD`]);
+                
+                // Check if we are checking against just "master" or "main" and if we are ON that branch.
+                // If baseBranch is "master" and current is "master", comparisons are empty.
+                // We typically want to compare against the *upstream* version if we are on the main branch.
+                // Or user should configure baseBranch as 'origin/master'.
+                
+                let actualBase = baseBranch;
+                if (!baseBranch.includes('/') && currentBranch === baseBranch) {
+                    // If we are on 'master' and base is 'master', we likely want 'origin/master'
+                    actualBase = `origin/${baseBranch}`;
+                }
+
+                const diffFiles = await runExec(rootDir, 'git', ['diff', '--name-only', `${actualBase}...HEAD`]);
 
                 // Dry run turbo to see what would happen
                 // npx turbo run build --filter=[origin/main...HEAD] --dry=json
-                // We use --dry=json to get parsing
                 
                 let dryJson = null;
                 let turboError = null;
                 try {
-                     const turboOutput = await runExec(rootDir, 'npx', ['turbo', 'run', 'build', `--filter=[${baseBranch}...HEAD]`, '--dry=json']);
-                     // The output might contain logs before the JSON, so we need to find the JSON blob.
-                     // Turbo dry json usually outputs just json, but let's be safe.
+                     // Use the sensitive actualBase
+                     const turboOutput = await runExec(rootDir, 'npx', ['turbo', 'run', 'build', `--filter=[${actualBase}...HEAD]`, '--dry=json']);
                      dryJson = JSON.parse(turboOutput); 
                 } catch(e) {
                     turboError = e.message;
-                    // Fallback: use changed files to "guess" or just report git diff
                 }
 
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({
-                    currentBranch: currentBranch.trim(),
-                    baseBranch: baseBranch,
+                    currentBranch: currentBranch,
+                    baseBranch: actualBase, // Return the one we actually used
                     changedFiles: diffFiles.split('\n').filter(Boolean),
                     turboPlan: dryJson,
                     turboError

@@ -38,8 +38,8 @@
         { id: 'p4', name: 'Service A Build', lastRun: 'success' },
     ];
 
-    window.initDeploymentsCdPage = function() {
-        console.log('Deployments CD Page Loaded');
+    window.initDeploymentsPage = function() {
+        console.log('Deployments Page Loaded');
         renderRuns(mockRuns);
         renderPipelines(mockPipelines);
     };
@@ -190,5 +190,5 @@
     }
 
     // Auto Init
-    initDeploymentsCdPage();
+    initDeploymentsPage();
 }

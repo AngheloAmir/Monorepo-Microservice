@@ -1,6 +1,6 @@
 {
-    // Namespace for Git CI Logic
-    window.gitCi = {
+    // Namespace for Changes Logic
+    window.changes = {
         config: {
             remoteRepositoryUrl: "",
             baseBranch: "master"
@@ -76,7 +76,7 @@
         container.innerHTML = `
             <div class="col-span-4 text-center py-8 text-gray-500 italic">
                 <div class="mb-2"><i class="fas fa-circle-notch fa-spin text-2xl"></i></div>
-                <div>Analyzing changes via Turbo against <span class="font-bold text-gray-400">${window.gitCi.config.baseBranch}</span>...</div>
+                <div>Analyzing changes via Turbo against <span class="font-bold text-gray-400">${window.changes.config.baseBranch}</span>...</div>
                 <div class="text-[10px] text-gray-600 mt-1">Checking git diff & turbo graph...</div>
             </div>
         `;
@@ -94,6 +94,10 @@
 
             // Update UI with Real Data
             if (branchEl) branchEl.textContent = data.currentBranch;
+            const baseBranchEl = document.getElementById('git-ci-base-branch');
+            const diffCountEl = document.getElementById('git-ci-diff-count');
+            
+            if (baseBranchEl) baseBranchEl.textContent = data.baseBranch;
             
             let html = '';
             let affectedWorkspaces = [];
@@ -103,10 +107,15 @@
                 // Turbo dry run JSON format: { packages: [...], tasks: [...] }
                 affectedWorkspaces = data.turboPlan.packages;
             } else if (data.changedFiles) {
-                // Simple heuristic if turbo failed or wasn't used
-                // Filter files to see what folders changed? 
-                // For now, let's just show changed files count if turbo didn't return packages
                 html += `<div class="col-span-4 text-yellow-500 text-center">Turbo analysis unavailable. Found ${data.changedFiles.length} file changes.</div>`;
+            }
+            
+            // Update the "Comparing..." text
+            if (diffCountEl && data.changedFiles) {
+                const count = data.changedFiles.length;
+                diffCountEl.textContent = `${count} File${count !== 1 ? 's' : ''}`;
+                // Optional: make it clickable to see file list?
+                diffCountEl.parentElement.title = data.changedFiles.slice(0, 10).join('\n') + (count > 10 ? '\n...' : '');
             }
 
             if (affectedWorkspaces.length > 0) {
@@ -164,5 +173,5 @@
     };
 
     // Auto Init
-    window.gitCi.init();
+    window.changes.init();
 }
