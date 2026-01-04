@@ -1,32 +1,29 @@
 {
     // Namespace for Git CI Logic
     window.gitCi = {
-        settingsPanel: null,
         config: {
             remoteRepositoryUrl: "",
-            baseBranch: "main"
+            baseBranch: "master"
         },
 
         init: function() {
-            this.settingsPanel = document.getElementById('git-ci-settings');
             this.loadConfig();  // Load config first
-            
             // Initial check
             setTimeout(() => window.checkAffected(), 500);
         },
 
         loadConfig: async function() {
             try {
-                // Fetch actual config from backend (we simulate reading the file we just edited)
-                // Since this is a static tool file, we might need an endpoint to read 'tooldata/cicd.js'
-                // For now, we mock the load or assume the PageLoader might inject it.
-                // Or better, we define a small endpoint or just use the defaults we know.
+                const res = await fetch('/api/ci', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'get-config' })
+                });
+                const data = await res.json();
                 
-                // Simulating a fetch from /api/cicd-config (fictional for now, or we rely on hardcoded defaults matching the file)
-                this.config = {
-                    remoteRepositoryUrl: "git@github.com:AngheloAmir/Monorepo-Microservice.git",
-                    baseBranch: "master"
-                };
+                if (data && !data.error) {
+                    this.config = data;
+                }
                 
                 this.updateUiWithConfig();
             } catch (e) {
@@ -37,25 +34,13 @@
         updateUiWithConfig: function() {
             // Update Base Branch Display
             const baseBranchEl = document.getElementById('git-ci-base-branch');
-            if(baseBranchEl) baseBranchEl.textContent = this.config.baseBranch;
+            if(baseBranchEl) baseBranchEl.textContent = this.config.baseBranch || 'master';
 
-            // Update Settings Inputs
+            // Update Header Inputs
             const inputRemote = document.getElementById('setting-remote-url');
             const inputBranch = document.getElementById('setting-base-branch');
-            if(inputRemote) inputRemote.value = this.config.remoteRepositoryUrl;
-            if(inputBranch) inputBranch.value = this.config.baseBranch;
-        },
-
-        openSettings: function() {
-            if(this.settingsPanel) {
-                this.settingsPanel.classList.remove('translate-x-full');
-            }
-        },
-
-        closeSettings: function() {
-            if(this.settingsPanel) {
-                this.settingsPanel.classList.add('translate-x-full');
-            }
+            if(inputRemote) inputRemote.value = this.config.remoteRepositoryUrl || '';
+            if(inputBranch) inputBranch.value = this.config.baseBranch || 'master';
         },
 
         saveSettings: function() {
@@ -65,16 +50,16 @@
             if(inputRemote) this.config.remoteRepositoryUrl = inputRemote.value;
             if(inputBranch) this.config.baseBranch = inputBranch.value;
             
-            // Here we would send a POST to save to file /tooldata/cicd.js
-            // For UI demo:
-            this.updateUiWithConfig();
-            this.closeSettings();
+            // Note: Server save implementation is pending, so we update UI locally for now.
             
-            // Trigger a toast or alert
-            const btn = document.querySelector('#git-ci-settings button i.fa-save');
+            this.updateUiWithConfig();
+            
+            // Visual feedback on the save button if needed, but since it's inline, just a flash
+            const btn = document.querySelector('button[title="Save Configuration"] i');
             if(btn) {
-                btn.className = "fas fa-check";
-                setTimeout(() => btn.className = "fas fa-save", 1000);
+                const original = btn.className;
+                btn.className = "fas fa-check text-green-400";
+                setTimeout(() => btn.className = original, 1000);
             }
             
             // Re-run checks with new config
@@ -90,29 +75,42 @@
         
         container.innerHTML = `
             <div class="col-span-4 text-center py-8 text-gray-500 italic">
-                <i class="fas fa-circle-notch fa-spin mr-2"></i> Analyzing changes via Turbo against <span class="font-bold text-gray-400">${window.gitCi.config.baseBranch}</span>...
+                <div class="mb-2"><i class="fas fa-circle-notch fa-spin text-2xl"></i></div>
+                <div>Analyzing changes via Turbo against <span class="font-bold text-gray-400">${window.gitCi.config.baseBranch}</span>...</div>
+                <div class="text-[10px] text-gray-600 mt-1">Checking git diff & turbo graph...</div>
             </div>
         `;
         
         try {
-            // Check Git Branch first (Simulated Backend Call)
-            const branchRes = await fetch('/api/runcmd', {
-                method: 'POST', 
+            // Fetch real status from server
+            const res = await fetch('/api/ci', {
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ directory: '.', cmd: ['git', 'rev-parse', '--abbrev-ref', 'HEAD'] })
+                body: JSON.stringify({ action: 'check-status' })
             });
-
-            // MOCKING DATA for evaluation
-            // Randomly select workspaces to be "Modified"
-            const workspaces = ['MyReactApp', 'NodeJS', 'Socket', 'Supabase', 'components', 'config', 'models', 'routes'];
-            const randomAffected = workspaces.filter(() => Math.random() > 0.6);
-            if (randomAffected.length === 0) randomAffected.push('MyReactApp'); // ensure at least one
+            const data = await res.json();
             
-            setTimeout(() => {
-                if (branchEl) branchEl.textContent = "feat/multi-dev-workflow"; 
-                
-                let html = '';
-                randomAffected.forEach(w => {
+            if (data.error) throw new Error(data.error);
+
+            // Update UI with Real Data
+            if (branchEl) branchEl.textContent = data.currentBranch;
+            
+            let html = '';
+            let affectedWorkspaces = [];
+            
+            // Process Turbo Plan (if available) or fallback to Git Diff
+            if (data.turboPlan && data.turboPlan.packages) {
+                // Turbo dry run JSON format: { packages: [...], tasks: [...] }
+                affectedWorkspaces = data.turboPlan.packages;
+            } else if (data.changedFiles) {
+                // Simple heuristic if turbo failed or wasn't used
+                // Filter files to see what folders changed? 
+                // For now, let's just show changed files count if turbo didn't return packages
+                html += `<div class="col-span-4 text-yellow-500 text-center">Turbo analysis unavailable. Found ${data.changedFiles.length} file changes.</div>`;
+            }
+
+            if (affectedWorkspaces.length > 0) {
+                affectedWorkspaces.forEach(w => {
                     html += `
                         <div class="bg-gray-700/50 border border-gray-600 rounded-lg p-3 flex items-center gap-3 animate-fade-in relative overflow-hidden group">
                              <div class="absolute inset-0 bg-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -128,23 +126,40 @@
                         </div>
                     `;
                 });
-                
-                // Add "Others Cached" info
-                const cachedCount = workspaces.length - randomAffected.length;
-                if (cachedCount > 0) {
-                     html += `
-                        <div class="col-span-2 md:col-span-1 border border-dashed border-gray-700 rounded-lg p-3 flex items-center justify-center gap-2 text-gray-500 text-xs">
-                             <i class="fas fa-history text-green-500"></i>
-                             <span>${cachedCount} Workspaces Cached</span>
-                        </div>
-                    `;
-                }
+            } else if (data.changedFiles && data.changedFiles.length === 0) {
+                 html = `
+                    <div class="col-span-4 text-center py-8 text-gray-500">
+                        <i class="fas fa-check-circle text-green-500 text-2xl mb-2"></i>
+                        <div>No changes detected against base branch.</div>
+                    </div>
+                `;
+            } else if (affectedWorkspaces.length === 0 && data.changedFiles.length > 0) {
+                 html += `
+                    <div class="col-span-4 text-center py-8 text-gray-500">
+                        <i class="fas fa-info-circle text-blue-500 text-2xl mb-2"></i>
+                        <div>Changes detected but no workspaces affected (root files only?).</div>
+                    </div>
+                `;
+            }
 
-                container.innerHTML = html;
-            }, 1000);
+            // Error display
+            if (data.turboError) {
+                html += `
+                 <div class="col-span-4 mt-4 p-3 bg-red-900/20 border border-red-800 rounded text-xs text-red-400 font-mono overflow-x-auto">
+                    <strong>Turbo Error:</strong> ${data.turboError}
+                </div>`;
+            }
+
+            container.innerHTML = html;
 
         } catch (e) {
-            container.innerHTML = `<div class="text-red-500">Error checking status</div>`;
+            container.innerHTML = `
+                <div class="col-span-4 text-center py-8 text-red-400">
+                    <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                    <div>Error checking status</div>
+                    <div class="text-xs text-gray-500 mt-2">${e.message}</div>
+                </div>
+            `;
         }
     };
 

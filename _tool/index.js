@@ -85,10 +85,18 @@ const server = http.createServer((req, res) => {
         return handleKillPort(req, res);
     
     // Docker management routes
-    case '/api/docker/stop':
     case '/api/docker/stop-all':
         const { handleDockerRequest } = require('./tools/apidocker');
         return handleDockerRequest(req, res);
+
+    // CI/CD Routes
+    case '/api/ci':
+        const { apiCiHandler } = require('./tools/apiCi');
+        return apiCiHandler(req, res);
+    
+    case '/api/cd':
+        const { apiCdHandler } = require('./tools/apiCd');
+        return apiCdHandler(req, res);
 
     //internal CRUD testing routes===========================================
     case '/pingme':
