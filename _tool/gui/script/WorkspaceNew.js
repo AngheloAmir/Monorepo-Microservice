@@ -1,33 +1,33 @@
-// Logic for repoNew.html
+// Logic for WorkspaceNew.html
 
 
 window.openAddModal = function() {
-    document.getElementById('add-repo-modal').classList.remove('hidden');
+    document.getElementById('add-workspace-modal').classList.remove('hidden');
     
     //clears some field
-    document.getElementById('repo-name').value    = '';
-    document.getElementById('repo-desc').value    = '';
-    document.getElementById('repo-icon').value    = 'fa fa-cube';
+    document.getElementById('workspace-name').value    = '';
+    document.getElementById('workspace-desc').value    = '';
+    document.getElementById('workspace-icon').value    = 'fa fa-cube';
     document.getElementById('add-icon-preview').className = 'fa fa-cube';
-    document.getElementById('repo-devurl').value  = 'localhost:3000';
-    document.getElementById('repo-produrl').value = '';
-    document.getElementById('repo-giturl').value    = '';
-    document.getElementById('repo-gitorigin').value = '';
-    document.getElementById('repo-gitbranch').value = '';
-    document.getElementById('repo-install').value  = '';
-    document.getElementById('repo-start').value    = '';
-    document.getElementById('repo-stop').value     = '';
-    document.getElementById('repo-build').value    = '';
-    document.getElementById('repo-lint').value     = '';
-    document.getElementById('repo-test').value     = '';
-    document.getElementById('repo-init').value     = '';
+    document.getElementById('workspace-devurl').value  = 'localhost:3000';
+    document.getElementById('workspace-produrl').value = '';
+    document.getElementById('workspace-giturl').value    = '';
+    document.getElementById('workspace-gitorigin').value = '';
+    document.getElementById('workspace-gitbranch').value = '';
+    document.getElementById('workspace-install').value  = '';
+    document.getElementById('workspace-start').value    = '';
+    document.getElementById('workspace-stop').value     = '';
+    document.getElementById('workspace-build').value    = '';
+    document.getElementById('workspace-lint').value     = '';
+    document.getElementById('workspace-test').value     = '';
+    document.getElementById('workspace-init').value     = '';
     
     // Default to service
     window.selectType('service');
 };
 
 window.closeAddModal = function() {
-    document.getElementById('add-repo-modal').classList.add('hidden');
+    document.getElementById('add-workspace-modal').classList.add('hidden');
 };
 
 window.selectType = function(type) {
@@ -103,7 +103,7 @@ function renderTemplates(templates) {
 
 function selectTemplate(template) {
     // Fill init command with text: "TEMPLATE: <path>" to indicate it's using a template
-    document.getElementById('repo-init').value = template.templatepath;
+    document.getElementById('workspace-init').value = template.templatepath;
     
     // Auto-fill Type
     if (template.type) {
@@ -111,14 +111,14 @@ function selectTemplate(template) {
     }
 
     // Auto-fill URLs
-    document.getElementById('repo-devurl').value  = template.devurl || '';
-    document.getElementById('repo-install').value = template.installcmd || '';
-    document.getElementById('repo-start').value   = template.startcmd || '';
-    document.getElementById('repo-stop').value    = template.stopcmd || '';
-    document.getElementById('repo-build').value   = template.buildcmd || '';
-    document.getElementById('repo-lint').value    = template.lintcmd || '';
-    document.getElementById('repo-test').value    = template.testcmd || '';
-    document.getElementById('repo-icon').value    = template.icon;
+    document.getElementById('workspace-devurl').value  = template.devurl || '';
+    document.getElementById('workspace-install').value = template.installcmd || '';
+    document.getElementById('workspace-start').value   = template.startcmd || '';
+    document.getElementById('workspace-stop').value    = template.stopcmd || '';
+    document.getElementById('workspace-build').value   = template.buildcmd || '';
+    document.getElementById('workspace-lint').value    = template.lintcmd || '';
+    document.getElementById('workspace-test').value    = template.testcmd || '';
+    document.getElementById('workspace-icon').value    = template.icon;
     document.getElementById('add-icon-preview').className = template.icon;
 
     // Close menu
@@ -126,8 +126,8 @@ function selectTemplate(template) {
     
 }
 
-window.createRepository = async function() {
-    const createBtn = document.querySelector('#add-repo-modal button.bg-blue-600');
+window.createWorkspace = async function() {
+    const createBtn = document.querySelector('#add-workspace-modal button.bg-blue-600');
     if(createBtn) {
         createBtn.dataset.originalText = createBtn.innerText;
         createBtn.innerText = 'Creating...';
@@ -135,27 +135,27 @@ window.createRepository = async function() {
     }
 
     const data = {
-        name: document.getElementById('repo-name').value,
-        description: document.getElementById('repo-desc').value,
-        icon: document.getElementById('repo-icon').value,
-        type: document.querySelector('#add-repo-modal .type-btn.active')?.dataset.type || 'service', 
-        devurl: document.getElementById('repo-devurl').value,
-        produrl: document.getElementById('repo-produrl').value,
-        installcmd: document.getElementById('repo-install').value,
-        startcmd: document.getElementById('repo-start').value,
-        stopcmd: document.getElementById('repo-stop').value,
-        buildcmd: document.getElementById('repo-build').value,
-        lintcmd: document.getElementById('repo-lint').value,
-        testcmd: document.getElementById('repo-test').value,
-        template: document.getElementById('repo-init').value, 
+        name: document.getElementById('workspace-name').value,
+        description: document.getElementById('workspace-desc').value,
+        icon: document.getElementById('workspace-icon').value,
+        type: document.querySelector('#add-workspace-modal .type-btn.active')?.dataset.type || 'service', 
+        devurl: document.getElementById('workspace-devurl').value,
+        produrl: document.getElementById('workspace-produrl').value,
+        installcmd: document.getElementById('workspace-install').value,
+        startcmd: document.getElementById('workspace-start').value,
+        stopcmd: document.getElementById('workspace-stop').value,
+        buildcmd: document.getElementById('workspace-build').value,
+        lintcmd: document.getElementById('workspace-lint').value,
+        testcmd: document.getElementById('workspace-test').value,
+        template: document.getElementById('workspace-init').value, 
         
-        giturl: document.getElementById('repo-giturl').value,
-        gitorigin: document.getElementById('repo-gitorigin').value,
-        gitbranch: document.getElementById('repo-gitbranch').value, 
+        giturl: document.getElementById('workspace-giturl').value,
+        gitorigin: document.getElementById('workspace-gitorigin').value,
+        gitbranch: document.getElementById('workspace-gitbranch').value, 
     };
     
     try {
-        const response = await fetch('/api/create-repository', {
+        const response = await fetch('/api/create-workspace', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -165,7 +165,7 @@ window.createRepository = async function() {
 
         if (response.ok && result.success) {
             closeAddModal();
-            await window.loadRepositoryData();
+            await window.loadWorkspaceData();
 
             // If template AND installcmd is present, run Install Command
             if (data.template && data.template.trim() !== '' && data.installcmd && data.installcmd.trim() !== '') {
@@ -184,11 +184,11 @@ window.createRepository = async function() {
 
         } else {
             console.error(result);
-            alert('Failed to create repository: ' + (result.error || 'Unknown error'));
+            alert('Failed to create workspace: ' + (result.error || 'Unknown error'));
         }
     } catch (error) {
         console.error('Network error:', error);
-        alert('Network error while creating repository: ' + error.message);
+        alert('Network error while creating workspace: ' + error.message);
     } finally {
         if(createBtn) {
             createBtn.innerText = createBtn.dataset.originalText || 'Create';

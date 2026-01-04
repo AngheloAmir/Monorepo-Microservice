@@ -2,7 +2,7 @@ const os = require('os');
 const pidusage = require('pidusage');
 const { getActiveProcessCount, getActiveProcesses } = require('./runcmddev');
 const { getActiveJobs } = require('./runcmdjob');
-const repositoryData = require('../tooldata/repository.js');
+const workSpaceData = require('../tooldata/Workspace.js');
 const { getDockerContainers } = require('./apidocker');
 
 let peakMemory = 0;
@@ -55,7 +55,7 @@ function getAllDescendants(rootPid, parentMap) {
 async function getStats() {
     // Calculate total repos
     let totalRepos = 0;
-    Object.values(repositoryData).forEach(list => {
+    Object.values(workSpaceData).forEach(list => {
         if (Array.isArray(list)) totalRepos += list.length;
     });
 

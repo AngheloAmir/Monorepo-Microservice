@@ -1,36 +1,36 @@
 const fs = require('fs');
 const path = require('path');
 
-const repoFilePath = path.join(__dirname, '../tooldata/repository.js');
+const workspaceFilePath = path.join(__dirname, '../tooldata/Workspace.js');
 
-const serveRepositoryData = (res, req, directory) => {
+const serveWorkspaceData = (res, req, directory) => {
     res.writeHead(200, { 'Content-Type': 'application/json' })
     try {
         const fullPath = path.join(__dirname, '../tooldata/', directory);
         if (require.cache[require.resolve(fullPath)]) {
             delete require.cache[require.resolve(fullPath)];
         }
-        const repoData = require(fullPath);
-        res.end(JSON.stringify(repoData));
+        const workspaceData = require(fullPath);
+        res.end(JSON.stringify(workspaceData));
     } catch (e) {
         console.error(e);
         res.end(JSON.stringify({}));
     }
 }
 
-const writeRepositoryFile = (data) => {
+const writeWorkspaceFile = (data) => {
     const content = `/**
- * Repository Data
+ * Workspace Data
  */
 
-const repository = ${JSON.stringify(data, null, 4)}
+const workspace = ${JSON.stringify(data, null, 4)}
 
-module.exports = repository;
+module.exports = workspace;
 `;
-    fs.writeFileSync(repoFilePath, content, 'utf8');
+    fs.writeFileSync(workspaceFilePath, content, 'utf8');
 }
 
-const updateRepositoryData = (req, res) => {
+const updateWorkspaceData = (req, res) => {
     let body = '';
     req.on('data', chunk => body += chunk);
     req.on('end', () => {
@@ -42,22 +42,22 @@ const updateRepositoryData = (req, res) => {
             const section = id.substring(0, firstHyphen).toLowerCase();
             const name    = id.substring(firstHyphen + 1);
 
-            if (require.cache[require.resolve(repoFilePath)]) {
-                delete require.cache[require.resolve(repoFilePath)];
+            if (require.cache[require.resolve(workspaceFilePath)]) {
+                delete require.cache[require.resolve(workspaceFilePath)];
             }
-            const repoData = require(repoFilePath);
+            const workspaceData = require(workspaceFilePath);
             
-            const index = repoData[section] ? repoData[section].findIndex(item => item.name === name) : -1;
+            const index = workspaceData[section] ? workspaceData[section].findIndex(item => item.name === name) : -1;
 
             if (index !== -1) {
                 // Merge updates
-                repoData[section][index] = { ...repoData[section][index], ...data };
-                writeRepositoryFile(repoData);
+                workspaceData[section][index] = { ...workspaceData[section][index], ...data };
+                writeWorkspaceFile(workspaceData);
                 
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: true }));
             } else {
-                throw new Error('Repository not found: ' + section + ' ' + name);
+                throw new Error('Workspace not found: ' + section + ' ' + name);
             }
         } catch (e) {
             console.error(e);
@@ -67,7 +67,7 @@ const updateRepositoryData = (req, res) => {
     });
 }
 
-const deleteRepositoryData = (req, res) => {
+const deleteWorkspaceData = (req, res) => {
     let body = '';
     req.on('data', chunk => body += chunk);
     req.on('end', () => {
@@ -79,15 +79,15 @@ const deleteRepositoryData = (req, res) => {
             const section = id.substring(0, firstHyphen).toLowerCase();
             const name    = id.substring(firstHyphen + 1);
 
-            if (require.cache[require.resolve(repoFilePath)]) {
-                delete require.cache[require.resolve(repoFilePath)];
+            if (require.cache[require.resolve(workspaceFilePath)]) {
+                delete require.cache[require.resolve(workspaceFilePath)];
             }
-            const repoData = require(repoFilePath);
+            const workspaceData = require(workspaceFilePath);
             
-            const index = repoData[section] ? repoData[section].findIndex(item => item.name === name) : -1;
+            const index = workspaceData[section] ? workspaceData[section].findIndex(item => item.name === name) : -1;
 
             if (index !== -1) {
-                const item = repoData[section][index];
+                const item = workspaceData[section][index];
                 
                 // Delete folder if path exists
                 if (item.path) {
@@ -99,14 +99,14 @@ const deleteRepositoryData = (req, res) => {
                 }
 
                 // Remove from array
-                repoData[section].splice(index, 1);
+                workspaceData[section].splice(index, 1);
                 
-                writeRepositoryFile(repoData);
+                writeWorkspaceFile(workspaceData);
                 
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: true }));
             } else {
-                throw new Error('Repository not found: ' + section + ' ' + name);
+                throw new Error('Workspace not found: ' + section + ' ' + name);
             }
         } catch (e) {
             console.error(e);
@@ -117,7 +117,7 @@ const deleteRepositoryData = (req, res) => {
 }
 
 module.exports = {
-    serveRepositoryData,
-    updateRepositoryData,
-    deleteRepositoryData
+    serveWorkspaceData,
+    updateWorkspaceData,
+    deleteWorkspaceData
 }

@@ -1,8 +1,8 @@
 /**
- * Repository Data
+ * Workspace Data
  */
 
-const repository = {
+const workspace = {
     "backend": [
         {
             "name": "NodeJS",
@@ -88,4 +88,4 @@ const repository = {
     "service": []
 }
 
-module.exports = repository;
+module.exports = workspace;

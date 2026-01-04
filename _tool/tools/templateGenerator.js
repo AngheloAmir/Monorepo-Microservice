@@ -56,29 +56,29 @@ async function generateTemplate(data) {
         );
     }
 
-    // Register into repository.js
-    await registerRepository(data);
+    // Register into Workspace.js
+    await registerWorkspace(data);
 
     return { 
         success: true, 
-        message: 'Repository created successfully', 
+        message: 'Workspace created successfully', 
         path: targetDir 
     };
 }
 
-async function registerRepository(data) {
-    const repoFilePath = path.resolve(__dirname, '../tooldata/repository.js');
+async function registerWorkspace(data) {
+    const workspaceFilePath = path.resolve(__dirname, '../tooldata/Workspace.js');
     
     // Invalidate cache to ensure we have latest
-    if (require.cache[require.resolve(repoFilePath)]) {
-        delete require.cache[require.resolve(repoFilePath)];
+    if (require.cache[require.resolve(workspaceFilePath)]) {
+        delete require.cache[require.resolve(workspaceFilePath)];
     }
     
-    let repoData;
+    let workspaceData;
     try {
-        repoData = require(repoFilePath);
+        workspaceData = require(workspaceFilePath);
     } catch (e) {
-        console.error('Failed to load repository.js for registration', e);
+        console.error('Failed to load Workspace.js for registration', e);
         throw e;
     }
 
@@ -102,21 +102,21 @@ async function registerRepository(data) {
         gitbranch:   data.gitbranch || 'master'
     };
 
-    if (repoData[data.type]) {
-        repoData[data.type].push(newEntry);
+    if (workspaceData[data.type]) {
+        workspaceData[data.type].push(newEntry);
         
         const content = `/**
- * Repository Data
+ * Workspace Data
  */
 
-const repository = ${JSON.stringify(repoData, null, 4)}
+const workspace = ${JSON.stringify(workspaceData, null, 4)}
 
-module.exports = repository;
+module.exports = workspace;
 `;
-        await fs.promises.writeFile(repoFilePath, content, 'utf8');
-        console.log(`[TemplateGenerator] Registered ${data.name} in repository.js`);
+        await fs.promises.writeFile(workspaceFilePath, content, 'utf8');
+        console.log(`[TemplateGenerator] Registered ${data.name} in Workspace.js`);
     } else {
-        console.warn(`[TemplateGenerator] Could not find section for type: ${data.type} in repository.js`);
+        console.warn(`[TemplateGenerator] Could not find section for type: ${data.type} in Workspace.js`);
     }
 }
 

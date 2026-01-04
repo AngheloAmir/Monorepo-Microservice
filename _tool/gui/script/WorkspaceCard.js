@@ -1,4 +1,4 @@
-class RepositoryCard {
+class WorkspaceCard {
     constructor(template) {
         this.template = template;
     }

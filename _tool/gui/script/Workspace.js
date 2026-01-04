@@ -1,45 +1,45 @@
-window.repositoryLoader = async () => {
+window.workspaceLoader = async () => {
     try {
-        if( !window.repoNewHTML || !window.repoOptionsHTML || !window.repoCardHTML ) {
+        if( !window.workspaceNewHTML || !window.workspaceOptionsHTML || !window.workspaceCardHTML ) {
             const [newRepoHtml, optsRepoHtml, cardRepoHtml] = await Promise.all([
-                fetch('/gui/components/repoNew.html').then(r => r.text()),
-                fetch('/gui/components/repoOption.html').then(r => r.text()),
-                fetch('/gui/components/repositorycard.html').then(r => r.text())
+                fetch('/gui/components/WorkspaceNew.html').then(r => r.text()),
+                fetch('/gui/components/WorkspaceOption.html').then(r => r.text()),
+                fetch('/gui/components/WorkspaceCard.html').then(r => r.text())
             ]);
-            window.repoNewHTML     = newRepoHtml;
-            window.repoOptionsHTML = optsRepoHtml;
-            window.repoCardHTML    = cardRepoHtml;
+            window.workspaceNewHTML     = newRepoHtml;
+            window.workspaceOptionsHTML = optsRepoHtml;
+            window.workspaceCardHTML    = cardRepoHtml;
         }
-        document.getElementById('mount-repo-new').innerHTML     = window.repoNewHTML;
-        document.getElementById('mount-repo-options').innerHTML = window.repoOptionsHTML;
+        document.getElementById('mount-workspace-new').innerHTML     = window.workspaceNewHTML;
+        document.getElementById('mount-workspace-options').innerHTML = window.workspaceOptionsHTML;
     } catch (e) {
         console.error('Error loading modal components', e);
     }
     
     if(!window.cardRenderer) {
-        window.cardRenderer = new RepositoryCard(window.repoCardHTML);
+        window.cardRenderer = new WorkspaceCard(window.workspaceCardHTML);
     }
 
     // Init Terminal in this view
     if (window.TabTerminal) {
-        const mount = document.getElementById('repo-terminal-mount');
+        const mount = document.getElementById('workspace-terminal-mount');
         if (mount) {
             await window.TabTerminal.init(mount);
         }
     }
-    await window.loadRepositoryData();
+    await window.loadWorkspaceData();
 }
 
- window.loadRepositoryData = async function() {
+ window.loadWorkspaceData = async function() {
     if (!window.cardRenderer) return;
 
     try {
-        const response = await fetch('/api/repository', { cache: "no-store" });
+        const response = await fetch('/api/workspace', { cache: "no-store" });
         if(!response.ok) throw new Error('API Error');
         const data   = await response.json();
         let hasItems = false;
 
-        window.repoSections.forEach(section => {
+        window.workspaceSections.forEach(section => {
             const items     = data[ section];
             const container = document.getElementById(`container-${section}`);
             const countEl   = document.getElementById(`count-${section}`);
@@ -66,7 +66,7 @@ window.repositoryLoader = async () => {
         }
 
     } catch (error) {
-        console.error('Error loading repository data:', error);
+        console.error('Error loading workspace data:', error);
         document.getElementById('empty-state').querySelector('p').textContent = 'Error loading data: ' + error.message;
         document.getElementById('empty-state').classList.remove('hidden');
     }

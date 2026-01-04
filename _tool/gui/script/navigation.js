@@ -1,7 +1,7 @@
 window.Navigation = {
     items: [
         { id: 'home',       label: 'Home', icon: 'fa-home', component: 'home' },
-        { id: 'repository', label: 'Repository', icon: 'fa-cube', component: 'repository' },
+        { id: 'workspace', label: 'Workspace', icon: 'fa-cube', component: 'workspace' },
         { id: 'turborepo',  label: 'Turborepo', icon: 'fa-solid fa-truck-fast', component: 'turborepo' },
         { id: 'crudtester', label: 'CRUD Tester', icon: 'fa-microscope', component: 'crudtester' },
 
@@ -75,8 +75,8 @@ window.Navigation = {
         await window.PageLoader.load(id); 
 
         switch(id) {
-            case 'repository':
-                await window.repositoryLoader();
+            case 'workspace':
+                await window.workspaceLoader();
                 break;
             case 'crudtester':
                 if (window.crudTesterLoader) await window.crudTesterLoader();

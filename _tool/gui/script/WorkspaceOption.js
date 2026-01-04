@@ -1,5 +1,5 @@
 
-// Logic for repoOption.html
+// Logic for WorkspaceOption.html
 
 window.activeSettingsId = null;
 
@@ -8,7 +8,7 @@ window.openSettingsModal = function(id) {
     if (!data) return;
 
     window.activeSettingsId = id;
-    const modal = document.getElementById('repository-settings-modal');
+    const modal = document.getElementById('workspace-settings-modal');
     
     // Populate fields
     //document.getElementById('settings-title-name').textContent = data.name;
@@ -50,7 +50,7 @@ window.openSettingsModal = function(id) {
 };
 
 window.closeSettingsModal = function() {
-    document.getElementById('repository-settings-modal').classList.add('hidden');
+    document.getElementById('workspace-settings-modal').classList.add('hidden');
     window.activeSettingsId = null;
 };
 
@@ -78,14 +78,14 @@ window.saveRepo = async function() {
     };
     
     try {
-        const res = await fetch('/api/repository/update', {
+        const res = await fetch('/api/workspace/update', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id, data })
         });
         const json = await res.json();
         if (json.success) {
-            await window.loadRepositoryData();
+            await window.loadWorkspaceData();
             window.closeSettingsModal();
         } else {
             await window.openAlertModal('Error', 'Failed to save: ' + (json.error || 'Unknown error'), 'error');
@@ -106,14 +106,14 @@ window.deleteRepo = async function() {
 
     if (confirmed) {
         try {
-            const res = await fetch('/api/repository/delete', {
+            const res = await fetch('/api/workspace/delete', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id })
             });
             const json = await res.json();
             if (json.success) {
-                await window.loadRepositoryData();
+                await window.loadWorkspaceData();
                 window.closeSettingsModal();
             } else {
                 await window.openAlertModal('Error', 'Failed to delete: ' + (json.error || 'Unknown error'), 'error');

@@ -1,10 +1,10 @@
-<div id="add-repo-modal" class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4" onclick="if(event.target === this) closeAddModal()">
+<div id="add-workspace-modal" class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4" onclick="if(event.target === this) closeAddModal()">
     <div class="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh] animate-fade-in relative">
         
         <!-- Modal Header -->
         <div class="px-6 py-4 border-b border-gray-700 flex justify-between items-center bg-gray-800/50 rounded-t-2xl">
             <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                <i class="fas fa-plus-circle text-blue-500"></i> Create New Repository
+                <i class="fas fa-plus-circle text-blue-500"></i> Create New Workspace
             </h3>
             <button onclick="closeAddModal()" class="text-gray-400 hover:text-white transition-colors">
                 <i class="fas fa-times text-lg"></i>
@@ -20,7 +20,7 @@
                 <div class="col-span-5 space-y-1">
                     <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Icon</label>
                     <div class="relative">
-                        <input type="text" id="repo-icon" value="fas fa-cube" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:border-blue-500 outline-none pl-9" oninput="document.getElementById('add-icon-preview').className = this.value">
+                        <input type="text" id="workspace-icon" value="fas fa-cube" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:border-blue-500 outline-none pl-9" oninput="document.getElementById('add-icon-preview').className = this.value">
                             <div class="absolute left-3 top-1/2 -translate-y-1/2 w-4 flex justify-center text-gray-500">
                             <i id="add-icon-preview" class="fas fa-cube"></i>
                         </div>
@@ -29,20 +29,20 @@
                 <!-- Name -->
                  <div class="col-span-7 space-y-1">
                     <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Name</label>
-                    <input type="text" id="repo-name" value="my-service" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:border-blue-500 outline-none font-bold tracking-wide">
+                    <input type="text" id="workspace-name" value="my-service" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:border-blue-500 outline-none font-bold tracking-wide">
                 </div>
             </div>
 
             <!-- Description -->
              <div class="">
-                <textarea id="repo-desc" rows="2" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 focus:border-blue-500 outline-none resize-none" placeholder="Brief description..."></textarea>
+                <textarea id="workspace-desc" rows="2" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 focus:border-blue-500 outline-none resize-none" placeholder="Brief description..."></textarea>
             </div>
 
              <!-- Template Input -->
             <div class="relative">
                  <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Template</label>
                  <div class="flex gap-2 mb-2">
-                    <input type="text" id="repo-init" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-purple-300 focus:border-purple-500 outline-none" placeholder="[ no template used ]">
+                    <input type="text" id="workspace-init" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-purple-300 focus:border-purple-500 outline-none" placeholder="[ no template used ]">
                     <button onclick="toggleTemplateMenu()" class="px-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg border border-gray-600 text-xs font-bold uppercase tracking-wider transition-colors whitespace-nowrap">
                         Select
                     </button>
@@ -86,8 +86,8 @@
             <div class="space-y-1">
                 <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">URLs</label>
                 <div class="grid grid-cols-2 gap-3">
-                    <input type="text" id="repo-devurl" value="http://localhost:3000" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-blue-300 focus:border-blue-500 outline-none">
-                     <input type="text" id="repo-produrl" placeholder="Prod URL (Optional)" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-blue-300 focus:border-blue-500 outline-none">
+                    <input type="text" id="workspace-devurl" value="http://localhost:3000" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-blue-300 focus:border-blue-500 outline-none">
+                     <input type="text" id="workspace-produrl" placeholder="Prod URL (Optional)" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-blue-300 focus:border-blue-500 outline-none">
                 </div>
             </div>
 
@@ -95,10 +95,10 @@
              <div class="space-y-1">
                     <label class="text-xs text-gray-400 font-bold uppercase tracking-wider">Git Config (To allow Git Sub-Tree)</label>
                     <div class="grid grid-cols-1 gap-2">
-                         <input type="text" id="repo-giturl" placeholder="Git URL for a sub-tree" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
+                         <input type="text" id="workspace-giturl" placeholder="Git URL for a sub-tree" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
                          <div class="grid grid-cols-2 gap-2">
-                              <input type="text" id="repo-gitorigin" value="" placeholder="Sub-Tree Origin Name" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
-                              <input type="text" id="repo-gitbranch" value="" placeholder="Sub-Tree Branch Name" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
+                              <input type="text" id="workspace-gitorigin" value="" placeholder="Sub-Tree Origin Name" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
+                              <input type="text" id="workspace-gitbranch" value="" placeholder="Sub-Tree Branch Name" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-orange-300 focus:border-orange-500 outline-none">
                          </div>
                     </div>
             </div>
@@ -110,27 +110,27 @@
                  <div class="grid grid-cols-1 gap-2">
                         <div class="flex gap-2 items-center">
                                 <span class="w-16 text-xs font-mono text-gray-500 text-right">Install</span>
-                                <input type="text" id="repo-install" placeholder="npm install" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-cyan-400 focus:border-cyan-500 outline-none">
+                                <input type="text" id="workspace-install" placeholder="npm install" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-cyan-400 focus:border-cyan-500 outline-none">
                         </div>
                         <div class="flex gap-2 items-center">
                                 <span class="w-16 text-xs font-mono text-gray-500 text-right">Start</span>
-                                <input type="text" id="repo-start" value="npm run dev" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-green-400 focus:border-green-500 outline-none">
+                                <input type="text" id="workspace-start" value="npm run dev" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-green-400 focus:border-green-500 outline-none">
                         </div>
                         <div class="flex gap-2 items-center">
                                 <span class="w-16 text-xs font-mono text-gray-500 text-right">Stop</span>
-                                <input type="text" id="repo-stop" value="npm run stop" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-red-400 focus:border-red-500 outline-none">
+                                <input type="text" id="workspace-stop" value="npm run stop" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-red-400 focus:border-red-500 outline-none">
                         </div>
                         <div class="flex gap-2 items-center">
                                 <span class="w-16 text-xs font-mono text-gray-500 text-right">Build</span>
-                                <input type="text" id="repo-build" value="npm run build" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-yellow-400 focus:border-yellow-500 outline-none">
+                                <input type="text" id="workspace-build" value="npm run build" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-yellow-400 focus:border-yellow-500 outline-none">
                         </div>
                         <div class="flex gap-2 items-center">
                                 <span class="w-16 text-xs font-mono text-gray-500 text-right">Lint</span>
-                                <input type="text" id="repo-lint" value="npm run lint" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-pink-400 focus:border-pink-500 outline-none">
+                                <input type="text" id="workspace-lint" value="npm run lint" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-pink-400 focus:border-pink-500 outline-none">
                         </div>
                         <div class="flex gap-2 items-center">
                                 <span class="w-16 text-xs font-mono text-gray-500 text-right">Test</span>
-                                <input type="text" id="repo-test" value="npm run test" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-indigo-400 focus:border-indigo-500 outline-none">
+                                <input type="text" id="workspace-test" value="npm run test" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono text-indigo-400 focus:border-indigo-500 outline-none">
                         </div>
                 </div>
 
@@ -143,8 +143,8 @@
             <button onclick="closeAddModal()" class="px-5 py-2.5 rounded-xl border border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white font-medium transition-colors text-sm">
                 Cancel
             </button>
-            <button onclick="createRepository()" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-500 font-medium shadow-lg shadow-blue-600/20 transition-all transform hover:-translate-y-0.5 text-sm">
-                Create Repository
+            <button onclick="createWorkspace()" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-500 font-medium shadow-lg shadow-blue-600/20 transition-all transform hover:-translate-y-0.5 text-sm">
+                Create Workspace
             </button>
         </div>
     </div>

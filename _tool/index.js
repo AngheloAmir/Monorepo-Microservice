@@ -3,7 +3,7 @@ const path     = require('path');
 const { Server } = require("socket.io"); // Import Socket.IO
 const PORT     = process.env.PORT || 3200;
 const { serveFile, serveGUIFile } = require('./tools/serveGUIFile');
-const { serveRepositoryData }     = require('./tools/apiRespository');
+const { serveWorkspaceData }     = require('./tools/apiWorkspace');
 const { generateTemplate }        = require('./tools/templateGenerator');
 const { runCmdHandler }           = require('./tools/runcmd');
 const { runCmdDevHandler, initSocket } = require('./tools/runcmddev'); // Import initSocket
@@ -25,16 +25,16 @@ const server = http.createServer((req, res) => {
     case '/index.html':
       return serveGUIFile(req, res);
       
-    case '/api/repository':
-      return serveRepositoryData(res, req, 'repository.js');
+    case '/api/workspace':
+      return serveWorkspaceData(res, req, 'Workspace.js');
 
     case '/api/repotemplate':
-      return serveRepositoryData(res, req, 'repotemplate.js');
+      return serveWorkspaceData(res, req, 'repotemplate.js');
 
     case '/api/crud':
-      return serveRepositoryData(res, req, 'crud.js');
+      return serveWorkspaceData(res, req, 'crud.js');
 
-    case '/api/create-repository':
+    case '/api/create-workspace':
         if (req.method === 'POST') {
             let body = '';
             req.on('data', chunk => body += chunk);
@@ -61,13 +61,13 @@ const server = http.createServer((req, res) => {
         const { runCmdJobHandler } = require('./tools/runcmdjob');
         return runCmdJobHandler(req, res);
 
-    case '/api/repository/update':
-        const { updateRepositoryData } = require('./tools/apiRespository');
-        return updateRepositoryData(req, res);
+    case '/api/workspace/update':
+        const { updateWorkspaceData } = require('./tools/apiWorkspace');
+        return updateWorkspaceData(req, res);
     
-    case '/api/repository/delete':
-        const { deleteRepositoryData } = require('./tools/apiRespository');
-        return deleteRepositoryData(req, res);
+    case '/api/workspace/delete':
+        const { deleteWorkspaceData } = require('./tools/apiWorkspace');
+        return deleteWorkspaceData(req, res);
 
     case '/api/runcmddev':
         return runCmdDevHandler(req, res);

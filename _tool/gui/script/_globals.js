@@ -1,11 +1,11 @@
 //Define here the global variables=====================================================================
 
-//Repository relative variables
-window.repoNewHTML      = '';
-window.repoOptionsHTML  = '';
-window.repoCardHTML     = '';
+//Workspace relative variables
+window.workspaceNewHTML      = '';
+window.workspaceOptionsHTML  = '';
+window.workspaceCardHTML     = '';
 window.cardRenderer     = null;
-window.repoSections     = ['backend', 'database', 'frontend', 'service'];
+window.workspaceSections     = ['backend', 'database', 'frontend', 'service'];
 
 //TabTerminal relative variables
 window.tabTerminalItems     = {};
