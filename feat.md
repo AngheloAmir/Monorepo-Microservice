@@ -91,3 +91,6 @@ If adding a "Deployment" tab to your GUI:
 1. **Status Check**: Run `npx turbo run build --dry-run` to parse what *would* execute.
 2. **Visual Feedback**: Capture `stdout`. Look for `[CACHE HIT]` to show users which steps were instant.
 3. **Selective Deploy**: Use `--filter` heavily to allow users to "Deploy Backend" or "Test Frontend" independently.
+
+
+npx turbo run build --dry-run
