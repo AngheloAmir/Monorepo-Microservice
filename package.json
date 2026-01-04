@@ -4,6 +4,7 @@
   "description": "A monorepo for microservices",
   "workspaces": [
     "_tool",
+    "_tool/turborepo",
     "backend/*",
     "database/*",
     "frontend/*",
@@ -25,7 +26,5 @@
   ],
   "author": "anghelo amir",
   "license": "ISC",
-  "devDependencies": {
-    "turbo": "latest"
-  }
+  "packageManager": "npm@11.6.2"
 }
