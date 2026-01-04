@@ -7,7 +7,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "stop": "npx -y kill-port 3000"
+    "stop": "npx -y kill-port 3002"
   },
   "keywords": [],
   "author": "",
