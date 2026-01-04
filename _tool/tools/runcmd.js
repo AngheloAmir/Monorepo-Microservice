@@ -72,10 +72,19 @@ function executeCommand(res, { directory, basecmd, cmd }) {
         NPM_CONFIG_PROGRESS: 'false',
         CI: 'true' 
     };
+
+    // Sanitize npm environment variables
+    Object.keys(env).forEach(key => {
+        if (key.startsWith('npm_') || key.startsWith('NPM_') || key === 'INIT_CWD') {
+             if (!['NPM_CONFIG_AUDIT', 'NPM_CONFIG_FUND', 'NPM_CONFIG_PROGRESS'].includes(key)) {
+                delete env[key];
+             }
+        }
+    });
     
     const args = Array.isArray(cmd) ? cmd : [cmd];
 
-    if (basecmd === 'npm' || basecmd === 'npx' || basecmd === 'yarn' || basecmd === 'pnpm') {
+    if (basecmd === 'npx') {
         if (!args.includes('--yes')) args.push('--yes');
     }
 

@@ -45,10 +45,19 @@ async function generateTemplate(data) {
                 else resolve();
             });
         });
+
+        // Update package.json if it exists (or create if missing but requested? No, usually template has one)
+        // actually, we should ensure it has one if we are updating it.
+        await updatePackageJson(targetDir, data);
+
     } else {
-        console.log(`[TemplateGenerator] No template selected, creating empty with README`);
+        console.log(`[TemplateGenerator] No template selected, creating directory with package.json`);
         // Create directory
         await fs.promises.mkdir(targetDir, { recursive: true });
+        
+        // Create package.json
+        await updatePackageJson(targetDir, data);
+
         // Create README
         await fs.promises.writeFile(
             path.join(targetDir, 'README.md'), 
@@ -118,6 +127,73 @@ module.exports = workspace;
     } else {
         console.warn(`[TemplateGenerator] Could not find section for type: ${data.type} in Workspace.js`);
     }
+}
+
+
+async function updatePackageJson(targetDir, data) {
+    const pkgPath = path.join(targetDir, 'package.json');
+    let pkg = {
+        name: data.name,
+        version: "1.0.0",
+        description: data.description || "",
+        scripts: {},
+        keywords: [],
+        author: "",
+        license: "ISC"
+    };
+
+    if (fs.existsSync(pkgPath)) {
+        try {
+            const existing = JSON.parse(await fs.promises.readFile(pkgPath, 'utf8'));
+            // Merge defaults with existing, giving priority to existing (preserves scripts/deps)
+            pkg = { ...pkg, ...existing };
+            
+            // Enforce overrides from user data
+            pkg.name = data.name; 
+            if (data.description) pkg.description = data.description;
+        } catch (e) {
+            console.error('Error reading package.json', e);
+        }
+    }
+
+    if (!pkg.scripts) pkg.scripts = {};
+
+    // Map fields to scripts
+    const scriptMap = {
+        'install': data.installcmd,
+        'start': data.startcmd,
+        'stop': data.stopcmd,
+        'build': data.buildcmd,
+        'lint': data.lintcmd,
+        'test': data.testcmd
+    };
+
+    for (const [key, cmd] of Object.entries(scriptMap)) {
+        // Only add if cmd is provided and valid
+        if (cmd && cmd.trim() !== '') {
+            const trimmed = cmd.trim();
+            // Prevent recursive loops
+            // 1. Install loop: "install": "npm install"
+            if (key === 'install' && trimmed.match(/^npm\s+install/)) {
+                continue; 
+            }
+            
+            // 2. npm run loop: "build": "npm run build"
+            // Note: matching "npm run key" or "npm run-script key"
+            if (trimmed.match(new RegExp(`^npm\\s+(run|run-script)\\s+${key}\\b`))) {
+                continue;
+            }
+
+            // 3. npm short loop: "test": "npm test" or "start": "npm start"
+             if (trimmed.match(new RegExp(`^npm\\s+${key}\\b`))) {
+                continue;
+            }
+            
+            pkg.scripts[key] = cmd;
+        }
+    }
+
+    await fs.promises.writeFile(pkgPath, JSON.stringify(pkg, null, 2));
 }
 
 module.exports = { generateTemplate };

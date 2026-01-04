@@ -42,9 +42,12 @@ function startDevCommand(res, config) {
             return;
         }
         if (!fs.existsSync(path.join(targetDir, 'node_modules'))) {
-             res.writeHead(400, { 'Content-Type': 'application/json' });
-             res.end(JSON.stringify({ error: 'node_modules missing. Run install first.' }));
-             return;
+            // Check root (monorepo) node_modules before failing
+            if (!fs.existsSync(path.join(rootDir, 'node_modules'))) {
+                 res.writeHead(400, { 'Content-Type': 'application/json' });
+                 res.end(JSON.stringify({ error: 'node_modules missing. Run install first.' }));
+                 return;
+            }
         }
     }
 
@@ -97,6 +100,15 @@ function spawnAndMonitor(id) {
         FORCE_COLOR: '0',
         NPM_CONFIG_PROGRESS: 'false'
     };
+
+    // Sanitize npm environment variables
+    Object.keys(env).forEach(key => {
+        if (key.startsWith('npm_') || key.startsWith('NPM_') || key === 'INIT_CWD') {
+             if (!['NPM_CONFIG_AUDIT', 'NPM_CONFIG_FUND', 'NPM_CONFIG_PROGRESS'].includes(key)) {
+                delete env[key];
+             }
+        }
+    });
 
     const child = spawn(basecmd, args, {
         cwd: targetDir,

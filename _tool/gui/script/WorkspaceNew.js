@@ -111,7 +111,7 @@ function selectTemplate(template) {
     }
 
     // Auto-fill URLs
-    document.getElementById('workspace-devurl').value  = template.devurl || '';
+    document.getElementById('workspace-devurl').value  = template.devurl || 'http://localhost:3000';
     document.getElementById('workspace-install').value = template.installcmd || '';
     document.getElementById('workspace-start').value   = template.startcmd || '';
     document.getElementById('workspace-stop').value    = template.stopcmd || '';

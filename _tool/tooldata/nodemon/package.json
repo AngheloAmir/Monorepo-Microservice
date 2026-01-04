@@ -10,7 +10,7 @@
     "build": "tsc",
     "test": "jest",
     "docker": "docker build -t node-service . && docker run -p 8000:8000 node-service",
-    "stop": "npx -y kill-port 8000"
+    "stop": "npx -y kill-port 8080"
   },
   "dependencies": {
     "cookie-parser": "^1.4.7",

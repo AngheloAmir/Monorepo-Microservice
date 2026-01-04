@@ -22,25 +22,6 @@ const workspace = {
             "gitbranch": "",
             "installcmd": "npm install",
             "testcmd": ""
-        },
-        {
-            "name": "Socket",
-            "description": "This is a test socket",
-            "icon": "fa-brands fa-node-js",
-            "type": "backend",
-            "path": "/backend/Socket",
-            "devurl": "http://localhost:8081",
-            "produrl": "",
-            "installcmd": "npm install",
-            "startcmd": "npm run dev",
-            "stopcmd": "npm run stop",
-            "buildcmd": "npm run build",
-            "lintcmd": "",
-            "testcmd": "",
-            "template": "node_socket_ts",
-            "giturl": "",
-            "gitorigin": "origin",
-            "gitbranch": "master"
         }
     ],
     "frontend": [
