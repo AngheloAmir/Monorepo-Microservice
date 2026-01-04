@@ -47,28 +47,7 @@ const workspace = {
         }
     ],
     "database": [],
-    "service": [
-        {
-            "name": "temp",
-            "description": "",
-            "icon": "fa fa-cube",
-            "type": "service",
-            "path": "/service/temp",
-            "devurl": "localhost:3000",
-            "produrl": "",
-            "installcmd": "",
-            "devcmd": "",
-            "startcmd": "",
-            "stopcmd": "",
-            "buildcmd": "",
-            "lintcmd": "",
-            "testcmd": "",
-            "template": "",
-            "giturl": "",
-            "gitorigin": "origin",
-            "gitbranch": "master"
-        }
-    ]
+    "service": []
 }
 
 module.exports = workspace;
