@@ -1,0 +1,148 @@
+<div class="h-full flex flex-col bg-gray-900 text-white overflow-hidden font-sans">
+    <!-- Header -->
+<!-- 
+    <div class="border-b border-gray-800 p-6 flex justify-between items-center bg-gray-950/50 backdrop-blur-md sticky top-0 z-10">
+    <div>
+      <h1 class="text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">Turborepo Control</h1>
+      <p class="text-gray-400 text-sm mt-1">Manage tasks, pipelines, and caching across your monorepo</p>
+    </div> 
+  </div> -->
+
+    <!-- Main Content -->
+    <div class="flex-1 overflow-auto p-6 scrollbar-hide">
+
+        <!-- Quick Actions Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+            <!-- Dev -->
+            <div class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 hover:border-blue-500/50 hover:bg-gray-800/60 transition-all group cursor-pointer flex items-center gap-4"
+                onclick="window.turbo.run('dev')">
+                <div
+                    class="p-3 bg-blue-500/10 rounded-lg text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors flex-shrink-0">
+                    <i class="fas fa-code text-xl w-6 h-6 flex items-center justify-center"></i>
+                </div>
+                <div class="flex flex-col">
+                    <h3 class="font-bold text-gray-200 group-hover:text-blue-400 transition-colors">Develop</h3>
+                    <p class="text-xs text-gray-500">Run development servers</p>
+                </div>
+            </div>
+
+            <!-- Build -->
+            <div class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 hover:border-emerald-500/50 hover:bg-gray-800/60 transition-all group cursor-pointer flex items-center gap-4"
+                onclick="window.turbo.run('build')">
+                <div
+                    class="p-3 bg-emerald-500/10 rounded-lg text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-colors flex-shrink-0">
+                    <i class="fas fa-cube text-xl w-6 h-6 flex items-center justify-center"></i>
+                </div>
+                <div class="flex flex-col">
+                    <h3 class="font-bold text-gray-200 group-hover:text-emerald-400 transition-colors">Build</h3>
+                    <p class="text-xs text-gray-500">Build all packages</p>
+                </div>
+            </div>
+
+            <!-- Lint -->
+            <div class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 hover:border-purple-500/50 hover:bg-gray-800/60 transition-all group cursor-pointer flex items-center gap-4"
+                onclick="window.turbo.run('lint')">
+                <div
+                    class="p-3 bg-purple-500/10 rounded-lg text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-colors flex-shrink-0">
+                    <i class="fas fa-check-double text-xl w-6 h-6 flex items-center justify-center"></i>
+                </div>
+                <div class="flex flex-col">
+                    <h3 class="font-bold text-gray-200 group-hover:text-purple-400 transition-colors">Lint</h3>
+                    <p class="text-xs text-gray-500">Check code quality</p>
+                </div>
+            </div>
+
+            <!-- Test -->
+            <div class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 hover:border-pink-500/50 hover:bg-gray-800/60 transition-all group cursor-pointer flex items-center gap-4"
+                onclick="window.turbo.run('test')">
+                <div
+                    class="p-3 bg-pink-500/10 rounded-lg text-pink-400 group-hover:bg-pink-500 group-hover:text-white transition-colors flex-shrink-0">
+                    <i class="fas fa-vial text-xl w-6 h-6 flex items-center justify-center"></i>
+                </div>
+                <div class="flex flex-col">
+                    <h3 class="font-bold text-gray-200 group-hover:text-pink-400 transition-colors">Test</h3>
+                    <p class="text-xs text-gray-500">Run test suites</p>
+                </div>
+            </div>
+
+            <!-- Viz Graph -->
+            <div
+                class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 transition-all group flex items-center gap-4 opacity-60 cursor-not-allowed relative overflow-hidden">
+                <!-- Coming soon ribbon logic if needed, or just disabled look -->
+                <div class="absolute -right-8 top-3 bg-gray-700 text-gray-300 text-[10px] px-8 py-1 rotate-45">Soon
+                </div>
+
+                <div class="p-3 bg-gray-700/50 rounded-lg text-gray-500 flex-shrink-0">
+                    <i class="fas fa-project-diagram text-xl w-6 h-6 flex items-center justify-center"></i>
+                </div>
+                <div class="flex flex-col">
+                    <h3 class="font-bold text-gray-500">Viz Graph</h3>
+                    <p class="text-xs text-gray-600">View dependency graph</p>
+                </div>
+            </div>
+
+            <!-- Clean Cache -->
+            <div class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 hover:border-red-500/50 hover:bg-gray-800/60 transition-all group cursor-pointer flex items-center gap-4"
+                onclick="window.turbo.startCommand(['turbo', 'clean'])">
+                <div
+                    class="p-3 bg-red-500/10 rounded-lg text-red-400 group-hover:bg-red-500 group-hover:text-white transition-colors flex-shrink-0">
+                    <i class="fas fa-trash-alt text-xl w-6 h-6 flex items-center justify-center"></i>
+                </div>
+                <div class="flex flex-col">
+                    <h3 class="font-bold text-gray-200 group-hover:text-red-400 transition-colors">Clean Cache</h3>
+                    <p class="text-xs text-gray-500">Clear turbo cache & artifacts</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced/Detailed View -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[500px]">
+            <!-- Workspaces List -->
+            <div class="col-span-1 bg-gray-900 border border-gray-800 rounded-xl p-4 flex flex-col h-full shadow-xl">
+                <div class="flex justify-between items-center mb-4 px-2">
+                    <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider">Workspaces</h3>
+                    <span class="text-xs bg-gray-800 px-2 py-1 rounded text-gray-500">Auto-detected</span>
+                </div>
+
+                <div class="flex-1 overflow-y-auto space-y-1 pr-2 scrollbar-thin scrollbar-thumb-gray-800"
+                    id="turbo-workspace-list">
+                    <!-- Populated by JS -->
+                    <div class="animate-pulse bg-gray-800 h-8 rounded w-full"></div>
+                    <div class="animate-pulse bg-gray-800 h-8 rounded w-full delay-75"></div>
+                    <div class="animate-pulse bg-gray-800 h-8 rounded w-full delay-150"></div>
+                </div>
+            </div>
+
+            <!-- Terminal Output -->
+            <div
+                class="col-span-2 bg-black rounded-xl border border-gray-800 flex flex-col overflow-hidden font-mono text-sm relative group shadow-xl">
+                <div
+                    class="bg-gray-900 p-2 flex justify-between items-center border-b border-gray-800 text-xs px-4 select-none">
+                    <span class="text-gray-400 flex items-center gap-2">
+                        <i class="fas fa-terminal text-blue-500"></i>
+                        Output Console
+                    </span>
+                    <button class="text-gray-500 hover:text-white transition-colors"
+                        onclick="document.getElementById('turbo-output').innerHTML = ''">
+                        <i class="fas fa-ban mr-1"></i> Clear
+                    </button>
+                </div>
+                <div id="turbo-output"
+                    class="flex-1 p-4 overflow-y-auto text-gray-300 space-y-1 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
+                    <div class="text-gray-500 italic opacity-50">Ready to run turbo tasks...</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Initialize if window.turbo is available
+    if (window.turbo) {
+        window.turbo.init();
+    } else {
+        // Retry shortly if script is still loading
+        setTimeout(() => window.turbo && window.turbo.init(), 100);
+    }
+</script>
