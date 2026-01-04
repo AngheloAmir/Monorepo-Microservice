@@ -33,7 +33,7 @@ const crud = [
                 "route": "/pingstream",
                 "methods": "STREAM",
                 "description": "Send a stream request to check if it sending correctly",
-                "sampleInput": "{\n   \"data\": \"test\", \n   \"message\": \"test\"\n}",
+                "sampleInput": "{ }",
                 "suggested": [
                     {
                         "name": "I Wandered Lonely as a Cloud",
