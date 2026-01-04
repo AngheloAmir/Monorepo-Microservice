@@ -1,0 +1,19 @@
+<div class="flex flex-col h-full bg-black rounded-xl border border-gray-800 overflow-hidden font-mono text-sm relative group shadow-xl">
+    <div class="bg-gray-900 p-2 flex justify-between items-center border-b border-gray-800 text-xs px-4 select-none flex-none">
+        <span class="text-gray-400 flex items-center gap-2 console-header-title">
+            <i class="fas fa-terminal text-blue-500"></i>
+            Output Console
+        </span>
+        <div class="flex gap-2">
+            <button class="text-gray-500 hover:text-white transition-colors btn-copy">
+                <i class="fas fa-copy mr-1"></i>
+            </button>
+            <button class="text-gray-500 hover:text-white transition-colors btn-clear">
+                <i class="fas fa-ban mr-1"></i> Clear
+            </button>
+        </div>
+    </div>
+    <div class="console-output flex-1 p-4 overflow-y-auto text-gray-300 space-y-1 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
+        <div class="text-gray-500 italic opacity-50">Checking Console...</div>
+    </div>
+</div>

@@ -5,10 +5,10 @@
   "scripts": {
     "start": "node dist/index.js",
     "start:ts": "ts-node src/index.ts",
-    "dev": "ts-node src/index.ts",
     "build": "tsc",
     "docker": "docker build -t node-service . && docker run -p 8000:8000 node-service",
-    "stop": "npx -y kill-port 8080"
+    "stop": "npx -y kill-port 8080",
+    "dev": "ts-node src/index.ts"
   },
   "keywords": [],
   "author": "",
