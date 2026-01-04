@@ -19,7 +19,7 @@ function handleTurboRequest(req, res) {
              const data = JSON.parse(body);
              const { action, manualCommand } = data; 
              
-             if (isRunning) {
+             if (isRunning && action !== 'stop') {
                  res.writeHead(409, { 'Content-Type': 'application/json' });
                  res.end(JSON.stringify({ error: 'A Turbo task is already running. Please wait.' }));
                  return;
@@ -27,7 +27,12 @@ function handleTurboRequest(req, res) {
              
              // Allow passing manualCommand array for custom stuff like ['turbo', 'clean']
              // OR action string for 'run <action>'
-             startTurboProcess(res, action, manualCommand);
+
+             if (action === 'stop') {
+                 stopTurboProcess(res);
+             } else {
+                 startTurboProcess(res, action, manualCommand);
+             }
 
          } catch (e) {
              res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -74,6 +79,7 @@ function startTurboProcess(res, action, manualCommand) {
         cwd: workspaceRoot,
         env: env,
         shell: true,
+        detached: true, // Key for group kill
         stdio: ['ignore', 'pipe', 'pipe']
     });
 
@@ -93,6 +99,36 @@ function startTurboProcess(res, action, manualCommand) {
         emit(`\n> Failed to start turbo: ${err.message}\n`);
         emit('::DONE::');
     });
+}
+
+function stopTurboProcess(res) {
+    if (!isRunning || !currentChild) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, message: 'No process running' }));
+        return;
+    }
+
+    const killProcess = (pid) => {
+        try {
+            if (process.platform === 'win32') {
+                 spawn('taskkill', ['/pid', pid, '/T', '/F']);
+            } else {
+                 process.kill(-pid, 'SIGKILL'); // Kill process group
+            }
+        } catch (e) {
+            // Process might be gone already
+        }
+    };
+
+    killProcess(currentChild.pid);
+    
+    // Force reset state to unblock, in case close event doesn't fire or is delayed
+    isRunning = false;
+    currentChild = null;
+
+    // We don't force isRunning=false here, we let the close event handle it
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ success: true, message: 'Stop requested' }));
 }
 
 module.exports = { handleTurboRequest };
