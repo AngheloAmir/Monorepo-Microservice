@@ -5,11 +5,11 @@
 const workspace = {
     "backend": [
         {
-            "name": "NodeJS",
+            "name": "nodejs",
             "description": "Primary API Server",
             "icon": "fa-brands fa-node-js",
             "type": "backend",
-            "path": "/backend/NodeJS",
+            "path": "/backend/nodejs",
             "devurl": "http://localhost:8080",
             "produrl": "",
             "giturl": "",
@@ -20,11 +20,11 @@ const workspace = {
     ],
     "frontend": [
         {
-            "name": "FoodShop",
+            "name": "food-shop",
             "description": "Frontend for customer",
             "icon": "fa-solid fa-user",
             "type": "frontend",
-            "path": "/frontend/FoodShop",
+            "path": "/frontend/food-shop",
             "devurl": "http://localhost:3002",
             "produrl": "",
             "template": "reactapp",
@@ -33,11 +33,11 @@ const workspace = {
             "gitbranch": "master"
         },
         {
-            "name": "AdminPanel",
+            "name": "admin-panel",
             "description": "Private App",
             "icon": "fa-brands fa-react",
             "type": "frontend",
-            "path": "/frontend/AdminPanel",
+            "path": "/frontend/admin-panel",
             "devurl": "http://localhost:3001",
             "produrl": "",
             "template": "reactapp",

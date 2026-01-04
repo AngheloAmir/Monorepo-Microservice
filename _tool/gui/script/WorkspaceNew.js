@@ -137,7 +137,7 @@ window.createWorkspace = async function() {
     }
 
     const data = {
-        name: document.getElementById('workspace-name').value,
+        name: document.getElementById('workspace-name').value.toLowerCase(),
         description: document.getElementById('workspace-desc').value,
         icon: document.getElementById('workspace-icon').value,
         type: document.querySelector('#add-workspace-modal .type-btn.active')?.dataset.type || 'service', 

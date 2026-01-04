@@ -7,6 +7,7 @@ const { exec } = require('child_process');
  * @param {Object} data - The repository data object (name, type, template, description, etc)
  */
 async function generateTemplate(data) {
+    if(data.name) data.name = data.name.toLowerCase();
     const { name, type, template: templateName } = data;
 
     if (!name || !type) {

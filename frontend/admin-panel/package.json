@@ -1,7 +1,7 @@
 {
-  "name": "FoodShop",
+  "name": "admin-panel",
   "version": "0.0.0",
-  "description": "Frontend for customer",
+  "description": "Private App",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -15,7 +15,6 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@monorepo/config": "*",
     "@radix-ui/react-icons": "^1.3.2",
     "@radix-ui/themes": "^3.2.1",
     "@tailwindcss/postcss": "^4.1.18",
