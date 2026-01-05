@@ -26,8 +26,9 @@ window.crudState = {       // Persistent state
     expandedCategories: new Set() // Store indices of open categories
 };
 
-
-
+// Turborepo Cache
+window.turboGraphData = null;
+window.componentCache = {};
 // Home/Dashboard State
 window.homeState = {
     peakMemory: 0,

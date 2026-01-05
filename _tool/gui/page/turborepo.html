@@ -1,110 +1,96 @@
 <div class="h-full flex flex-col bg-gray-900 text-white overflow-hidden font-sans">
     <!-- Header -->
-
     <div class="border-b border-gray-800 p-4 flex justify-between items-center bg-gray-950/50 backdrop-blur-md sticky top-0 z-10">
-    <div>
-      <h1 class="text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">Turborepo Control</h1>
-    </div> 
-  </div>
+        <div>
+            <h1 class="text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">Turborepo Management</h1>
+        </div> 
+        
+        <!-- Tabs -->
+        <div class="flex bg-gray-800/50 p-1 rounded-lg border border-gray-700/50">
+            <button onclick="window.turboPage.switchTab('control')" id="tab-control" 
+                class="px-4 py-1.5 rounded-md text-sm font-medium transition-all text-white bg-gray-700 shadow-sm">
+                <i class="fas fa-sliders-h mr-2"></i>Control
+            </button>
+            <button onclick="window.turboPage.switchTab('graph')" id="tab-graph"
+                class="px-4 py-1.5 rounded-md text-sm font-medium transition-all text-gray-400 hover:text-white">
+                <i class="fas fa-project-diagram mr-2"></i>Graph
+            </button>
+        </div>
+    </div>
 
     <!-- Main Content -->
-    <div class="flex-1 overflow-auto p-6 scrollbar-hide flex flex-col lg:flex-row gap-6">
-
-        <!-- Left Column: Actions -->
-        <div class="w-full lg:w-1/3 flex flex-none flex-col gap-4">
-            <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Tasks</h2>
-             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Install -->
-                <div class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 hover:border-blue-500/50 hover:bg-gray-800/60 transition-all group cursor-pointer flex items-center gap-4"
-                    onclick="window.turbo.run('install')">
-                    <div class="p-3 bg-blue-500/10 rounded-lg text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors flex-shrink-0">
-                        <i class="fas fa-download text-xl w-6 h-6 flex items-center justify-center"></i>
-                    </div>
-                    <div class="flex flex-col">
-                        <h3 class="font-bold text-gray-200 group-hover:text-blue-400 transition-colors">Install</h3>
-                        <p class="text-xs text-gray-500">Install dependencies</p>
-                    </div>
-                </div>
-
-                <!-- Dev -->
-                <div class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 hover:border-blue-500/50 hover:bg-gray-800/60 transition-all group cursor-pointer flex items-center gap-4"
-                    onclick="window.turbo.run('dev')">
-                    <div class="p-3 bg-blue-500/10 rounded-lg text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors flex-shrink-0">
-                        <i class="fas fa-code text-xl w-6 h-6 flex items-center justify-center"></i>
-                    </div>
-                    <div class="flex flex-col">
-                        <h3 class="font-bold text-gray-200 group-hover:text-blue-400 transition-colors">Develop</h3>
-                        <p class="text-xs text-gray-500">Run dev servers</p>
-                    </div>
-                </div>
-
-                <!-- Build -->
-                <div class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 hover:border-emerald-500/50 hover:bg-gray-800/60 transition-all group cursor-pointer flex items-center gap-4"
-                    onclick="window.turbo.run('build')">
-                    <div class="p-3 bg-emerald-500/10 rounded-lg text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-colors flex-shrink-0">
-                        <i class="fas fa-cube text-xl w-6 h-6 flex items-center justify-center"></i>
-                    </div>
-                    <div class="flex flex-col">
-                        <h3 class="font-bold text-gray-200 group-hover:text-emerald-400 transition-colors">Build</h3>
-                        <p class="text-xs text-gray-500">Build all</p>
-                    </div>
-                </div>
-
-                <!-- Lint -->
-                <div class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 hover:border-purple-500/50 hover:bg-gray-800/60 transition-all group cursor-pointer flex items-center gap-4"
-                    onclick="window.turbo.run('lint')">
-                    <div class="p-3 bg-purple-500/10 rounded-lg text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-colors flex-shrink-0">
-                        <i class="fas fa-check-double text-xl w-6 h-6 flex items-center justify-center"></i>
-                    </div>
-                    <div class="flex flex-col">
-                        <h3 class="font-bold text-gray-200 group-hover:text-purple-400 transition-colors">Lint</h3>
-                         <p class="text-xs text-gray-500">Check code</p>
-                    </div>
-                </div>
-
-                <!-- Test -->
-                <div class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 hover:border-pink-500/50 hover:bg-gray-800/60 transition-all group cursor-pointer flex items-center gap-4"
-                    onclick="window.turbo.run('test')">
-                    <div class="p-3 bg-pink-500/10 rounded-lg text-pink-400 group-hover:bg-pink-500 group-hover:text-white transition-colors flex-shrink-0">
-                        <i class="fas fa-vial text-xl w-6 h-6 flex items-center justify-center"></i>
-                    </div>
-                    <div class="flex flex-col">
-                        <h3 class="font-bold text-gray-200 group-hover:text-pink-400 transition-colors">Test</h3>
-                        <p class="text-xs text-gray-500">Run tests</p>
-                    </div>
-                </div>
-
-                <!-- Clean Cache -->
-                <div class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 hover:border-red-500/50 hover:bg-gray-800/60 transition-all group cursor-pointer flex items-center gap-4"
-                    onclick="window.turbo.startCommand(['turbo', 'clean'])">
-                    <div class="p-3 bg-red-500/10 rounded-lg text-red-400 group-hover:bg-red-500 group-hover:text-white transition-colors flex-shrink-0">
-                        <i class="fas fa-trash-alt text-xl w-6 h-6 flex items-center justify-center"></i>
-                    </div>
-                    <div class="flex flex-col">
-                        <h3 class="font-bold text-gray-200 group-hover:text-red-400 transition-colors">Clean</h3>
-                        <p class="text-xs text-gray-500">Clear cache</p>
-                    </div>
-                </div>
-
-
-            </div>
+    <div class="flex-1 overflow-hidden relative">
+        <!-- Control Tab -->
+        <div id="view-control" class="absolute inset-0 p-6 overflow-auto">
+             <!-- Injected TurboControl.html -->
         </div>
 
-        <!-- Right Column: Console -->
-        <div class="flex-1 min-h-[500px] h-full" id="turbo-console-container">
-            <!-- Populated by JS -->
-            <div class="h-full bg-gray-800/30 rounded-xl animate-pulse"></div>
+        <!-- Graph Tab -->
+        <div id="view-graph" class="absolute inset-0 p-6 hidden">
+             <!-- Injected TurboGraph.html -->
         </div>
-
     </div>
 </div>
 
 <script>
-    // Initialize if window.turbo is available
-    if (window.turbo) {
-        window.turbo.init();
-    } else {
-        // Retry shortly if script is still loading
-        setTimeout(() => window.turbo && window.turbo.init(), 100);
-    }
+    window.turboPage = {
+        init: async function() {
+            console.log('TurboPage initializing...');
+            await this.loadComponent('view-control', '/gui/components/TurboControl.html');
+            await this.loadComponent('view-graph', '/gui/components/TurboGraph.html');
+            
+            this.switchTab('control'); // Set default
+        },
+
+        loadComponent: async function(id, url) {
+            const el = document.getElementById(id);
+            if(!el) return;
+            
+            if (window.componentCache[url]) {
+                el.innerHTML = window.componentCache[url];
+            } else {
+                const res = await fetch(url);
+                const text = await res.text();
+                window.componentCache[url] = text;
+                el.innerHTML = text;
+            }
+        },
+
+        switchTab: function(tab) {
+            const controlBtn = document.getElementById('tab-control');
+            const graphBtn = document.getElementById('tab-graph');
+            const controlView = document.getElementById('view-control');
+            const graphView = document.getElementById('view-graph');
+
+            if (tab === 'control') {
+                controlBtn.classList.add('bg-gray-700', 'text-white', 'shadow-sm');
+                controlBtn.classList.remove('text-gray-400', 'hover:text-white');
+                
+                graphBtn.classList.remove('bg-gray-700', 'text-white', 'shadow-sm');
+                graphBtn.classList.add('text-gray-400', 'hover:text-white');
+
+                controlView.classList.remove('hidden');
+                graphView.classList.add('hidden');
+                
+                if(window.TurboControl && window.TurboControl.init) {
+                    window.TurboControl.init();
+                }
+            } else {
+                graphBtn.classList.add('bg-gray-700', 'text-white', 'shadow-sm');
+                graphBtn.classList.remove('text-gray-400', 'hover:text-white');
+                
+                controlBtn.classList.remove('bg-gray-700', 'text-white', 'shadow-sm');
+                controlBtn.classList.add('text-gray-400', 'hover:text-white');
+
+                graphView.classList.remove('hidden');
+                controlView.classList.add('hidden');
+                
+                if(window.TurboGraph && window.TurboGraph.init) {
+                    window.TurboGraph.init();
+                }
+            }
+        }
+    };
+
+    window.turboPage.init();
 </script>

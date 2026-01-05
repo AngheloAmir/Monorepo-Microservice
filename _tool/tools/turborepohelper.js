@@ -30,6 +30,8 @@ function handleTurboRequest(req, res) {
 
              if (action === 'stop') {
                  stopTurboProcess(res);
+             } else if (action === 'get-graph') {
+                 getTurboGraph(res);
              } else {
                  startTurboProcess(res, action, manualCommand);
              }
@@ -129,6 +131,57 @@ function stopTurboProcess(res) {
     // We don't force isRunning=false here, we let the close event handle it
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ success: true, message: 'Stop requested' }));
+}
+
+
+function getTurboGraph(res) {
+    const workspaceRoot = path.resolve(__dirname, '../../');
+    const turboArgs = ['turbo', 'run', 'build', '--dry=json'];
+
+    runExec(workspaceRoot, 'npx', turboArgs)
+        .then(output => {
+            try {
+                // Find the JSON part if there is extra noise (npx can be noisy)
+                // But usually --dry=json is clean if force color is off
+                const graphJson = JSON.parse(output);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ graph: graphJson }));
+            } catch (e) {
+                console.error("JSON Parse Error", e); //, output
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Failed to parse graph output' }));
+            }
+        })
+        .catch(err => {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Graph generation failed: ' + err.message }));
+        });
+}
+
+function runExec(cwd, command, args) {
+    return new Promise((resolve, reject) => {
+        const child = spawn(command, args, {
+            cwd,
+            shell: true,
+            env: { ...process.env, CI: 'true', FORCE_COLOR: '0' }
+        });
+
+        let stdout = '';
+        let stderr = '';
+
+        child.stdout.on('data', d => stdout += d.toString());
+        child.stderr.on('data', d => stderr += d.toString());
+
+        child.on('close', (code) => {
+            if (code === 0) {
+                resolve(stdout);
+            } else {
+                reject(new Error(`Command failed with code ${code}: ${stderr || stdout}`));
+            }
+        });
+        
+        child.on('error', (err) => reject(err));
+    });
 }
 
 module.exports = { handleTurboRequest };
