@@ -141,10 +141,10 @@ function handleToggleExclude(req, res) {
                                 directoryChildren.push(child.name);
                                 const relPath = `${root}/${child.name}`;
                                 
-                                // Check if this specific child is active
-                                if (activePaths.has(relPath)) {
+                                // Check if this specific child is active OR if it is the "shared" folder (always visible)
+                                if (activePaths.has(relPath) || root === 'shared') {
                                     hasActiveChildInRoot = true;
-                                    // It is running, so ensure it is Visible
+                                    // It is running (or is shared), so ensure it is Visible
                                     settings['files.exclude'][`**/${relPath}`] = false;
                                 } else {
                                     // It is NOT running, so Hide it (potentially)
@@ -160,7 +160,7 @@ function handleToggleExclude(req, res) {
                         console.error(`Error scanning ${root}`, e);
                     }
 
-                    if (!hasActiveChildInRoot) {
+                    if (!hasActiveChildInRoot && root !== 'shared') {
                         // Optimization: Hide the entire root folder if nothing inside is running
                         settings['files.exclude'][`**/${root}`] = true;
                     } else {
