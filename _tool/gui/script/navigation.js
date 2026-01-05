@@ -4,7 +4,7 @@ window.Navigation = {
         { id: 'workspace',  label: 'Workspace', icon: 'fa fa-cube', component: 'workspace' },
         { id: 'turborepo',  label: 'Turborepo', icon: 'fa-solid fa-truck-fast', component: 'turborepo' },
 
-        { id: 'changes',     label: 'Changes', icon: 'fas fa-code-branch', component: 'changes' },
+
         { id: 'deployments', label: 'Deployments', icon: 'fa-rocket', component: 'deployments' },
 
         { id: 'crudtester', label: 'CRUD Tester', icon: 'fa-microscope', component: 'crudtester' },

@@ -26,8 +26,7 @@ window.crudState = {       // Persistent state
     expandedCategories: new Set() // Store indices of open categories
 };
 
-// Changes Module Cache
-window.changesConfig = null;
+
 
 // Home/Dashboard State
 window.homeState = {

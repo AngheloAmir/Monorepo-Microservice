@@ -90,9 +90,7 @@ const server = http.createServer((req, res) => {
         return handleDockerRequest(req, res);
 
     // CI/CD Routes
-    case '/api/changes':
-        const { apiChangesHandler } = require('./tools/apiChanges');
-        return apiChangesHandler(req, res);
+
     
     case '/api/cd':
         const { apiCdHandler } = require('./tools/apiCd');
