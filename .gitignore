@@ -17,3 +17,4 @@ app/
 _build/build/**
 _build/bundle/**
 .turbo
+_temp

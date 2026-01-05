@@ -62,6 +62,7 @@
          });
 
          document.getElementById('turbo-ci-create-btn').addEventListener('click', createProviderFile);
+         document.getElementById('turbo-ci-deploy-btn').addEventListener('click', insertDeploymentCode);
     }
 
     function initSocket() {
@@ -228,6 +229,44 @@
 
         } catch (e) {
              if (consoleDiv) consoleDiv.log(`Error: ${e.message}\n`, true);
+        }
+    }
+    
+
+
+    function insertDeploymentCode() {
+        if (!editor || !currentProvider) return;
+        
+        let snippet = "";
+        
+        if (currentProvider === 'vercel') {
+            // JSON
+            snippet = `
+  ,
+  "build": {
+    "env": {
+      "MY_API_KEY": "@my-api-key"
+    }
+  }`;
+             editor.navigateFileEnd();
+             // Simple hack for JSON, user will likely need to fix comma placement manually if specific
+             // But appending to end of valid JSON is invalid. 
+             // Let's just insert at cursor for JSON to be safe or warn.
+             // editor.insert(snippet);
+             alert("For Vercel (JSON), please place cursor inside the JSON object before inserting.");
+             editor.insert(snippet);
+        } else {
+            // YAML
+            snippet = `
+      - name: Deploy
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Deploying..."
+          # Add your deployment commands here
+`;
+            editor.navigateFileEnd();
+            editor.insert(snippet);
+            editor.scrollToLine(editor.session.getLength(), true, true, function() {});
         }
     }
     

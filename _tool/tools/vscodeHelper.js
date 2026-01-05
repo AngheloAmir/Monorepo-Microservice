@@ -31,9 +31,12 @@ const EXCLUDE_PATTERNS = {
     ".gitignore":        true,
     ".vscode":           true,
     "package.json":      true,
-    "README.md":         true
-
-    //no essential when programming
+    "README.md":         true,
+    ".github":           true,
+    ".buildkite":        true,
+    ".circleci":         true,
+    ".gitlab-ci.yml":    true,
+    ".travis.yml":       true,
 };
 
 const EXCLUDE_PATTERNS_DEFAULT = {
