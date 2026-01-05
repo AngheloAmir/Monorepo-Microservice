@@ -1,0 +1,11 @@
+{
+  "name": "@monorepo/api",
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

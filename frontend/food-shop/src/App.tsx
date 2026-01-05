@@ -25,7 +25,7 @@ function App() {
                         <Text as="p">
                             This application is now consuming components from <code>packages/ui</code> (aliased as shared/components).
 
-                            { config.test }
+                            { config.test ?? 'No config found' }
                         </Text>
                     </Card>
                 </div>

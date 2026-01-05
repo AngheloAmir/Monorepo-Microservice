@@ -1,4 +1,6 @@
 //@ts-nocheck
+export * from './apiServer';
+
 
 //These values are temporary, this tells how they are used
 const config = {

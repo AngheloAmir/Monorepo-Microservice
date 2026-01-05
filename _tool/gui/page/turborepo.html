@@ -1,20 +1,33 @@
 <div class="h-full flex flex-col bg-gray-900 text-white overflow-hidden font-sans">
     <!-- Header -->
     <div class="border-b border-gray-800 p-4 flex justify-between items-center bg-gray-950/50 backdrop-blur-md sticky top-0 z-10">
-        <div>
-            <h1 class="text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">Turborepo Management</h1>
-        </div> 
-        
-        <!-- Tabs -->
+        <!-- Tabs (Left) -->
         <div class="flex bg-gray-800/50 p-1 rounded-lg border border-gray-700/50">
             <button onclick="window.turboPage.switchTab('control')" id="tab-control" 
-                class="px-4 py-1.5 rounded-md text-sm font-medium transition-all text-white bg-gray-700 shadow-sm">
-                <i class="fas fa-sliders-h mr-2"></i>Control
+                class="px-4 py-1.5 rounded-md text-sm font-bold transition-all text-white bg-gray-700 shadow-sm flex items-center gap-2">
+                <i class="fas fa-sliders-h"></i> Control
             </button>
             <button onclick="window.turboPage.switchTab('graph')" id="tab-graph"
-                class="px-4 py-1.5 rounded-md text-sm font-medium transition-all text-gray-400 hover:text-white">
-                <i class="fas fa-project-diagram mr-2"></i>Graph
+                class="px-4 py-1.5 rounded-md text-sm font-medium transition-all text-gray-400 hover:text-white flex items-center gap-2">
+                <i class="fas fa-project-diagram"></i> Dependency Graph
             </button>
+        </div>
+        
+
+        <!-- Tabs -->
+
+
+        <!-- Info (Right) -->
+        <div class="flex flex-col items-end">
+            <div class="flex items-center gap-2">
+                <h1 class="text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
+                    Turborepo.js by 
+                    <span class="text-white">Vercel</span>
+                </h1>
+            </div>
+            <span class="text-[10px] text-gray-500 uppercase tracking-widest font-semibold flex items-center gap-1">
+                 GUI Tool <span class="w-1 h-1 rounded-full bg-gray-700"></span> made by AngheloAmir
+            </span>
         </div>
     </div>
 

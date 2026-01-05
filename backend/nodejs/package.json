@@ -17,6 +17,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "@monorepo/config": "*",
+    "@monorepo/api": "*",
     "chalk": "^4.1.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
