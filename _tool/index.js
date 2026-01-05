@@ -20,7 +20,8 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  switch( req.url ) {
+  const urlPath = req.url.split('?')[0];
+  switch( urlPath ) {
     case '/':
     case '/index.html':
       return serveGUIFile(req, res);
@@ -99,6 +100,11 @@ const server = http.createServer((req, res) => {
     case '/api/turborepo':
         const { handleTurboRequest } = require('./tools/turborepohelper');
         return handleTurboRequest(req, res);
+
+    // Turbo CI Route
+    case '/api/turboci':
+        const { handleTurboCIRequest } = require('./tools/turborepocihelper');
+        return handleTurboCIRequest(req, res);
 
     // VS Code Helper Routes
     case '/api/vscode/toggle-exclude':
