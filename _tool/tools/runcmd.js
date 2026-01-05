@@ -66,7 +66,8 @@ function executeCommand(res, { directory, basecmd, cmd }) {
     // Prepare Environment
     const env = { 
         ...process.env, 
-        TERM: 'dumb',
+        // TERM: 'dumb', // This disables colors
+        FORCE_COLOR: '1', // This forces 16-color ANSI output
         NPM_CONFIG_AUDIT: 'false',
         NPM_CONFIG_FUND: 'false',
         NPM_CONFIG_PROGRESS: 'false',
@@ -83,26 +84,8 @@ function executeCommand(res, { directory, basecmd, cmd }) {
     });
     
     const args = Array.isArray(cmd) ? cmd : [cmd];
-
     if (basecmd === 'npx') {
-        // DO NOT automatically append --yes for 'turbo run'.
-        // Why? Turbo interprets '--yes' as a flag for the executed command if not careful,
-        // or unexpected argument.
-        // Usually, '--yes' is for auto-installing the package.
-        // It's safer to add it only if the command is NOT 'turbo' or just rely on user explicit command.
-        
-        // Check if first arg is turbo
-        const isTurbo = args[0] === 'turbo';
-        if (!isTurbo && !args.includes('--yes')) {
-            args.unshift('--yes'); // Prepend it for npx
-        } else if (isTurbo) {
-            // Turbo doesn't need --yes unless installing turbo itself
-            // but we usually assume turbo is local or handled.
-            // If we really want to ensure npx runs without prompt:
-            // args.unshift('--yes'); // Turbo might complain about unexpected argument depending on position
-            // Tests show turbo run build --yes fails.
-            // So we skip it for turbo.
-        }
+        if (!args.includes('--yes')) args.push('--yes');
     }
 
     const child = spawn(basecmd, args, {

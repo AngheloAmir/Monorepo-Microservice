@@ -212,26 +212,52 @@
 
         if (consoleDiv) consoleDiv.log(`> ${fullCmd}\n`);
         
-        // Parse command (naive split)
+        // Parse command: check if it starts with turbo
+        // Standardize: The turborepohelper expects 'action' (turbo run <action>) OR 'manualCommand' array
+        
         const parts = fullCmd.split(' ');
-        const basecmd = parts[0];
-        const cmd = parts.slice(1);
+        
+        // Prepare payload
+        let payload = {};
+        
+        // Heuristic: If it starts with 'npx turbo run <task>', extract task
+        // But user might type arbitrary stuff.
+        // turborepohelper 'manualCommand' passes raw args to npx --yes ...
+        // So if user typed 'npx turbo run build', we want to pass ['turbo', 'run', 'build'] 
+        // IF the helper uses npx by default for manualCommand.
+        
+        // Let's verify turborepohelper.js:
+        // if (manualCommand && Array.isArray(manualCommand)) { args = ['--yes', ...manualCommand]; }
+        // baseCmd = 'npx';
+        
+        // So if user types "npx turbo run build", we should strip "npx" and pass ["turbo", "run", "build"]
+        // If user types "turbo run build", pass ["turbo", "run", "build"]
+        
+        let cmdParts = parts;
+        if (parts[0] === 'npx') {
+            cmdParts = parts.slice(1); 
+        }
+        
+        // If user typed 'turbo', we keep it.
+        // If user typed 'npm run build', we keep it? 
+        // turborepohelper runs with npx. 'npx npm run build' works but is weird.
+        // But the request is to use turborepohelper which is optimized for turbo interactions.
+        
+        payload = { manualCommand: cmdParts };
 
         try {
-             const res = await fetch('/api/runcmd', {
+             // We use /api/turborepo which maps to turborepohelper
+             const res = await fetch('/api/turborepo', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    directory: '.', 
-                    basecmd, 
-                    cmd 
-                }) 
+                body: JSON.stringify(payload)
             });
             
             const data = await res.json();
             
             if (data.runId) {
                 currentRunId = data.runId;
+                if (consoleDiv) consoleDiv.log(`> Started Process ID: ${data.runId}\n`, true);
             } else if (data.error) {
                  if (consoleDiv) consoleDiv.log(`Error: ${data.error}\n`, true);
             }
