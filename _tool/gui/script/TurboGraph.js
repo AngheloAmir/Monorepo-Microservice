@@ -7,6 +7,12 @@ window.TurboGraph = {
     },
 
     render: function() {
+        // If we already have a functional network instance, do nothing.
+        // The DOM is preserved (hidden via CSS), so the canvas is still there.
+        if (window.turboGraphInstance) {
+            return;
+        }
+
         const container = document.getElementById('turbo-graph-container');
         if(!container) return;
 
@@ -22,6 +28,13 @@ window.TurboGraph = {
         const container = document.getElementById('turbo-graph-container');
         if(!container) return;
         
+        // Force fully reset
+        if(window.turboGraphInstance) {
+            window.turboGraphInstance.destroy();
+            window.turboGraphInstance = null;
+        }
+        window.turboGraphData = null;
+
         // Show loading state
         container.innerHTML = `
         <div class="absolute inset-0 flex items-center justify-center text-gray-500">
@@ -54,6 +67,7 @@ window.TurboGraph = {
     },
 
     buildNetwork: function(container, graphData) {
+        // ... (data processing omitted, assume similar logic) ...
         // Reuse logic from DependencyGraph
         // 1. Process Nodes and Edges
         const nodes = [];
@@ -92,7 +106,7 @@ window.TurboGraph = {
                 if (!nodeSet.has(pkg)) {
                     nodeSet.add(pkg);
                     const isPackage = pkg.startsWith('@');
-                    const label = pkg.replace(/^@monorepo\//, '');
+                    const label     = pkg.replace(/^@monorepo\//, '');
                     
                     nodes.push({
                         id: pkg,
@@ -139,22 +153,38 @@ window.TurboGraph = {
             nodes: {
                 shadow: { enabled: true, color: 'rgba(0,0,0,0.5)', size: 10, x: 5, y: 5 }
             },
+            layout: {
+                hierarchical: {
+                    enabled: true,
+                    direction: 'DU', // Up-Down
+                    sortMethod: 'directed',
+                    nodeSpacing: 150,
+                }
+            },
             physics: {
-                enabled: false,
+                enabled: true, // Physics usually helpful for settling hierarchical
+                hierarchicalRepulsion: {
+                    nodeDistance: 150
+                },
                 stabilization: { enabled: true, iterations: 1000, fit: true }
             },
             interaction: {
-                dragNodes: true, dragView: true, zoomView: true
+                dragView: true, zoomView: true
             }
         };
 
         const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
-        this.network = new vis.Network(container, data, options);
+        window.turboGraphInstance = new vis.Network(container, data, options);
     },
     
     getIconCode: function(name) {
-        if(name.includes('api') || name.includes('backend')) return '\uf1c0'; 
-        if(name.includes('web') || name.includes('app') || name.includes('admin')) return '\uf108';
+        // console.log(name);
+
+        // //colorer the backend as blue
+        // if(name.includes('backend')) return '\uf1c0'; 
+        // if(name.includes('api')) return '\uf1c0'; 
+
+        // if(name.includes('web') || name.includes('app') || name.includes('admin')) return '\uf108';
         return '\uf07b'; 
     }
 };

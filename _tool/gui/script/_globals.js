@@ -28,6 +28,7 @@ window.crudState = {       // Persistent state
 
 // Turborepo Cache
 window.turboGraphData = null;
+window.turboGraphInstance = null;
 window.componentCache = {};
 // Home/Dashboard State
 window.homeState = {
