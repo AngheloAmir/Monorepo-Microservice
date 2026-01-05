@@ -35,3 +35,7 @@ window.homeState = {
     peakMemory: 0,
     eventSource: null
 };
+
+// TurboControl
+window.turboConsoleInstance = null;
+window.turboCIConsoleInstance = null;

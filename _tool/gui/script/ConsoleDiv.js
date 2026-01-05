@@ -12,6 +12,22 @@ class ConsoleDiv {
         this.init();
     }
 
+    // Call this if you want to reuse the history from another instance
+    rehydrate(oldInstance) {
+        if (oldInstance && oldInstance.outputEl) {
+            // Copy innerHTML directly to preserve rendered logs
+            const content = oldInstance.outputEl.innerHTML;
+            // We need to wait until THIS instance is ready
+            const checkReady = setInterval(() => {
+                if (this.isReady && this.outputEl) {
+                    clearInterval(checkReady);
+                    this.outputEl.innerHTML = content;
+                    this.scrollToBottom();
+                }
+            }, 100);
+        }
+    }
+
     async init() {
         if (!this.container) {
             console.error("ConsoleDiv: Container not found");

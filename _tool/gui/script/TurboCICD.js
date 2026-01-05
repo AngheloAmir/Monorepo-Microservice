@@ -19,7 +19,16 @@
          // Init Console
          const consoleContainer = document.getElementById('turbo-ci-console');
          if (consoleContainer) {
-             consoleDiv = new ConsoleDiv(consoleContainer);
+              if (window.ConsoleDiv) {
+                   if (!window.turboCIConsoleInstance) {
+                       window.turboCIConsoleInstance = new window.ConsoleDiv(consoleContainer);
+                   } else {
+                       const oldInstance = window.turboCIConsoleInstance;
+                       window.turboCIConsoleInstance = new window.ConsoleDiv(consoleContainer);
+                       window.turboCIConsoleInstance.rehydrate(oldInstance);
+                   }
+                   consoleDiv = window.turboCIConsoleInstance;
+              }
          }
 
          // Init Editor
