@@ -3,10 +3,16 @@ class WorkspaceCard {
         this.template = template;
     }
 
-    static getStopButton(id) {
-        return `<button onclick="window.stopDevRepo('${id}')" class="flex-1 py-2 px-3 rounded-lg bg-red-600 text-white hover:bg-red-500 transition-colors shadow-lg shadow-red-600/20 text-sm font-medium flex items-center justify-center gap-2 animate-fade-in">
-                    <i class="fas fa-stop text-xs"></i> Stop
-                </button>`;
+    static getStopButton(id, runBy) {
+        if (runBy === 'start') {
+            return `<button onclick="window.stopDevRepo('${id}')" class="flex-1 py-2 px-3 rounded-lg bg-orange-600 text-white hover:bg-orange-500 transition-colors shadow-lg shadow-orange-600/20 text-sm font-medium flex items-center justify-center gap-2 animate-fade-in">
+                        <i class="fas fa-check-circle text-xs"></i> Server is up
+                    </button>`;
+        } else {
+             return `<button onclick="window.stopDevRepo('${id}')" class="flex-1 py-2 px-3 rounded-lg bg-red-600 text-white hover:bg-red-500 transition-colors shadow-lg shadow-red-600/20 text-sm font-medium flex items-center justify-center gap-2 animate-fade-in">
+                        <i class="fas fa-stop text-xs"></i> Stop Dev
+                    </button>`;
+        }
     }
 
     static getStartButtons(id, data) {
@@ -40,7 +46,11 @@ class WorkspaceCard {
         
         let buttonsHtml = '';
         if (isRunning) {
-            buttonsHtml = WorkspaceCard.getStopButton(uniqueID);
+            // Find the active item to get runBy
+            const runningItem = window.tabTerminalItems && window.tabTerminalItems[uniqueID] 
+                ? window.tabTerminalItems[uniqueID].data 
+                : {};
+            buttonsHtml = WorkspaceCard.getStopButton(uniqueID, runningItem.runBy);
         } else {
             buttonsHtml = WorkspaceCard.getStartButtons(uniqueID, data);
         }
@@ -86,7 +96,10 @@ window.updateCardState = function(id, isRunning) {
 
     if (container && data) {
         if (isRunning) {
-            container.innerHTML = WorkspaceCard.getStopButton(id);
+            const runningItem = window.tabTerminalItems && window.tabTerminalItems[id] 
+                ? window.tabTerminalItems[id].data 
+                : {};
+            container.innerHTML = WorkspaceCard.getStopButton(id, runningItem.runBy);
             // Show Open Button
             if(openBtn) {
                 openBtn.classList.remove('hidden');
