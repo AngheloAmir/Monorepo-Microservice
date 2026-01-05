@@ -1,6 +1,6 @@
 {
-  "name":        "monorepo-microservice",
-  "version":     "1.0.0",
+  "name": "monorepo-microservice",
+  "version": "1.0.0",
   "description": "A monorepo for microservices",
   "workspaces": [
     "backend/*",
@@ -10,22 +10,22 @@
     "shared/*"
   ],
   "scripts": {
-    "starttool":   "cd _tool && npm run starttool",
-    "devtool":     "cd _tool && npm run boottool",
-    "stoptool":    "cd _tool && npm run stoptool",
+    "starttool": "cd _tool && npm run starttool",
+    "devtool": "cd _tool && npm run boottool",
+    "stoptool": "cd _tool && npm run stoptool",
     "installtool": "cd _tool && npm install",
-    "build":       "turbo run build --cache-dir=./_tool/turborepo/.turbo",
-    "dev":         "turbo run dev --cache-dir=./_tool/turborepo/.turbo",
-    "lint":        "turbo run lint --cache-dir=./_tool/turborepo/.turbo",
-    "test":        "turbo run test --cache-dir=./_tool/turborepo/.turbo",
-    "clean":       "turbo run clean --cache-dir=./_tool/turborepo/.turbo"
+    "build": "turbo run build --cache-dir=./_tool/turborepo/.turbo",
+    "dev": "turbo run dev --cache-dir=./_tool/turborepo/.turbo",
+    "lint": "turbo run lint --cache-dir=./_tool/turborepo/.turbo",
+    "test": "turbo run test --cache-dir=./_tool/turborepo/.turbo",
+    "clean": "turbo run clean --cache-dir=./_tool/turborepo/.turbo"
   },
   "keywords": [
     "monorepo",
     "microservices"
   ],
   "devDependencies": {
-    "turbo": "latest"
+    "turbo": "^2.7.2"
   },
   "author": "anghelo amir",
   "license": "ISC",

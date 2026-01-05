@@ -7,12 +7,12 @@
     let currentRunId = null;
 
     const PROVIDER_COMMANDS = {
-        'vercel': 'npx turbo run build',
-        'github': 'npx turbo run build test lint',
-        'gitlab': 'npx turbo run build test lint',
-        'circleci': 'npx turbo run build test lint',
-        'travis': 'npx turbo run build test lint',
-        'buildkite': 'npx turbo run build test lint'
+        'vercel': 'npx --no-install turbo run build',
+        'github': 'npx --no-install turbo run build test lint',
+        'gitlab': 'npx --no-install turbo run build test lint',
+        'circleci': 'npx --no-install turbo run build test lint',
+        'travis': 'npx --no-install turbo run build test lint',
+        'buildkite': 'npx --no-install turbo run build test lint'
     };
 
     function init() {

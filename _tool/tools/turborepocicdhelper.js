@@ -51,13 +51,13 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npx turbo run build
+        run: npx --no-install turbo run build
 
       - name: Test
-        run: npx turbo run test
+        run: npx --no-install turbo run test
 
       - name: Lint
-        run: npx turbo run lint
+        run: npx --no-install turbo run lint
 `,
     'gitlab': `image: node:latest
 
@@ -68,7 +68,7 @@ build:
   stage: build
   script:
     - npm ci
-    - npx turbo run build test lint
+    - npx --no-install turbo run build test lint
   cache:
     paths:
       - node_modules/
@@ -87,7 +87,7 @@ jobs:
           command: npm ci
       - run:
           name: Build, Test, Lint
-          command: npx turbo run build test lint
+          command: npx --no-install turbo run build test lint
 
 workflows:
   version: 2
@@ -103,7 +103,7 @@ cache:
     - node_modules
 script:
   - npm ci
-  - npx turbo run build test lint
+  - npx --no-install turbo run build test lint
 `,
     'buildkite': `steps:
   - label: ":node: Build, Test, and Lint"
@@ -112,7 +112,7 @@ script:
           image: "node:18"
     commands:
       - npm ci
-      - npx turbo run build test lint
+      - npx --no-install turbo run build test lint
 `
 };
 

@@ -52,12 +52,12 @@ function startTurboProcess(res, action, manualCommand) {
     let baseCmd = 'npx'; // Use npx to ensure we use local turbo or download it
     
     if (manualCommand && Array.isArray(manualCommand)) {
-        args = ['--yes', ...manualCommand];
+        args = ['--no-install', ...manualCommand]; 
     } else if (action === 'install') {
         baseCmd = 'npm';
         args = ['install'];
     } else if (action) {
-        args = ['--yes', 'turbo', 'run', action]; // "npx --yes turbo run dev"
+        args = ['--no-install', 'turbo', 'run', action]; // "npx --no-install turbo run dev"
     } else {
          res.writeHead(400, { 'Content-Type': 'application/json' });
          res.end(JSON.stringify({ error: 'No action specified' }));
