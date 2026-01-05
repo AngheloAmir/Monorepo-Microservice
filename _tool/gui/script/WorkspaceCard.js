@@ -109,6 +109,7 @@ window.startDevRepo = function(id) {
         const runtimeData = { ...data };
         // Explicitly set startcmd to devcmd
         runtimeData.startcmd = runtimeData.devcmd || 'npm run dev';
+        runtimeData.runBy = 'dev'; // Added runBy attribute
 
         window.TabTerminal.createTab(id, runtimeData);
         window.disableBtnContainer(id);
@@ -128,6 +129,7 @@ window.startProdRepo = function(id) {
         const runtimeData = { ...data };
         // Use actual startcmd
         runtimeData.startcmd = runtimeData.startcmd || 'npm run start';
+        runtimeData.runBy = 'start'; // Added runBy attribute
 
         window.TabTerminal.createTab(id, runtimeData);
         window.disableBtnContainer(id);

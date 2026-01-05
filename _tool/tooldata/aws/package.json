@@ -1,0 +1,9 @@
+{
+  "name": "aws",
+  "version": "1.0.0",
+  "description": "local aws with localstack",
+  "scripts": {
+    "start": "docker compose up -d",
+    "stop":  "docker compose down"
+  }
+}

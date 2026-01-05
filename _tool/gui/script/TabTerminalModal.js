@@ -266,7 +266,8 @@ window.TabTerminal = {
                 name:       data.name,
                 directory:  data.path,
                 basecmd:    data.startcmd.split(' ')[0], 
-                cmd:        data.startcmd.split(' ').slice(1)
+                cmd:        data.startcmd.split(' ').slice(1),
+                runBy:      data.runBy || '' // Added runBy to payload
             };
             
             const response = await fetch('/api/runcmddev', {

@@ -51,9 +51,6 @@ function handleToggleExclude(req, res) {
         res.end(JSON.stringify({ error: 'Method not allowed' }));
         return;
     }
-
-
-    console.log( activeProcesses );
     
     try {
         if (!fs.existsSync(VSCODE_DIR)) {
@@ -110,9 +107,13 @@ function handleToggleExclude(req, res) {
         const activePaths = new Set();
         activeProcesses.forEach(proc => {
             if (proc.shouldRun && proc.config && proc.config.directory) {
-                let dir = proc.config.directory.replace(/\\/g, '/');
-                if (dir.startsWith('/')) dir = dir.substring(1);
-                activePaths.add(dir);
+                // Only consider "dev" processes as active focus targets. 
+                // "start" processes are background services we don't need to see.
+                if (proc.config.runBy === 'dev') {
+                    let dir = proc.config.directory.replace(/\\/g, '/');
+                    if (dir.startsWith('/')) dir = dir.substring(1);
+                    activePaths.add(dir);
+                }
             }
         });
 

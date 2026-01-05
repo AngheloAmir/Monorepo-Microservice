@@ -1,0 +1,9 @@
+{
+  "name": "redis",
+  "version": "1.0.0",
+  "description": "local redis for testing",
+  "scripts": {
+    "start": "docker compose up -d",
+    "stop":  "docker compose down"
+  }
+}
