@@ -3,8 +3,6 @@
   "version":     "1.0.0",
   "description": "A monorepo for microservices",
   "workspaces": [
-    "_tool",
-    "_tool/turborepo",
     "backend/*",
     "database/*",
     "frontend/*",
@@ -15,6 +13,7 @@
     "starttool":   "cd _tool && npm run starttool",
     "devtool":     "cd _tool && npm run boottool",
     "stoptool":    "cd _tool && npm run stoptool",
+    "installtool": "cd _tool && npm install",
     "build":       "turbo run build --cache-dir=./_tool/turborepo/.turbo",
     "dev":         "turbo run dev --cache-dir=./_tool/turborepo/.turbo",
     "lint":        "turbo run lint --cache-dir=./_tool/turborepo/.turbo",
@@ -25,6 +24,9 @@
     "monorepo",
     "microservices"
   ],
+  "devDependencies": {
+    "turbo": "latest"
+  },
   "author": "anghelo amir",
   "license": "ISC",
   "packageManager": "npm@11.6.2"

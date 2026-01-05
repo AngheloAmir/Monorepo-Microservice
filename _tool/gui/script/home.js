@@ -236,10 +236,52 @@
         }
     }
 
+    // --- VS CODE TOGGLE LOGIC ---
+    const setupVscodeToggle = () => {
+        const btn = document.getElementById('vscode-toggle-btn');
+        if (btn) {
+            btn.onclick = async () => {
+                try {
+                    const res = await fetch('/api/vscode/toggle-exclude', {
+                        method: 'POST'
+                    });
+                    const data = await res.json();
+                    
+                    if (data.success) {
+                        const icon = btn.querySelector('i');
+                        if (data.hidden) {
+                            if (window.openAlertModal) await window.openAlertModal('Success', 'Workspace Cleaned! (Files hidden)', 'success');
+                            if (icon) {
+                                icon.classList.remove('fa-eye-slash');
+                                icon.classList.add('fa-eye');
+                            }
+                            const span = btn.querySelector('span');
+                            if(span) span.innerText = "Show All Files";
+                        } else {
+                            if (window.openAlertModal) await window.openAlertModal('Success', 'All Files Visible!', 'success');
+                            if (icon) {
+                                icon.classList.remove('fa-eye');
+                                icon.classList.add('fa-eye-slash');
+                            }
+                            const span = btn.querySelector('span');
+                            if(span) span.innerText = "Clean View";
+                        }
+                    } else {
+                        if (window.openAlertModal) await window.openAlertModal('Error', data.error, 'error');
+                    }
+                } catch (e) {
+                     console.error(e);
+                     if (window.openAlertModal) await window.openAlertModal('Error', 'Request failed', 'error');
+                }
+            };
+        }
+    };
+
     setTimeout(() => {
         startStream();
         setupPortRemover();
         setupDockerStopAll();
+        setupVscodeToggle();
     }, 100);
 
 })();

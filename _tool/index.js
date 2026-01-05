@@ -100,6 +100,11 @@ const server = http.createServer((req, res) => {
         const { handleTurboRequest } = require('./tools/turborepohelper');
         return handleTurboRequest(req, res);
 
+    // VS Code Helper Routes
+    case '/api/vscode/toggle-exclude':
+        const { handleToggleExclude } = require('./tools/vscodeHelper');
+        return handleToggleExclude(req, res);
+
     //internal CRUD testing routes===========================================
     case '/pingme':
        return internalCrudTester.pingMe(req, res);
