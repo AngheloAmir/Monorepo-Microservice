@@ -86,7 +86,7 @@
         document.getElementById('turbo-ci-filename').textContent = 'Loading...';
         
         try {
-            const res = await fetch(`/api/turboci?action=load&provider=${provider}`);
+            const res = await fetch(`/api/turbocicd?action=load&provider=${provider}`);
             const data = await res.json();
             
             if (data.error) {
@@ -141,7 +141,7 @@
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
         
         try {
-            const res = await fetch(`/api/turboci?action=create&provider=${currentProvider}`, {
+            const res = await fetch(`/api/turbocicd?action=create&provider=${currentProvider}`, {
                 method: 'POST'
             });
             const data = await res.json();
@@ -170,7 +170,7 @@
         icon.className = "fas fa-spinner fa-spin border-r border-blue-500 pr-2 mr-2";
         
         try {
-            const res = await fetch(`/api/turboci?action=save&provider=${currentProvider}`, {
+            const res = await fetch(`/api/turbocicd?action=save&provider=${currentProvider}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ content })

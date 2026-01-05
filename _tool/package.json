@@ -5,9 +5,9 @@
   "main": "toolServer.js",
   "scripts": {
     "starttool": "node bootserve.js",
-    "boottool":  "node boot.js",
-    "devtool":   "nodemon index.js --ignore tooldata/ --ignore gui/",
-    "stoptool":  "npx -y kill-port 3200"
+    "boottool": "node boot.js",
+    "devtool": "nodemon index.js --ignore tooldata/ --ignore gui/",
+    "stoptool": "npx -y kill-port 3200"
   },
   "keywords": [],
   "author": "",
@@ -17,8 +17,8 @@
     "nodemon": "^3.1.11"
   },
   "dependencies": {
+    "chalk": "^4.1.2",
     "pidusage": "^4.0.1",
-    "socket.io": "^4.8.3",
-    "chalk": "^4.1.2"
+    "socket.io": "^4.8.3"
   }
 }

@@ -93,18 +93,16 @@ const server = http.createServer((req, res) => {
     // CI/CD Routes
 
     
-    case '/api/cd':
-        const { apiCdHandler } = require('./tools/apiCd');
-        return apiCdHandler(req, res);
+    // Turbo CI/CD Route
+    case '/api/turbocicd':
+        const { handleTurboCIRequest } = require('./tools/turborepocicdhelper');
+        return handleTurboCIRequest(req, res);
 
     case '/api/turborepo':
         const { handleTurboRequest } = require('./tools/turborepohelper');
         return handleTurboRequest(req, res);
 
-    // Turbo CI Route
-    case '/api/turboci':
-        const { handleTurboCIRequest } = require('./tools/turborepocihelper');
-        return handleTurboCIRequest(req, res);
+
 
     // VS Code Helper Routes
     case '/api/vscode/toggle-exclude':
