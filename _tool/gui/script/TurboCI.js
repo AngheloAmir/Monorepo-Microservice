@@ -60,6 +60,8 @@
          document.getElementById('turbo-ci-clear-console').addEventListener('click', () => {
              if(consoleDiv) consoleDiv.clear();
          });
+
+         document.getElementById('turbo-ci-create-btn').addEventListener('click', createProviderFile);
     }
 
     function initSocket() {
@@ -92,15 +94,32 @@
                 return;
             }
 
-            // Set content
-            editor.setValue(data.content || '', -1); 
-            document.getElementById('turbo-ci-filename').textContent = data.filePath;
+            const enableOverlay = document.getElementById('turbo-ci-enable-overlay');
+            const editorEl = document.getElementById('turbo-ci-editor');
+            const saveBtn = document.getElementById('turbo-ci-save-btn');
             
+            // Check existence
+            if (!data.exists && provider !== 'vercel') {
+                // Show Enable Overlay
+                enableOverlay.classList.remove('hidden');
+                editorEl.classList.add('hidden');
+                saveBtn.classList.add('hidden');
+                
+                document.getElementById('turbo-ci-provider-name').textContent = provider;
+                // Editor value ignored for now until created
+            } else {
+                // Show Editor
+                enableOverlay.classList.add('hidden');
+                editorEl.classList.remove('hidden');
+                saveBtn.classList.remove('hidden');
+                
+                editor.setValue(data.content || '', -1);
+            }
+
+            document.getElementById('turbo-ci-filename').textContent = data.filePath;
             if (provider === 'vercel') editor.session.setMode("ace/mode/json");
             else editor.session.setMode("ace/mode/yaml");
 
-            // Show buttons
-            document.getElementById('turbo-ci-save-btn').classList.remove('hidden');
             document.getElementById('turbo-ci-docs-btn').classList.remove('hidden');
             document.getElementById('turbo-ci-docs-btn').dataset.url = data.docUrl;
 
@@ -111,6 +130,32 @@
         } catch (e) {
             console.error("Failed to load provider", e);
             document.getElementById('turbo-ci-filename').textContent = 'Error loading provider';
+        }
+    }
+
+    async function createProviderFile() {
+        if (!currentProvider) return;
+        
+        const btn = document.getElementById('turbo-ci-create-btn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+        
+        try {
+            const res = await fetch(`/api/turboci?action=create&provider=${currentProvider}`, {
+                method: 'POST'
+            });
+            const data = await res.json();
+            
+            if (data.success) {
+                // Reload to show editor
+                loadProvider(currentProvider);
+            } else {
+                alert('Failed to create: ' + (data.error || 'Unknown error'));
+            }
+        } catch(e) {
+            alert('Error: ' + e.message);
+        } finally {
+            btn.innerHTML = originalText;
         }
     }
 

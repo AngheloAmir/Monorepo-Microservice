@@ -1,8 +1,0 @@
-steps:
-  - label: ":node: Build, Test, and Lint"
-    plugins:
-      - docker#v3.5.0:
-          image: "node:18"
-    commands:
-      - npm ci
-      - npx turbo run build test lint
