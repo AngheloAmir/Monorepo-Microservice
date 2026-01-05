@@ -84,14 +84,30 @@
     <div id="workspace-terminal-mount" class="w-full relative z-50"></div>
 
 
-    <!-- Floating Action Button -->
+
+    <!-- Floating VS Code Toggle Button -->
+    <button id="vscode-fab-btn" onclick="window.setupVscodeToggle()"
+        class="p-2 fixed bottom-24 right-8 bg-blue-600 hover:bg-blue-500 text-white rounded-full  shadow-lg shadow-blue-600/30 transition-all hover:scale-110 flex items-center gap-2 z-50 group">
+        <i class="w-8 h-8 fa-solid fa-eye-slash text-xl"></i>
+        <span class="font-medium pr-2 hidden group-hover:inline-block transition-all duration-300 whitespace-nowrap overflow-hidden">Hide Files</span>
+    </button>
+
+    <button id="vscode-fab-btn" onclick="openAddModal()"
+        class="p-2 fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-lg shadow-blue-600/30 transition-all hover:scale-110 flex items-center gap-2 z-50 group">
+        <i class="w-8 h-8 fa-solid fa-plus text-xl"></i>
+        <span class="font-medium pr-2 hidden group-hover:inline-block transition-all duration-300 whitespace-nowrap overflow-hidden">
+            Add Workspace
+        </span>
+    </button>
+
+    <!-- 
     <button onclick="openAddModal()" class="z-50 fixed bottom-10 right-8 w-14 h-14 bg-green-600 hover:bg-green-500 text-white rounded-full shadow-lg hover:shadow-blue-600/40 flex items-center justify-center transition-all duration-300 hover:scale-110 group">
         <i class="fas fa-plus text-xl transition-transform duration-300 group-hover:rotate-90"></i>
-        <!-- Tooltip -->
+
          <div class="absolute right-full mr-4 px-3 py-1.5 bg-gray-900 text-white text-sm font-medium rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-xl border border-gray-700 whitespace-nowrap">
             Add Workspace
         </div>
-    </button>
+    </button> -->
 
 </div>
 
