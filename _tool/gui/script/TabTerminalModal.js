@@ -36,28 +36,25 @@ window.TabTerminal = {
         return !!window.tabTerminalItems[id];
     },
 
-    toggleMinimize: function() {
-        if(!this.container) return; // container undefined? this.container vs window.tabTerminalContainer
-        // Fix usage of this.container vs window.tabTerminalContainer
-        const container = window.tabTerminalContainer; 
+    toggleMaximize: function() {
+        const container = window.tabTerminalContainer;
         if (!container) return;
 
-        if (container.classList.contains('h-48')) {
-            container.classList.remove('h-48');
-            container.classList.add('h-8');
-            container.classList.add('terminal-minimized');
+        if (container.classList.contains('terminal-maximized')) {
+             container.classList.remove('terminal-maximized');
+             // Restore icon
+             const icon = document.getElementById('terminal-max-icon');
+             if(icon) icon.className = 'fas fa-expand text-xs';
         } else {
-            container.classList.add('h-48');
-            container.classList.remove('h-8');
-            container.classList.remove('terminal-minimized');
-        }
-        const icon = document.getElementById('terminal-toggle-icon');
-        if(icon) {
-            if (container.classList.contains('terminal-minimized')) {
-                icon.className = 'fas fa-chevron-up text-xs';
-            } else {
-                icon.className = 'fas fa-chevron-down text-xs';
-            }
+             // Ensure it's not minimized when maximizing
+             if (container.classList.contains('terminal-minimized')) {
+                 this.toggleMinimize();
+             }
+             
+             container.classList.add('terminal-maximized');
+             // Change icon to compress/restore
+             const icon = document.getElementById('terminal-max-icon');
+             if(icon) icon.className = 'fas fa-compress text-xs';
         }
     },
 

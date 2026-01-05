@@ -13,13 +13,11 @@
         </div>
 
         <!-- Controls -->
-        <!--
-        <div class="flex items-center">
-            <button onclick="window.TabTerminal.toggleMinimize()" class="w-16 text-gray-400 hover:text-white transition-colors rounded hover:bg-gray-700" title="Toggle Terminal">
-                <i id="terminal-toggle-icon" class="fas fa-chevron-down text-xs"></i>
+        <div class="flex items-center gap-1 border-l border-gray-700 pl-2 ml-2 pr-2">
+             <button onclick="window.TabTerminal.toggleMaximize()" class="w-6 h-6 text-gray-400 hover:text-white transition-colors rounded hover:bg-gray-700 flex items-center justify-center" title="Maximize">
+                <i id="terminal-max-icon" class="fas fa-expand text-xs"></i>
             </button>
         </div>
-        -->
     </div>
 
     <!-- Terminal Content Area -->
@@ -88,6 +86,19 @@
     /* Minimized State */
     .terminal-minimized {
         height: 40px !important; /* Header height (36px) + Resizer (4px) */
+    }
+
+    /* Maximized State */
+    .terminal-maximized {
+        position: fixed !important;
+        top:     72px !important;
+        left:    90px !important;
+        right:   0 !important;
+        bottom:  0 !important;
+        width:   calc(100vw - 90px) !important;
+        height:  calc(100vh - 72px) !important;
+        z-index: 9999 !important;
+        border-top: none !important;
     }
 </style>
 </div>
