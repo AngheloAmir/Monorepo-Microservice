@@ -27,7 +27,7 @@ const EXCLUDE_PATTERNS = {
     "**/*eslint*":       true,
     "**/*prettier*":     true,
     "**/*vite*":         true,
-    "feat.md":           true,
+    "_temp":             true,
     ".gitignore":        true,
     ".vscode":           true,
     "package.json":      true,
