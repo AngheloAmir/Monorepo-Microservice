@@ -1,29 +1,29 @@
 window.TurboFlow = {
-    network: null,
-    data: { nodes: [], edges: [] },
-    pipelineConfig: {}, // The raw pipeline object from turbo.json
-    selectedNodeId: null,
-    isLinking: false,
-    initialized: false,
+    // State is now in window.turboFlowState handled by _globals.js
 
     init: async function() {
         console.log("TurboFlow Initializing...");
+        const state = window.turboFlowState;
         
-        if (this.initialized) {
+        if (state.initialized) {
             // Just refresh layout if already loaded
-            if (this.network) {
-                 this.network.fit();
+            if (state.network) {
+                 state.network.fit();
             }
             return; 
         }
 
-        await this.loadTurboJson();
+        await Promise.all([
+            this.loadTurboJson(),
+            this.fetchScripts()
+        ]);
+        
         this.renderGraph();
-        this.initialized = true;
+        state.initialized = true;
 
         // Listen for graph clicks
-        if(this.network) {
-            this.network.on("click", (params) => {
+        if (state.network) {
+            state.network.on("click", (params) => {
                 if (params.nodes.length > 0) {
                     this.onNodeSelected(params.nodes[0]);
                 } else {
@@ -33,15 +33,31 @@ window.TurboFlow = {
         }
     },
 
+    fetchScripts: async function() {
+        try {
+            const res = await fetch('/api/activepipeline', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'get-workspaces' })
+            });
+            const json = await res.json();
+            if (json.workspaces) {
+                // Reset set to ensure fresh data if re-fetched, though strictly we append here.
+                // Creating new set or clearing might be better?
+                // window.turboFlowState.availableScripts.clear(); // If we want to refresh
+                json.workspaces.forEach(ws => {
+                    if (ws.scripts) {
+                        Object.keys(ws.scripts).forEach(s => window.turboFlowState.availableScripts.add(s));
+                    }
+                });
+            }
+        } catch(e) {
+            console.error("Failed to fetch workspaces", e);
+        }
+    },
+
     loadTurboJson: async function() {
         try {
-            // Using existing endpoint logic or creating a new minimal one?
-            // Let's assume we use /api/turborepo/config or similar if available, 
-            // but for now I'll use list-prunable or read file directly via new helper route if needed.
-            // Actually, let's reuse api/activepipeline logic but with 'get-turbo-json' action.
-            // I need to update pipelineeditorhelper.js potentially to support this.
-            // For now, let's mock or try to fetch.
-            
             const res = await fetch('/api/activepipeline', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -50,13 +66,12 @@ window.TurboFlow = {
             const json = await res.json();
             
             if (json.pipeline) {
-                this.pipelineConfig = json.pipeline;
+                window.turboFlowState.pipelineConfig = json.pipeline;
                 this.transformToGraphData();
             }
         } catch(e) {
             console.error("Failed to load turbo.json", e);
-            // Default fallback
-            this.pipelineConfig = {
+            window.turboFlowState.pipelineConfig = {
                 "build": { "dependsOn": ["^build"], "outputs": ["dist/**", ".next/**"] },
                 "test": { "dependsOn": ["build"], "outputs": [] },
                 "lint": { "outputs": [] },
@@ -67,23 +82,25 @@ window.TurboFlow = {
     },
 
     transformToGraphData: function() {
+        const state = window.turboFlowState;
         // Convert pipeline object to Vis.js format
         const nodes = [];
         const edges = [];
-        const tasks = Object.keys(this.pipelineConfig);
+        const tasks = Object.keys(state.pipelineConfig);
         const addedNodes = new Set(tasks);
 
         tasks.forEach(task => {
-            const config = this.pipelineConfig[task];
+            const config = state.pipelineConfig[task];
+            const hasScript = state.availableScripts.has(task);
             
             // Add Node
             nodes.push({
                 id: task,
-                label: '📦 ' + task,
+                label: (hasScript ? '📦 ' : '⚠️ ') + task,
                 shape: 'box',
                 color: {
-                    background: '#1f2937', 
-                    border: '#3b82f6'
+                    background: hasScript ? '#1f2937' : '#7f1d1d', 
+                    border: hasScript ? '#3b82f6' : '#ef4444'
                 },
                 font: { color: '#ffffff', size: 14 },
                 heightConstraint: { minimum: 30 },
@@ -105,13 +122,14 @@ window.TurboFlow = {
 
                     // implicit nodes handling
                     if (!addedNodes.has(from) && from !== task) {
+                        const implicitHasScript = state.availableScripts.has(from);
                         nodes.push({
                             id: from,
-                            label: '📦 ' + from + ' (implicit)',
+                            label: (implicitHasScript ? '📦 ' : '⚠️ ') + from + ' (implicit)',
                             shape: 'box',
                             color: {
-                                background: '#374151',
-                                border: '#6b7280'
+                                background: implicitHasScript ? '#374151' : '#450a0a',
+                                border: implicitHasScript ? '#6b7280' : '#b91c1c'
                             },
                              font: { color: '#9ca3af', size: 14 },
                             heightConstraint: { minimum: 30 },
@@ -137,10 +155,11 @@ window.TurboFlow = {
             }
         });
 
-        this.data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
+        state.data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
     },
 
     renderGraph: function() {
+        const state = window.turboFlowState;
         const container = document.getElementById('flow-network');
         if (!container) return; // Not visible yet
 
@@ -167,9 +186,9 @@ window.TurboFlow = {
             }
         };
 
-        this.network = new vis.Network(container, this.data, options);
+        state.network = new vis.Network(container, state.data, options);
         
-        this.network.on("click", (params) => {
+        state.network.on("click", (params) => {
             if (params.nodes.length > 0) {
                 this.onNodeSelected(params.nodes[0]);
             } else {
@@ -179,8 +198,9 @@ window.TurboFlow = {
     },
 
     saveCurrentNodeState: function() {
-        if (this.selectedNodeId && this.pipelineConfig[this.selectedNodeId]) {
-             const config = this.pipelineConfig[this.selectedNodeId];
+        const state = window.turboFlowState;
+        if (state.selectedNodeId && state.pipelineConfig[state.selectedNodeId]) {
+             const config = state.pipelineConfig[state.selectedNodeId];
              
              // Check if element exists (panel might be hidden)
              const cacheEl = document.getElementById('config-cache');
@@ -203,7 +223,8 @@ window.TurboFlow = {
     },
 
     onNodeSelected: function(nodeId) {
-        if (this.isLinking) {
+        const state = window.turboFlowState;
+        if (state.isLinking) {
             this.handleLink(nodeId);
             return;
         }
@@ -211,14 +232,14 @@ window.TurboFlow = {
         // Save previous
         this.saveCurrentNodeState();
 
-        this.selectedNodeId = nodeId;
+        state.selectedNodeId = nodeId;
         
         // Show Config Panel
         document.getElementById('config-empty').classList.add('hidden');
         document.getElementById('config-form').classList.remove('hidden');
         document.getElementById('config-title').textContent = `Confgure: ${nodeId}`;
 
-        const config = this.pipelineConfig[nodeId] || {};
+        const config = state.pipelineConfig[nodeId] || {};
         
         document.getElementById('config-cache').checked = config.cache !== false; 
         document.getElementById('config-inputs').value = (config.inputs || []).join(', ');
@@ -241,14 +262,15 @@ window.TurboFlow = {
     },
 
     handleLink: function(targetId) {
-        const sourceId = this.selectedNodeId;
+        const state = window.turboFlowState;
+        const sourceId = state.selectedNodeId;
         if (!sourceId || sourceId === targetId) {
-            this.isLinking = false;
+            state.isLinking = false;
             document.body.style.cursor = 'default';
             return;
         }
 
-        const config = this.pipelineConfig[sourceId];
+        const config = state.pipelineConfig[sourceId];
         if (!config.dependsOn) config.dependsOn = [];
         
         if (!config.dependsOn.includes(targetId)) {
@@ -265,35 +287,38 @@ window.TurboFlow = {
             this.onNodeSelected(sourceId);
         }
 
-        this.isLinking = false;
+        state.isLinking = false;
         document.body.style.cursor = 'default';
     },
 
     onGridSelected: function() {
-        if (this.isLinking) {
-            this.isLinking = false;
+        const state = window.turboFlowState;
+        if (state.isLinking) {
+            state.isLinking = false;
             document.body.style.cursor = 'default';
         }
         
         this.saveCurrentNodeState();
-        this.selectedNodeId = null;
+        state.selectedNodeId = null;
         document.getElementById('config-empty').classList.remove('hidden');
         document.getElementById('config-form').classList.add('hidden');
         document.getElementById('config-title').textContent = "No Task Selected";
     },
 
     startLinking: function() {
-        if (!this.selectedNodeId) return;
-        this.isLinking = true;
+        const state = window.turboFlowState;
+        if (!state.selectedNodeId) return;
+        state.isLinking = true;
         document.body.style.cursor = 'crosshair';
-        alert(`Select the task that "${this.selectedNodeId}" depends on.`);
+        alert(`Select the task that "${state.selectedNodeId}" depends on.`);
     },
 
     addTask: function() {
+        const state = window.turboFlowState;
         const name = prompt("Enter task name (e.g. 'e2e-test'):");
         if (name) {
-            if (!this.pipelineConfig[name]) {
-                this.pipelineConfig[name] = { cache: true };
+            if (!state.pipelineConfig[name]) {
+                state.pipelineConfig[name] = { cache: true };
                 // Re-transform instead of manual add to ensure consistent state
                 this.transformToGraphData();
                 this.renderGraph();
@@ -305,18 +330,20 @@ window.TurboFlow = {
     },
     
     autoLayout: function() {
+        const state = window.turboFlowState;
         // Just trigger renderGraph which has physics enabled initially
         // Maybe stabilize
-        if(this.network) {
-            this.network.stabilize();
-            this.network.fit();
+        if(state.network) {
+            state.network.stabilize();
+            state.network.fit();
         } else {
             this.renderGraph();
         }
     },
 
     removeDep: function(task, dep) {
-        const config = this.pipelineConfig[task];
+        const state = window.turboFlowState;
+        const config = state.pipelineConfig[task];
         if (config && config.dependsOn) {
             config.dependsOn = config.dependsOn.filter(d => d !== dep);
             // Update UI
@@ -327,20 +354,12 @@ window.TurboFlow = {
     },
 
     save: async function() {
+        const state = window.turboFlowState;
         // Prepare payload
         // We probably need to update just the 'pipeline' key of turbo.json
         // But for now, we just sync the selected node config into state
-        if (this.selectedNodeId) {
-             const config = this.pipelineConfig[this.selectedNodeId];
-             config.cache = document.getElementById('config-cache').checked;
-             
-             const inputs = document.getElementById('config-inputs').value.split(',').map(s => s.trim()).filter(Boolean);
-             if (inputs.length > 0) config.inputs = inputs;
-             else delete config.inputs;
-             
-             const outputs = document.getElementById('config-outputs').value.split(',').map(s => s.trim()).filter(Boolean);
-             if (outputs.length > 0) config.outputs = outputs;
-             else delete config.outputs;
+        if (state.selectedNodeId) {
+            this.saveCurrentNodeState();
         }
 
         try {
@@ -349,7 +368,7 @@ window.TurboFlow = {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     action: 'save-turbo-json',
-                    pipeline: this.pipelineConfig
+                    pipeline: state.pipelineConfig
                 })
             });
             

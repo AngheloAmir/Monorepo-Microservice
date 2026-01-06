@@ -33,21 +33,6 @@
     },
     "clean": {
       "cache": false
-    },
-    "asd": {
-      "cache": true
-    },
-    "asda": {
-      "cache": true,
-      "dependsOn": [
-        "asd"
-      ]
-    },
-    "hjj": {
-      "cache": true,
-      "dependsOn": [
-        "asd"
-      ]
     }
   }
 }

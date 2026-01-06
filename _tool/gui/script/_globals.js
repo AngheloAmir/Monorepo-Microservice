@@ -39,3 +39,14 @@ window.homeState = {
 // TurboControl
 window.turboConsoleInstance = null;
 window.turboCIConsoleInstance = null;
+
+// TurboFlow State
+window.turboFlowState = {
+    network: null,
+    data: { nodes: [], edges: [] },
+    pipelineConfig: {},
+    selectedNodeId: null,
+    isLinking: false,
+    initialized: false,
+    availableScripts: new Set()
+};

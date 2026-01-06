@@ -48,7 +48,7 @@ function getWorkspacesWithScripts(res) {
         
         const workspaces = [];
         
-        ['backend', 'frontend', 'service', 'database'].forEach(section => {
+        ['backend', 'frontend', 'service', 'database', 'shared'].forEach(section => {
             if(workspaceData[section]) {
                 workspaceData[section].forEach(ws => {
                     const pkgPath = path.join(workspaceRoot, ws.path, 'package.json');
@@ -116,8 +116,10 @@ function getTurboJson(res) {
     if (fs.existsSync(turboPath)) {
         try {
             const turbo = JSON.parse(fs.readFileSync(turboPath, 'utf8'));
+            // Turbo 2.0 uses 'tasks', older uses 'pipeline'
+            const pipelineData = turbo.tasks || turbo.pipeline || {};
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ pipeline: turbo.pipeline || {} }));
+            res.end(JSON.stringify({ pipeline: pipelineData }));
         } catch(e) {
              res.writeHead(500, { 'Content-Type': 'application/json' });
              res.end(JSON.stringify({ error: 'Failed to parse turbo.json' }));
@@ -139,11 +141,16 @@ function saveTurboJson(res, pipeline) {
             turbo = JSON.parse(fs.readFileSync(turboPath, 'utf8'));
         }
         
-        if (!turbo.pipeline) turbo.pipeline = {};
-        
-        // Merge or replace logic. Let's replace the pipeline section provided
-        // We assume 'pipeline' argument is the FULL pipeline object from UI
-        turbo.pipeline = pipeline;
+        // Determine whether to use 'tasks' or 'pipeline'
+        // If 'tasks' exists, use it. If 'pipeline' exists, use it.
+        // If neither, use 'tasks' (modern default).
+        if (turbo.tasks) {
+            turbo.tasks = pipeline;
+        } else if (turbo.pipeline) {
+            turbo.pipeline = pipeline;
+        } else {
+            turbo.tasks = pipeline;
+        }
         
         fs.writeFileSync(turboPath, JSON.stringify(turbo, null, 2));
         
