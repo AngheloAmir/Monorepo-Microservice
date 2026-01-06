@@ -8,29 +8,31 @@ window.TurboFlow = {
         if (state.initialized) {
             // Just refresh layout if already loaded
             if (state.network) {
+                 // Ensure canvas size is correct after tab switch
+                 state.network.redraw();
                  state.network.fit();
             }
             return; 
         }
 
+        await this.refresh();
+        state.initialized = true;
+
+        // Listen for graph clicks
+        // Note: Listener is attached in renderGraph now
+    },
+
+    refresh: async function() {
+        const state = window.turboFlowState;
+        // console.log("Refreshing TurboFlow...");
+        
         await Promise.all([
             this.loadTurboJson(),
             this.fetchScripts()
         ]);
         
+        this.transformToGraphData();
         this.renderGraph();
-        state.initialized = true;
-
-        // Listen for graph clicks
-        if (state.network) {
-            state.network.on("click", (params) => {
-                if (params.nodes.length > 0) {
-                    this.onNodeSelected(params.nodes[0]);
-                } else {
-                    this.onGridSelected();
-                }
-            });
-        }
     },
 
     fetchScripts: async function() {

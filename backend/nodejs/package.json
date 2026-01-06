@@ -9,7 +9,8 @@
     "build": "tsc",
     "docker": "docker build -t node-service . && docker run -p 8000:8000 node-service",
     "stop": "npx -y kill-port 8080",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "test": "adasdasdas"
   },
   "keywords": [],
   "author": "",
