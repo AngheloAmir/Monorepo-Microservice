@@ -88,6 +88,15 @@ window.TurboControl = {
             this.executeRequest({ action: task });
         }
     },
+
+    pruneDocker: async function() {
+        if(this.isRunning) return;
+        
+        const scope = prompt("Enter the package name to prune (e.g., 'web' or 'api'):\nThis will create a partial monorepo in ./out directory.");
+        if(!scope) return;
+        
+        this.executeRequest({ action: 'prune', scope: scope });
+    },
     
     startCommand: async function(cmdArray) {
         if(this.isRunning) return;

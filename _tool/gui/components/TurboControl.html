@@ -74,6 +74,19 @@
                 </div>
             </div>
 
+            <!-- Prune Docker -->
+            <div class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 hover:border-cyan-500/50 hover:bg-gray-800/60 transition-all group cursor-pointer flex items-center gap-4"
+                onclick="window.TurboControl.pruneDocker()"
+                title="Benefit: For deployment, turbo prune creates a lightweight, 'sliced' version of your monorepo containing only the packages needed for a specific app. This is the gold standard for Dockerizing Turborepo apps.">
+                <div class="p-3 bg-cyan-500/10 rounded-lg text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white transition-colors flex-shrink-0">
+                    <i class="fas fa-box-open text-xl w-6 h-6 flex items-center justify-center"></i>
+                </div>
+                <div class="flex flex-col">
+                    <h3 class="font-bold text-gray-200 group-hover:text-cyan-400 transition-colors">Prune Docker</h3>
+                    <p class="text-xs text-gray-500">Pruning for Docker</p>
+                </div>
+            </div>
+
 
         </div>
     </div>

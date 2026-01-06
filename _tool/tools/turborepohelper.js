@@ -32,6 +32,14 @@ function handleTurboRequest(req, res) {
                  stopTurboProcess(res);
              } else if (action === 'get-graph') {
                  getTurboGraph(res);
+             } else if (action === 'prune') {
+                 const { scope } = data;
+                 if (!scope) {
+                     res.writeHead(400, { 'Content-Type': 'application/json' });
+                     res.end(JSON.stringify({ error: 'Scope is required for prune' }));
+                     return;
+                 }
+                 startTurboProcess(res, action, null, scope);
              } else {
                  startTurboProcess(res, action, manualCommand);
              }
@@ -43,7 +51,7 @@ function handleTurboRequest(req, res) {
     });
 }
 
-function startTurboProcess(res, action, manualCommand) {
+function startTurboProcess(res, action, manualCommand, scope) {
     isRunning = true;
     const runId = `turbo-${Date.now()}`;
     const workspaceRoot = path.resolve(__dirname, '../../');
@@ -56,6 +64,8 @@ function startTurboProcess(res, action, manualCommand) {
     } else if (action === 'install') {
         baseCmd = 'npm';
         args = ['install'];
+    } else if (action === 'prune') {
+        args = ['--no-install', 'turbo', 'prune', `--scope=${scope}`, '--docker'];
     } else if (action) {
         args = ['--no-install', 'turbo', 'run', action]; // "npx --no-install turbo run dev"
     } else {
