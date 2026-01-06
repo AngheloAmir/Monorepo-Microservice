@@ -1,0 +1,80 @@
+<div class="w-full h-full flex flex-col bg-gray-900 font-sans">
+    <!-- Header/Toolbar -->
+    <div class="bg-gray-800 border-b border-gray-700 p-4 flex items-center justify-between">
+        <div>
+            <h2 class="text-lg font-bold text-gray-200">Turbo.json Flow Editor</h2>
+            <p class="text-xs text-gray-500">Define global task dependencies and caching rules</p>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="window.TurboFlow.save()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-bold flex items-center gap-2">
+                <i class="fas fa-save"></i> Save turbo.json
+            </button>
+        </div>
+    </div>
+
+    <div class="flex-1 flex overflow-hidden">
+        <!-- Visual Graph Area -->
+        <div class="flex-1 relative bg-gray-900" id="flow-canvas-container">
+            <div id="flow-network" class="absolute inset-0"></div>
+            
+            <!-- Floating Tools -->
+            <div class="absolute top-4 left-4 flex flex-col gap-2">
+                <button onclick="window.TurboFlow.addTask()" class="p-3 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg text-white shadow-lg tooltip-right" title="Add New Task">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <div class="h-px bg-gray-700 my-1"></div>
+                 <button onclick="window.TurboFlow.autoLayout()" class="p-3 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg text-gray-300 shadow-lg tooltip-right" title="Auto Layout">
+                    <i class="fas fa-magic"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Configuration Panel -->
+        <div class="w-80 bg-gray-800 border-l border-gray-700 flex flex-col" id="flow-config-panel">
+            <div class="p-4 border-b border-gray-700">
+                <h3 class="font-bold text-gray-300" id="config-title">No Task Selected</h3>
+            </div>
+            
+            <div id="config-form" class="hidden flex-1 overflow-y-auto p-4 space-y-6">
+                <!-- Inputs -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-500 uppercase">Depends On</label>
+                    <div id="config-deps" class="flex flex-wrap gap-2">
+                        <!-- Chips will go here -->
+                        <span class="text-xs text-gray-600 italic">Select dependencies in graph</span>
+                    </div>
+                    <button onclick="window.TurboFlow.startLinking()" class="w-full py-1 mt-2 border border-dashed border-gray-600 text-gray-500 text-xs rounded hover:bg-gray-700 hover:text-white">
+                        <i class="fas fa-link"></i> Link a Task
+                    </button>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-500 uppercase">Cache Config</label>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="config-cache" class="rounded bg-gray-700 border-gray-600">
+                        <label for="config-cache" class="text-sm text-gray-300">Enable Caching</label>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-500 uppercase">Input Files</label>
+                    <textarea id="config-inputs" rows="3" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-2 text-sm text-gray-300 font-mono" placeholder="src/**/*.ts"></textarea>
+                    <p class="text-[10px] text-gray-500">Comma separated globs</p>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-500 uppercase">Output Files</label>
+                    <textarea id="config-outputs" rows="3" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-2 text-sm text-gray-300 font-mono" placeholder="dist/**, .next/**"></textarea>
+                    <p class="text-[10px] text-gray-500">Comma separated globs</p>
+                </div>
+            </div>
+
+            <div id="config-empty" class="flex-1 flex items-center justify-center p-8 text-center text-gray-500">
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-mouse-pointer text-2xl mb-2 opacity-50"></i>
+                    <p class="text-sm">Click a node to configure it</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

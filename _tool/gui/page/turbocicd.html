@@ -6,6 +6,8 @@
         </button>
         <button onclick="window.TurboCICDPage.switchTab('pipeline')" id="tab-pipeline" class="px-6 py-3 text-sm font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-700 transition-colors flex items-center gap-2">
             <i class="fas fa-code-branch"></i> Pipeline Editor
+        <button onclick="window.TurboCICDPage.switchTab('flow')" id="tab-flow" class="px-6 py-3 text-sm font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-700 transition-colors flex items-center gap-2">
+            <i class="fas fa-project-diagram"></i> Flow Editor
         </button>
     </div>
 
@@ -13,14 +15,13 @@
     <div class="flex-1 relative overflow-hidden bg-gray-900 text-white">
         
         <!-- Tab 1: CI Providers -->
-        <div id="view-ci" class="absolute inset-0 p-4 overflow-y-auto">
-             <!-- Injected TurboCI.html -->
-        </div>
+        <div id="view-ci" class="absolute inset-0 p-4 overflow-y-auto"></div>
 
         <!-- Tab 2: Pipeline Editor -->
-        <div id="view-pipeline" class="hidden absolute inset-0 flex">
-             <!-- Injected PipelineEditor.html -->
-        </div>
+        <div id="view-pipeline" class="hidden absolute inset-0 flex"></div>
+
+        <!-- Tab 3: Flow Editor -->
+        <div id="view-flow" class="hidden absolute inset-0 flex"></div>
     </div>
 </div>
 
@@ -31,6 +32,7 @@
             
             await this.loadComponent('view-ci', '/gui/components/TurboCI.html');
             await this.loadComponent('view-pipeline', '/gui/components/PipelineEditor.html');
+            await this.loadComponent('view-flow', '/gui/components/TurboFlow.html');
             
             // Set default tab
             this.switchTab('ci');
@@ -56,40 +58,28 @@
         },
 
         switchTab: function(tab) {
-            const tabCi = document.getElementById('tab-ci');
-            const tabPipeline = document.getElementById('tab-pipeline');
-            const viewCi = document.getElementById('view-ci');
-            const viewPipeline = document.getElementById('view-pipeline');
-
-            if (tab === 'ci') {
-                 tabCi.classList.add('border-blue-500', 'text-blue-400');
-                 tabCi.classList.remove('border-transparent', 'text-gray-500');
-                 
-                 tabPipeline.classList.remove('border-blue-500', 'text-blue-400');
-                 tabPipeline.classList.add('border-transparent', 'text-gray-500');
-                 
-                 viewCi.classList.remove('hidden');
-                 viewPipeline.classList.add('hidden');
-
-                 // Init Logic
-                 if (window.TurboCI && window.TurboCI.init) {
-                     window.TurboCI.init();
-                 }
-            } else {
-                 tabPipeline.classList.add('border-blue-500', 'text-blue-400');
-                 tabPipeline.classList.remove('border-transparent', 'text-gray-500');
-                 
-                 tabCi.classList.remove('border-blue-500', 'text-blue-400');
-                 tabCi.classList.add('border-transparent', 'text-gray-500');
-                 
-                 viewPipeline.classList.remove('hidden');
-                 viewCi.classList.add('hidden');
-                 
-                 // Init Logic
-                 if (window.PipelineEditor && window.PipelineEditor.init) {
-                     window.PipelineEditor.init();
-                 }
-            }
+            const tabs = ['ci', 'pipeline', 'flow'];
+            
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                const view = document.getElementById(`view-${t}`);
+                
+                if (t === tab) {
+                    btn.classList.add('border-blue-500', 'text-blue-400');
+                    btn.classList.remove('border-transparent', 'text-gray-500');
+                    view.classList.remove('hidden');
+                    
+                    // Init Logic
+                    if (t === 'ci' && window.TurboCI?.init) window.TurboCI.init();
+                    if (t === 'pipeline' && window.PipelineEditor?.init) window.PipelineEditor.init();
+                    if (t === 'flow' && window.TurboFlow?.init) window.TurboFlow.init();
+                    
+                } else {
+                    btn.classList.remove('border-blue-500', 'text-blue-400');
+                    btn.classList.add('border-transparent', 'text-gray-500');
+                    view.classList.add('hidden');
+                }
+            });
         }
     };
 

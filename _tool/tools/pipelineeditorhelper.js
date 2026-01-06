@@ -20,6 +20,10 @@ function handlePipelineRequest(req, res) {
                 getWorkspacesWithScripts(res);
             } else if (action === 'save-script') {
                 saveWorkspaceScript(res, data.workspacePath, data.scriptName, data.command);
+            } else if (action === 'get-turbo-json') {
+                getTurboJson(res);
+            } else if (action === 'save-turbo-json') {
+                saveTurboJson(res, data.pipeline);
             } else {
                 res.writeHead(400, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: 'Invalid action' }));
@@ -102,6 +106,53 @@ function saveWorkspaceScript(res, relativePath, scriptName, command) {
         console.error(e);
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Failed to save script: ' + e.message }));
+    }
+}
+
+function getTurboJson(res) {
+    const workspaceRoot = path.resolve(__dirname, '../../');
+    const turboPath = path.join(workspaceRoot, 'turbo.json');
+
+    if (fs.existsSync(turboPath)) {
+        try {
+            const turbo = JSON.parse(fs.readFileSync(turboPath, 'utf8'));
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ pipeline: turbo.pipeline || {} }));
+        } catch(e) {
+             res.writeHead(500, { 'Content-Type': 'application/json' });
+             res.end(JSON.stringify({ error: 'Failed to parse turbo.json' }));
+        }
+    } else {
+         // Create default if missing or just return empty
+         res.writeHead(200, { 'Content-Type': 'application/json' });
+         res.end(JSON.stringify({ pipeline: {} }));
+    }
+}
+
+function saveTurboJson(res, pipeline) {
+    const workspaceRoot = path.resolve(__dirname, '../../');
+    const turboPath = path.join(workspaceRoot, 'turbo.json');
+    
+    try {
+        let turbo = {};
+        if (fs.existsSync(turboPath)) {
+            turbo = JSON.parse(fs.readFileSync(turboPath, 'utf8'));
+        }
+        
+        if (!turbo.pipeline) turbo.pipeline = {};
+        
+        // Merge or replace logic. Let's replace the pipeline section provided
+        // We assume 'pipeline' argument is the FULL pipeline object from UI
+        turbo.pipeline = pipeline;
+        
+        fs.writeFileSync(turboPath, JSON.stringify(turbo, null, 2));
+        
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true }));
+    } catch(e) {
+         console.error(e);
+         res.writeHead(500, { 'Content-Type': 'application/json' });
+         res.end(JSON.stringify({ error: 'Failed to save turbo.json' }));
     }
 }
 
