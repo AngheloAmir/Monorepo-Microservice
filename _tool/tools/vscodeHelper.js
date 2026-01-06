@@ -37,12 +37,13 @@ const EXCLUDE_PATTERNS = {
     ".circleci":         true,
     ".gitlab-ci.yml":    true,
     ".travis.yml":       true,
+    "out":               true
 };
 
 const EXCLUDE_PATTERNS_DEFAULT = {
     "**/.git":  true,
     ".vscode":  true,
-    ".turbo":   true
+    ".turbo":   true,
 };
 
 // Patterns that match what the user wants to see "Shared, Backend, Frontend, Services, Database"

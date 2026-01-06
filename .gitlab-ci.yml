@@ -1,0 +1,19 @@
+image: node:latest
+
+stages:
+  - build
+
+build:
+  stage: build
+  script:
+    - npm ci
+    - npx --no-install turbo run build test lint
+  cache:
+    paths:
+      - node_modules/
+
+      - name: Deploy
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Deploying..."
+          # Add your deployment commands here

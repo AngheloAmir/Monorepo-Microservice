@@ -18,3 +18,4 @@ _build/build/**
 _build/bundle/**
 .turbo
 _temp
+out
