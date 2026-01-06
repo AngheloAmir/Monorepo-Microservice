@@ -1,105 +1,97 @@
-<div class="h-full flex flex-col gap-4 p-4">
-    <div class="flex h-full gap-4">
-        <!-- Col 1 -->
-        <div class="w-1/3 flex flex-col gap-4">
-            <!-- Row 1: Providers -->
-            <div class="flex-none bg-gray-800 rounded-xl p-4 border border-gray-700">
-                <h3 class="text-gray-400 text-sm font-bold mb-3 uppercase tracking-wider">CI Providers</h3>
-                <div class="grid grid-cols-2 gap-3" id="ci-provider-list">
-                    <!-- Buttons will be here -->
-                     <button class="ci-provider-btn p-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors flex items-center gap-3 text-sm font-medium border border-transparent focus:border-blue-500 focus:outline-none" data-provider="vercel">
-                        <i class="fas fa-triangle-circle-square text-white"></i> Vercel
-                     </button>
-                     <button class="ci-provider-btn p-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors flex items-center gap-3 text-sm font-medium border border-transparent focus:border-blue-500 focus:outline-none" data-provider="github">
-                        <i class="fab fa-github text-white"></i> Github Action
-                     </button>
-                     <button class="ci-provider-btn p-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors flex items-center gap-3 text-sm font-medium border border-transparent focus:border-blue-500 focus:outline-none" data-provider="gitlab">
-                        <i class="fab fa-gitlab text-orange-500"></i> Git Lab Ci
-                     </button>
-                      <button class="ci-provider-btn p-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors flex items-center gap-3 text-sm font-medium border border-transparent focus:border-blue-500 focus:outline-none" data-provider="circleci">
-                        <i class="fas fa-circle-nodes text-green-500"></i> Circle Ci
-                     </button>
-                      <button class="ci-provider-btn p-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors flex items-center gap-3 text-sm font-medium border border-transparent focus:border-blue-500 focus:outline-none" data-provider="travis">
-                        <i class="fas fa-hammer text-yellow-600"></i> Travis CI
-                     </button>
-                      <button class="ci-provider-btn p-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors flex items-center gap-3 text-sm font-medium border border-transparent focus:border-blue-500 focus:outline-none" data-provider="buildkite">
-                        <i class="fas fa-kite text-green-400"></i> Buildkite
-                     </button>
-                </div>
-            </div>
-            
-            <!-- Row 2: Execute CI -->
-            <div class="flex-1 bg-gray-800 rounded-xl p-4 border border-gray-700 flex flex-col">
-                 <h3 class="text-gray-400 text-sm font-bold mb-3 uppercase tracking-wider">Execute CI</h3>
-                 <div class="flex flex-col gap-2">
-                     <label class="text-xs text-gray-500">Command</label>
-                     <div class="flex gap-2">
-                         <input type="text" id="turbo-ci-cmd-input" class="flex-1 bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-200 focus:border-blue-500 outline-none" placeholder="e.g., npx turbo run build">
-                         <button id="turbo-ci-run-btn" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                             <i class="fas fa-play"></i>
-                         </button>
-                     </div>
-                     <p class="text-xs text-gray-400 mt-2 italic">
-                         Run verification locally. <b>If it fails here, do not push!</b>
-                     </p>
-                     
-                     <div class="mt-4 border-t border-gray-700 pt-3">
-                        <label class="text-xs text-gray-500 mb-2 block">Helpers</label>
-                        <button id="turbo-ci-deploy-btn" class="w-full bg-gray-700 hover:bg-gray-600 text-gray-200 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
-                             <i class="fas fa-cloud-upload-alt"></i> Insert Deployment Code
-                        </button>
-                     </div>
-                 </div>
-            </div>
+<div class="h-full flex flex-col font-sans">
+    <!-- Tabs Header -->
+    <div class="flex border-b border-gray-800 bg-gray-950 px-6 pt-4 text-white">
+        <button onclick="window.TurboCICDPage.switchTab('ci')" id="tab-ci" class="px-6 py-3 text-sm font-bold border-b-2 border-blue-500 text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-2">
+            <i class="fas fa-server"></i> CI Providers
+        </button>
+        <button onclick="window.TurboCICDPage.switchTab('pipeline')" id="tab-pipeline" class="px-6 py-3 text-sm font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-700 transition-colors flex items-center gap-2">
+            <i class="fas fa-code-branch"></i> Pipeline Editor
+        </button>
+    </div>
+
+    <!-- Content Area -->
+    <div class="flex-1 relative overflow-hidden bg-gray-900 text-white">
+        
+        <!-- Tab 1: CI Providers -->
+        <div id="view-ci" class="absolute inset-0 p-4 overflow-y-auto">
+             <!-- Injected TurboCI.html -->
         </div>
 
-        <!-- Col 2 -->
-        <div class="w-2/3 flex flex-col gap-4">
-             <!-- Row 1: Output -->
-            <div class="h-1/2 bg-gray-900 rounded-xl border border-gray-700 flex flex-col overflow-hidden">
-                <div class="bg-gray-800 px-4 py-2 border-b border-gray-700 flex justify-between items-center">
-                    <span class="text-xs font-mono text-gray-400">TERMINAL OUTPUT</span>
-                    <button id="turbo-ci-clear-console" class="text-xs text-gray-500 hover:text-white transition-colors">
-                        <i class="fas fa-trash-alt"></i> Clear
-                    </button>
-                </div>
-                <div id="turbo-ci-console" class="flex-1 overflow-hidden relative">
-                    <!-- ConsoleDiv will inject here -->
-                </div>
-            </div>
-             <!-- Row 2: Editor -->
-            <div class="h-1/2 bg-gray-800 rounded-xl border border-gray-700 flex flex-col overflow-hidden relative">
-                 <div class="bg-gray-800 px-4 py-2 border-b border-gray-700 flex justify-between items-center">
-                    <span id="turbo-ci-filename" class="text-sm font-bold text-gray-300">Select a provider</span>
-                     <div class="flex gap-2">
-                        <button id="turbo-ci-docs-btn" class="hidden text-xs bg-gray-700 hover:bg-gray-600 text-gray-300 px-3 py-1 rounded transition-colors">
-                            <i class="fas fa-book border-r border-gray-600 pr-2 mr-2"></i> Docs
-                        </button>
-                        <button id="turbo-ci-save-btn" class="hidden text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded transition-colors">
-                            <i class="fas fa-save border-r border-blue-500 pr-2 mr-2"></i> Save
-                        </button>
-                     </div>
-                </div>
-                 <div id="turbo-ci-editor" class="flex-1"></div>
-
-                 <!-- Enable Provider Overlay -->
-                 <div id="turbo-ci-enable-overlay" class="absolute inset-0 bg-gray-800/95 z-10 flex flex-col items-center justify-center hidden">
-                     <div class="text-center p-6 max-w-sm">
-                         <div class="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-                             <i class="fas fa-plus text-2xl text-gray-400"></i>
-                         </div>
-                         <h3 class="text-xl font-bold text-white mb-2">Enable CI Provider</h3>
-                         <p class="text-gray-400 mb-6 text-sm">
-                             This provider is not configured yet. Click below to create the default configuration file.
-                         </p>
-                         <button id="turbo-ci-create-btn" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-medium transition-transform active:scale-95 shadow-lg shadow-blue-500/20">
-                             Enable <span id="turbo-ci-provider-name">Provider</span>
-                         </button>
-                     </div>
-                 </div>
-            </div>
+        <!-- Tab 2: Pipeline Editor -->
+        <div id="view-pipeline" class="hidden absolute inset-0 flex">
+             <!-- Injected PipelineEditor.html -->
         </div>
     </div>
 </div>
-<!-- Load Script -->
-<script src="/gui/script/TurboCICD.js"></script>
+
+<script>
+    window.TurboCICDPage = {
+        init: async function() {
+            if (!window.componentCache) window.componentCache = {};
+            
+            await this.loadComponent('view-ci', '/gui/components/TurboCI.html');
+            await this.loadComponent('view-pipeline', '/gui/components/PipelineEditor.html');
+            
+            // Set default tab
+            this.switchTab('ci');
+        },
+
+        loadComponent: async function(id, url) {
+            const el = document.getElementById(id);
+            if(!el) return;
+            
+            if (window.componentCache[url]) {
+                el.innerHTML = window.componentCache[url];
+            } else {
+                try {
+                    const res = await fetch(url);
+                    const text = await res.text();
+                    window.componentCache[url] = text;
+                    el.innerHTML = text;
+                } catch(e) {
+                    console.error("Failed to load component", url, e);
+                    el.innerHTML = `<div class="p-4 text-red-500">Error loading component</div>`;
+                }
+            }
+        },
+
+        switchTab: function(tab) {
+            const tabCi = document.getElementById('tab-ci');
+            const tabPipeline = document.getElementById('tab-pipeline');
+            const viewCi = document.getElementById('view-ci');
+            const viewPipeline = document.getElementById('view-pipeline');
+
+            if (tab === 'ci') {
+                 tabCi.classList.add('border-blue-500', 'text-blue-400');
+                 tabCi.classList.remove('border-transparent', 'text-gray-500');
+                 
+                 tabPipeline.classList.remove('border-blue-500', 'text-blue-400');
+                 tabPipeline.classList.add('border-transparent', 'text-gray-500');
+                 
+                 viewCi.classList.remove('hidden');
+                 viewPipeline.classList.add('hidden');
+
+                 // Init Logic
+                 if (window.TurboCI && window.TurboCI.init) {
+                     window.TurboCI.init();
+                 }
+            } else {
+                 tabPipeline.classList.add('border-blue-500', 'text-blue-400');
+                 tabPipeline.classList.remove('border-transparent', 'text-gray-500');
+                 
+                 tabCi.classList.remove('border-blue-500', 'text-blue-400');
+                 tabCi.classList.add('border-transparent', 'text-gray-500');
+                 
+                 viewPipeline.classList.remove('hidden');
+                 viewCi.classList.add('hidden');
+                 
+                 // Init Logic
+                 if (window.PipelineEditor && window.PipelineEditor.init) {
+                     window.PipelineEditor.init();
+                 }
+            }
+        }
+    };
+
+    window.TurboCICDPage.init();
+</script>

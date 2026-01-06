@@ -1,0 +1,100 @@
+<div class="flex h-full gap-4">
+    <!-- Col 1 -->
+    <div class="w-1/3 flex flex-col gap-4">
+        <!-- Row 1: Providers -->
+        <div class="flex-none bg-gray-800 rounded-xl p-4 border border-gray-700">
+            <h3 class="text-gray-400 text-sm font-bold mb-3 uppercase tracking-wider">CI Providers</h3>
+            <div class="grid grid-cols-2 gap-3" id="ci-provider-list">
+                 <button class="ci-provider-btn p-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors flex items-center gap-3 text-sm font-medium border border-transparent focus:border-blue-500 focus:outline-none" data-provider="vercel">
+                    <i class="fas fa-triangle-circle-square text-white"></i> Vercel
+                 </button>
+                 <button class="ci-provider-btn p-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors flex items-center gap-3 text-sm font-medium border border-transparent focus:border-blue-500 focus:outline-none" data-provider="github">
+                    <i class="fab fa-github text-white"></i> Github Action
+                 </button>
+                 <button class="ci-provider-btn p-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors flex items-center gap-3 text-sm font-medium border border-transparent focus:border-blue-500 focus:outline-none" data-provider="gitlab">
+                    <i class="fab fa-gitlab text-orange-500"></i> Git Lab Ci
+                 </button>
+                  <button class="ci-provider-btn p-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors flex items-center gap-3 text-sm font-medium border border-transparent focus:border-blue-500 focus:outline-none" data-provider="circleci">
+                    <i class="fas fa-circle-nodes text-green-500"></i> Circle Ci
+                 </button>
+                  <button class="ci-provider-btn p-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors flex items-center gap-3 text-sm font-medium border border-transparent focus:border-blue-500 focus:outline-none" data-provider="travis">
+                    <i class="fas fa-hammer text-yellow-600"></i> Travis CI
+                 </button>
+                  <button class="ci-provider-btn p-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors flex items-center gap-3 text-sm font-medium border border-transparent focus:border-blue-500 focus:outline-none" data-provider="buildkite">
+                    <i class="fas fa-kite text-green-400"></i> Buildkite
+                 </button>
+            </div>
+        </div>
+        
+        <!-- Row 2: Execute CI -->
+        <div class="flex-1 bg-gray-800 rounded-xl p-4 border border-gray-700 flex flex-col">
+             <h3 class="text-gray-400 text-sm font-bold mb-3 uppercase tracking-wider">Execute CI</h3>
+             <div class="flex flex-col gap-2">
+                 <label class="text-xs text-gray-500">Command</label>
+                 <div class="flex gap-2">
+                     <input type="text" id="turbo-ci-cmd-input" class="flex-1 bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-200 focus:border-blue-500 outline-none" placeholder="e.g., npx turbo run build">
+                     <button id="turbo-ci-run-btn" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                         <i class="fas fa-play"></i>
+                     </button>
+                 </div>
+                 <p class="text-xs text-gray-400 mt-2 italic">
+                     Run verification locally. <b>If it fails here, do not push!</b>
+                 </p>
+                 
+                 <div class="mt-4 border-t border-gray-700 pt-3">
+                    <label class="text-xs text-gray-500 mb-2 block">Helpers</label>
+                    <button id="turbo-ci-deploy-btn" class="w-full bg-gray-700 hover:bg-gray-600 text-gray-200 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                         <i class="fas fa-cloud-upload-alt"></i> Insert Deployment Code
+                    </button>
+                 </div>
+             </div>
+        </div>
+    </div>
+
+    <!-- Col 2 -->
+    <div class="w-2/3 flex flex-col gap-4">
+         <!-- Row 1: Output -->
+        <div class="h-1/2 bg-gray-900 rounded-xl border border-gray-700 flex flex-col overflow-hidden">
+            <div class="bg-gray-800 px-4 py-2 border-b border-gray-700 flex justify-between items-center">
+                <span class="text-xs font-mono text-gray-400">TERMINAL OUTPUT</span>
+                <button id="turbo-ci-clear-console" class="text-xs text-gray-500 hover:text-white transition-colors">
+                    <i class="fas fa-trash-alt"></i> Clear
+                </button>
+            </div>
+            <div id="turbo-ci-console" class="flex-1 overflow-hidden relative">
+                <!-- ConsoleDiv will inject here -->
+            </div>
+        </div>
+         <!-- Row 2: Editor -->
+        <div class="h-1/2 bg-gray-800 rounded-xl border border-gray-700 flex flex-col overflow-hidden relative">
+             <div class="bg-gray-800 px-4 py-2 border-b border-gray-700 flex justify-between items-center">
+                <span id="turbo-ci-filename" class="text-sm font-bold text-gray-300">Select a provider</span>
+                 <div class="flex gap-2">
+                    <button id="turbo-ci-docs-btn" class="hidden text-xs bg-gray-700 hover:bg-gray-600 text-gray-300 px-3 py-1 rounded transition-colors">
+                        <i class="fas fa-book border-r border-gray-600 pr-2 mr-2"></i> Docs
+                    </button>
+                    <button id="turbo-ci-save-btn" class="hidden text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded transition-colors">
+                        <i class="fas fa-save border-r border-blue-500 pr-2 mr-2"></i> Save
+                    </button>
+                 </div>
+            </div>
+             <div id="turbo-ci-editor" class="flex-1"></div>
+
+             <!-- Enable Provider Overlay -->
+             <div id="turbo-ci-enable-overlay" class="absolute inset-0 bg-gray-800/95 z-10 flex flex-col items-center justify-center hidden">
+                 <div class="text-center p-6 max-w-sm">
+                     <div class="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                         <i class="fas fa-plus text-2xl text-gray-400"></i>
+                     </div>
+                     <h3 class="text-xl font-bold text-white mb-2">Enable CI Provider</h3>
+                     <p class="text-gray-400 mb-6 text-sm">
+                         This provider is not configured yet. Click below to create the default configuration file.
+                     </p>
+                     <button id="turbo-ci-create-btn" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-medium transition-transform active:scale-95 shadow-lg shadow-blue-500/20">
+                         Enable <span id="turbo-ci-provider-name">Provider</span>
+                     </button>
+                 </div>
+             </div>
+        </div>
+    </div>
+</div>
