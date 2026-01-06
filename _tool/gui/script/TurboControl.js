@@ -92,10 +92,39 @@ window.TurboControl = {
     pruneDocker: async function() {
         if(this.isRunning) return;
         
-        const scope = prompt("Enter the package name to prune (e.g., 'web' or 'api'):\nThis will create a partial monorepo in ./out directory.");
+        // const scope = prompt("Enter the package name to prune (e.g., 'web' or 'api'):\nThis will create a partial monorepo in ./out directory.");
+        const scope = await window.openInputModal(
+            'Prune Docker', 
+            "Enter the package name to prune (e.g., 'web' or 'api'):\nThis will create a partial monorepo in ./out directory.",
+            ''
+        );
         if(!scope) return;
         
         this.executeRequest({ action: 'prune', scope: scope });
+    },
+
+    remoteCache: async function() {
+        if(this.isRunning) return;
+
+        //const action = prompt("Manage Remote Cache.\nEnter one of the following commands:\n- 'login': Login to Vercel/Turbo\n- 'link': Link this repo (may ask questions in logs, usage might be limited)\n- 'unlink': Disable remote cache\n", "login");
+        const action = await window.openInputModal(
+            'Remote Cache',
+            "Enter one of the following commands:\n- 'login': Login to Vercel/Turbo\n- 'link': Link this repo\n- 'unlink': Disable remote cache",
+            'login'
+        );
+        
+        if (!action) return;
+
+        const validActions = ['login', 'link', 'unlink'];
+        const cleanAction = action.trim().toLowerCase();
+
+        if (!validActions.includes(cleanAction)) {
+            // alert("Invalid action. Please enter login, link, or unlink.");
+            this.appendLog(`> Error: Invalid action '${cleanAction}'. Please use login, link, or unlink.\n`, true);
+            return;
+        }
+
+        this.executeRequest({ action: cleanAction }, false);
     },
     
     startCommand: async function(cmdArray) {
@@ -103,14 +132,16 @@ window.TurboControl = {
         this.executeRequest({ manualCommand: cmdArray });
     },
 
-    executeRequest: async function(payload) {
+    executeRequest: async function(payload, lockUI = true) {
         if (this.consoleInstance) {
              this.consoleInstance.clear();
              const cmdLabel = payload.action ? `turbo run ${payload.action}` : (payload.manualCommand ? payload.manualCommand.join(' ') : 'Unknown');
              this.consoleInstance.log(`> Requesting: ${cmdLabel}\n`, true);
         }
         
-        this.setRunning();
+        if (lockUI) {
+            this.setRunning();
+        }
 
         try {
             const res = await fetch('/api/turborepo', {
@@ -167,12 +198,12 @@ window.TurboControl = {
                 this.appendLog(`> Process ID: ${data.runId}\n`, true);
             } else {
                 this.appendLog(`> Error starting process: ${data.error}\n`, true);
-                this.setNotRunning(); // Re-enable if server rejected
+                if (lockUI) this.setNotRunning(); // Re-enable if server rejected
             }
 
         } catch (e) {
             this.appendLog(`> Network Error: ${e.message}\n`, true);
-            this.setNotRunning();
+            if (lockUI) this.setNotRunning();
         }
     },
     

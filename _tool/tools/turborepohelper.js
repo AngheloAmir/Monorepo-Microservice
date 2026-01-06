@@ -40,6 +40,8 @@ function handleTurboRequest(req, res) {
                      return;
                  }
                  startTurboProcess(res, action, null, scope);
+             } else if (['login', 'link', 'unlink'].includes(action)) {
+                 startTurboProcess(res, action);
              } else {
                  startTurboProcess(res, action, manualCommand);
              }
@@ -66,6 +68,8 @@ function startTurboProcess(res, action, manualCommand, scope) {
         args = ['install'];
     } else if (action === 'prune') {
         args = ['--no-install', 'turbo', 'prune', `--scope=${scope}`, '--docker'];
+    } else if (['login', 'link', 'unlink'].includes(action)) {
+        args = ['--no-install', 'turbo', action];
     } else if (action) {
         args = ['--no-install', 'turbo', 'run', action]; // "npx --no-install turbo run dev"
     } else {
