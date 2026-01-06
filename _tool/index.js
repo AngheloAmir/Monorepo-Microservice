@@ -104,6 +104,10 @@ const server = http.createServer((req, res) => {
 
 
 
+    case '/api/activepipeline':
+        const { handlePipelineRequest } = require('./tools/pipelineeditorhelper');
+        return handlePipelineRequest(req, res);
+
     // VS Code Helper Routes
     case '/api/vscode/toggle-exclude':
         const { handleToggleExclude } = require('./tools/vscodeHelper');

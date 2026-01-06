@@ -4,6 +4,7 @@ window.Navigation = {
         { id: 'workspace',  label: 'Workspace', icon: 'fa fa-cube', component: 'workspace' },
         { id: 'turborepo',  label: 'Turborepo', icon: 'fa-solid fa-truck-fast', component: 'turborepo' },
         { id: 'turbocicd',  label: 'Turbo CI/CD', icon: 'fa-server',              component: 'turbocicd' },
+        { id: 'pipelineeditor',  label: 'Pipeline', icon: 'fa-code-branch',       component: 'pipelineeditor' },
         
         { id: 'crudtester', label: 'CRUD Tester', icon: 'fa-microscope', component: 'crudtester' },
 

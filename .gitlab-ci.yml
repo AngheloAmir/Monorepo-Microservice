@@ -2,18 +2,36 @@ image: node:latest
 
 stages:
   - build
+  - deploy
 
-build:
+# 1. Standard build/test for the whole repo
+build_monorepo:
   stage: build
   script:
     - npm ci
-    - npx --no-install turbo run build test lint
+    - npx turbo run build test lint
   cache:
     paths:
       - node_modules/
 
-      - name: Deploy
-        if: github.ref == 'refs/heads/main'
-        run: |
-          echo "Deploying..."
-          # Add your deployment commands here
+# 2. Deploy Stage (Using the Pruned 'out' folder)
+deploy_docker:
+  stage: deploy
+  image: docker:latest
+  services:
+    - docker:dind
+  only:
+    - main  # Only run on main branch
+  script:
+    - apk add --no-cache nodejs npm # We need node/npm to run turbo
+    - npm ci
+    
+    # --- HERE IS THE MAGIC ---
+    # Create the 'out' folder for a specific app (e.g., nodejs)
+    - npx --no-install turbo prune --scope=nodejs --docker
+    
+    # Now 'out/' exists. Use it to build your Docker image.
+    # (Assuming your Dockerfile copies from ./out/)
+    - docker build -t my-app-image . 
+    - echo "Pushing to registry..."
+    # - docker push ...

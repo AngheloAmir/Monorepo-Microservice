@@ -1,0 +1,108 @@
+const fs = require('fs');
+const path = require('path');
+const { spawn } = require('child_process');
+
+function handlePipelineRequest(req, res) {
+    if (req.method !== 'POST') {
+        res.writeHead(405, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Method Not Allowed' }));
+        return;
+    }
+
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+        try {
+            const data = JSON.parse(body);
+            const { action } = data;
+
+            if (action === 'get-workspaces') {
+                getWorkspacesWithScripts(res);
+            } else if (action === 'save-script') {
+                saveWorkspaceScript(res, data.workspacePath, data.scriptName, data.command);
+            } else {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Invalid action' }));
+            }
+        } catch (e) {
+            console.error(e);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal Server Error' }));
+        }
+    });
+}
+
+function getWorkspacesWithScripts(res) {
+    const workspaceRoot = path.resolve(__dirname, '../../');
+    const tooldataPath = path.resolve(__dirname, '../tooldata/Workspace.js');
+    
+    try {
+        if (require.cache[require.resolve(tooldataPath)]) {
+            delete require.cache[require.resolve(tooldataPath)];
+        }
+        const workspaceData = require(tooldataPath);
+        
+        const workspaces = [];
+        
+        ['backend', 'frontend', 'service', 'database'].forEach(section => {
+            if(workspaceData[section]) {
+                workspaceData[section].forEach(ws => {
+                    const pkgPath = path.join(workspaceRoot, ws.path, 'package.json');
+                    let scripts = {};
+                    if(fs.existsSync(pkgPath)) {
+                        try {
+                            const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+                            scripts = pkg.scripts || {};
+                        } catch(e) {
+                            console.error(`Error reading package.json for ${ws.name}`, e);
+                        }
+                    }
+                    
+                    workspaces.push({
+                        name: ws.name,
+                        path: ws.path,
+                        type: ws.type,
+                        icon: ws.icon,
+                        scripts: scripts
+                    });
+                });
+            }
+        });
+        
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ workspaces }));
+    } catch (e) {
+        console.error(e);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Failed to load workspace data' }));
+    }
+}
+
+function saveWorkspaceScript(res, relativePath, scriptName, command) {
+    const workspaceRoot = path.resolve(__dirname, '../../');
+    const pkgPath = path.join(workspaceRoot, relativePath, 'package.json');
+    
+    if (!fs.existsSync(pkgPath)) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Package.json not found' }));
+        return;
+    }
+
+    try {
+        const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+        if (!pkg.scripts) pkg.scripts = {};
+        
+        pkg.scripts[scriptName] = command;
+        
+        fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
+        
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true }));
+    } catch (e) {
+        console.error(e);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Failed to save script: ' + e.message }));
+    }
+}
+
+module.exports = { handlePipelineRequest };
