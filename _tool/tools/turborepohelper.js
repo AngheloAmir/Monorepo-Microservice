@@ -42,6 +42,8 @@ function handleTurboRequest(req, res) {
                  startTurboProcess(res, action, null, scope);
              } else if (['login', 'link', 'unlink'].includes(action)) {
                  startTurboProcess(res, action);
+             } else if (action === 'list-prunable') {
+                 listTurboPruneable(res);
              } else {
                  startTurboProcess(res, action, manualCommand);
              }
@@ -169,6 +171,93 @@ function getTurboGraph(res) {
         .catch(err => {
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Graph generation failed: ' + err.message }));
+        });
+}
+
+function listTurboPruneable(res) {
+    const workspaceRoot = path.resolve(__dirname, '../../');
+    const workspaceDataPath = path.resolve(__dirname, '../tooldata/Workspace.js');
+    
+    // We combine Turbo's graph (truth) with Workspace.js metadata (icons/desc)
+    const turboArgs = ['turbo', 'run', 'build', '--dry=json'];
+
+    runExec(workspaceRoot, 'npx', turboArgs)
+        .then(output => {
+            try {
+                const graphJson = JSON.parse(output);
+                const prunablePackages = new Set();
+                
+                if (graphJson.tasks) {
+                    if (Array.isArray(graphJson.tasks)) {
+                         graphJson.tasks.forEach(task => {
+                             if (task.package) prunablePackages.add(task.package);
+                         });
+                    } else {
+                        Object.keys(graphJson.tasks).forEach(key => {
+                             // key is usually "package#task" OR the task object might have a package property
+                             // In some versions, the value is the task details.
+                             const taskData = graphJson.tasks[key];
+                             if (taskData.package) {
+                                 prunablePackages.add(taskData.package);
+                             } else {
+                                const [pkgName] = key.split('#');
+                                if (pkgName) prunablePackages.add(pkgName);
+                             }
+                        });
+                    }
+                }
+                
+                // Read metadata
+                let workspaceMeta = {};
+                try {
+                    delete require.cache[require.resolve(workspaceDataPath)];
+                    workspaceMeta = require(workspaceDataPath);
+                } catch(e) {
+                    console.error("Failed to load Workspace.js", e);
+                }
+
+                // Flatten metadata for lookup
+                const metaLookup = {};
+                ['backend', 'frontend', 'service', 'database'].forEach(type => {
+                     if(workspaceMeta[type]) {
+                         workspaceMeta[type].forEach(item => {
+                             metaLookup[item.name] = item;
+                         });
+                     }
+                });
+
+                const machines = Array.from(prunablePackages)
+                .filter(p => !p.startsWith('@monorepo/'))
+                .map(p => {
+                    const meta = metaLookup[p] || {};
+                    let icon = 'fas fa-box';
+                    if (meta.icon) {
+                         icon = meta.icon; 
+                    } else {
+                         if(p.includes('app') || p.includes('web')) icon = 'fas fa-layer-group';
+                         else if (p.includes('api') || p.includes('back')) icon = 'fas fa-server';
+                         else if (p.includes('ui')) icon = 'fas fa-puzzle-piece';
+                    }
+
+                    return {
+                        name: p,
+                        description: meta.description || 'Monorepo Package',
+                        icon: icon,
+                        type: meta.type || 'library'
+                    };
+                });
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ workspaces: machines }));
+            } catch (e) {
+                console.error("JSON Parse Error", e);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Failed to process graph output' }));
+            }
+        })
+        .catch(err => {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Failed to listing workspaces: ' + err.message }));
         });
 }
 

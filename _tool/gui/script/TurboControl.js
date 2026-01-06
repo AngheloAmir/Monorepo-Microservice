@@ -92,12 +92,8 @@ window.TurboControl = {
     pruneDocker: async function() {
         if(this.isRunning) return;
         
-        // const scope = prompt("Enter the package name to prune (e.g., 'web' or 'api'):\nThis will create a partial monorepo in ./out directory.");
-        const scope = await window.openInputModal(
-            'Prune Docker', 
-            "Enter the package name to prune (e.g., 'web' or 'api'):\nThis will create a partial monorepo in ./out directory.",
-            ''
-        );
+        // Use custom Turbo Prune Modal
+        const scope = await window.openTurboPruneModal();
         if(!scope) return;
         
         this.executeRequest({ action: 'prune', scope: scope });
