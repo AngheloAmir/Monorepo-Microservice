@@ -106,23 +106,21 @@ window.TurboControl = {
     remoteCache: async function() {
         if(this.isRunning) return;
 
-        //const action = prompt("Manage Remote Cache.\nEnter one of the following commands:\n- 'login': Login to Vercel/Turbo\n- 'link': Link this repo (may ask questions in logs, usage might be limited)\n- 'unlink': Disable remote cache\n", "login");
-        const action = await window.openInputModal(
-            'Remote Cache',
-            "Enter one of the following commands:\n- 'login': Login to Vercel/Turbo\n- 'link': Link this repo\n- 'unlink': Disable remote cache",
-            'login'
+        // Use Selection Modal
+        const action = await window.openSelectionModal(
+            'Remote Cache Manager',
+            'Select a Turborepo remote cache action:',
+            [
+                { icon: 'fas fa-sign-in-alt', name: 'login', description: 'Login to Vercel/Turborepo account' },
+                { icon: 'fas fa-link', name: 'link', description: 'Link this repo to a remote scope' },
+                { icon: 'fas fa-unlink', name: 'unlink', description: 'Disable remote caching' }
+            ]
         );
         
-        if (!action) return;
+        if (!action) return; // Cancelled
 
         const validActions = ['login', 'link', 'unlink'];
         const cleanAction = action.trim().toLowerCase();
-
-        if (!validActions.includes(cleanAction)) {
-            // alert("Invalid action. Please enter login, link, or unlink.");
-            this.appendLog(`> Error: Invalid action '${cleanAction}'. Please use login, link, or unlink.\n`, true);
-            return;
-        }
 
         this.executeRequest({ action: cleanAction }, false);
     },
