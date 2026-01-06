@@ -79,16 +79,16 @@ window.TurboFlow = {
             // Add Node
             nodes.push({
                 id: task,
-                label: task,
+                label: '📦 ' + task,
                 shape: 'box',
                 color: {
                     background: '#1f2937', 
                     border: '#3b82f6'
                 },
-                font: { color: '#ffffff' },
-                heightConstraint: { minimum: 40 },
-                widthConstraint: { minimum: 100 },
-                margin: 10
+                font: { color: '#ffffff', size: 14 },
+                heightConstraint: { minimum: 30 },
+                widthConstraint: { minimum: 80 },
+                margin: 5 
             });
 
             // Add Edges
@@ -107,25 +107,22 @@ window.TurboFlow = {
                     if (!addedNodes.has(from) && from !== task) {
                         nodes.push({
                             id: from,
-                            label: from + ' (implicit)',
+                            label: '📦 ' + from + ' (implicit)',
                             shape: 'box',
                             color: {
                                 background: '#374151',
                                 border: '#6b7280'
                             },
-                             font: { color: '#9ca3af' },
-                            heightConstraint: { minimum: 40 },
-                            widthConstraint: { minimum: 100 },
-                            margin: 10
+                             font: { color: '#9ca3af', size: 14 },
+                            heightConstraint: { minimum: 30 },
+                            widthConstraint: { minimum: 80 },
+                            margin: 5
                         });
                         addedNodes.add(from);
                     }
 
                     // Check if self-dep (topo)
                     if (from === task && dep.startsWith('^')) {
-                         // Optional: visualize self-loop? Vis.js does this automatically if from===to
-                         // but for pipeline, it means "my dependencies", not "me".
-                         // We skip self-loop visual for cleaner graph.
                          return;
                     }
                     
@@ -149,18 +146,7 @@ window.TurboFlow = {
 
         const options = {
             physics: {
-                enabled: true,
-                solver: 'forceAtlas2Based',
-                forceAtlas2Based: {
-                    gravitationalConstant: -50,
-                    centralGravity: 0.01,
-                    springLength: 100,
-                    springConstant: 0.08
-                },
-                stabilization: {
-                    enabled: true,
-                    iterations: 1000
-                }
+                enabled: false
             },
             layout: {
                 hierarchical: {
@@ -170,23 +156,63 @@ window.TurboFlow = {
             interaction: {
                 hover: true,
                 dragView: true,
-                zoomView: true
+                zoomView: true,
+                dragNodes: true 
+            },
+            edges: {
+                smooth: {
+                    type: 'continuous',
+                    roundness: 0
+                }
             }
         };
 
         this.network = new vis.Network(container, this.data, options);
+        
+        this.network.on("click", (params) => {
+            if (params.nodes.length > 0) {
+                this.onNodeSelected(params.nodes[0]);
+            } else {
+                this.onGridSelected();
+            }
+        });
+    },
+
+    saveCurrentNodeState: function() {
+        if (this.selectedNodeId && this.pipelineConfig[this.selectedNodeId]) {
+             const config = this.pipelineConfig[this.selectedNodeId];
+             
+             // Check if element exists (panel might be hidden)
+             const cacheEl = document.getElementById('config-cache');
+             if(cacheEl) config.cache = cacheEl.checked;
+             
+             const inputsEl = document.getElementById('config-inputs');
+             if(inputsEl) {
+                 const inputs = inputsEl.value.split(',').map(s => s.trim()).filter(Boolean);
+                 if (inputs.length > 0) config.inputs = inputs;
+                 else delete config.inputs;
+             }
+             
+             const outputsEl = document.getElementById('config-outputs');
+             if(outputsEl) {
+                 const outputs = outputsEl.value.split(',').map(s => s.trim()).filter(Boolean);
+                 if (outputs.length > 0) config.outputs = outputs;
+                 else delete config.outputs;
+             }
+        }
     },
 
     onNodeSelected: function(nodeId) {
-        this.selectedNodeId = nodeId;
-        
         if (this.isLinking) {
-            // we were waiting for a target to link TO
-            // actually standard linking usually: select source -> click link -> click target
-            // implementation detail: simplified for now
-            this.isLinking = false;
+            this.handleLink(nodeId);
+            return;
         }
 
+        // Save previous
+        this.saveCurrentNodeState();
+
+        this.selectedNodeId = nodeId;
+        
         // Show Config Panel
         document.getElementById('config-empty').classList.add('hidden');
         document.getElementById('config-form').classList.remove('hidden');
@@ -194,14 +220,10 @@ window.TurboFlow = {
 
         const config = this.pipelineConfig[nodeId] || {};
         
-        // Cache
-        document.getElementById('config-cache').checked = config.cache !== false; // default is true in turbo
-
-        // Inputs/Outputs
+        document.getElementById('config-cache').checked = config.cache !== false; 
         document.getElementById('config-inputs').value = (config.inputs || []).join(', ');
         document.getElementById('config-outputs').value = (config.outputs || []).join(', ');
 
-        // Deps Chips
         const depsContainer = document.getElementById('config-deps');
         depsContainer.innerHTML = '';
         if (config.dependsOn) {
@@ -216,38 +238,81 @@ window.TurboFlow = {
                 depsContainer.appendChild(chip);
             });
         }
+    },
+
+    handleLink: function(targetId) {
+        const sourceId = this.selectedNodeId;
+        if (!sourceId || sourceId === targetId) {
+            this.isLinking = false;
+            document.body.style.cursor = 'default';
+            return;
+        }
+
+        const config = this.pipelineConfig[sourceId];
+        if (!config.dependsOn) config.dependsOn = [];
         
-        // Listeners for inputs (update internal state immediately)
-        // Note: Real world app would debounce
+        if (!config.dependsOn.includes(targetId)) {
+            config.dependsOn.push(targetId);
+            
+            // Validate Cycle (simple check)
+            // If I add B to A, I need to check if A is reachable from B?
+            // For now, let's just add it. Turbo will complain if invalid.
+            
+            this.transformToGraphData();
+            this.renderGraph();
+            
+            // Re-select source to show updated deps
+            this.onNodeSelected(sourceId);
+        }
+
+        this.isLinking = false;
+        document.body.style.cursor = 'default';
     },
 
     onGridSelected: function() {
+        if (this.isLinking) {
+            this.isLinking = false;
+            document.body.style.cursor = 'default';
+        }
+        
+        this.saveCurrentNodeState();
         this.selectedNodeId = null;
         document.getElementById('config-empty').classList.remove('hidden');
         document.getElementById('config-form').classList.add('hidden');
         document.getElementById('config-title').textContent = "No Task Selected";
     },
 
+    startLinking: function() {
+        if (!this.selectedNodeId) return;
+        this.isLinking = true;
+        document.body.style.cursor = 'crosshair';
+        alert(`Select the task that "${this.selectedNodeId}" depends on.`);
+    },
+
     addTask: function() {
         const name = prompt("Enter task name (e.g. 'e2e-test'):");
-        if (name && !this.pipelineConfig[name]) {
-            this.pipelineConfig[name] = { cache: true };
-            this.data.nodes.add({
-                id: name,
-                label: name,
-                shape: 'box',
-                color: { background: '#1f2937', border: '#3b82f6' },
-                font: { color: '#ffffff' }
-            });
-            this.onNodeSelected(name);
+        if (name) {
+            if (!this.pipelineConfig[name]) {
+                this.pipelineConfig[name] = { cache: true };
+                // Re-transform instead of manual add to ensure consistent state
+                this.transformToGraphData();
+                this.renderGraph();
+                this.onNodeSelected(name);
+            } else {
+                alert('Task already exists!');
+            }
         }
     },
     
     autoLayout: function() {
-        if(this.network) this.network.emit('stabilize'); 
-        // Force re-layout
-        // Simple hack: re-init with hierarchical enabled usually triggers it
-        this.renderGraph();
+        // Just trigger renderGraph which has physics enabled initially
+        // Maybe stabilize
+        if(this.network) {
+            this.network.stabilize();
+            this.network.fit();
+        } else {
+            this.renderGraph();
+        }
     },
 
     removeDep: function(task, dep) {
