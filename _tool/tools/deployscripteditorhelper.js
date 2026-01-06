@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
 
-function handlePipelineRequest(req, res) {
+function handleDeployScriptRequest(req, res) {
     if (req.method !== 'POST') {
         res.writeHead(405, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Method Not Allowed' }));
@@ -40,12 +40,15 @@ function getWorkspacesWithScripts(res) {
     const workspaceRoot = path.resolve(__dirname, '../../');
     const tooldataPath = path.resolve(__dirname, '../tooldata/Workspace.js');
     
+    console.log("Loading workspaces from:", tooldataPath);
+
     try {
         if (require.cache[require.resolve(tooldataPath)]) {
             delete require.cache[require.resolve(tooldataPath)];
         }
         const workspaceData = require(tooldataPath);
-        
+        console.log("Workspace Data Keys:", Object.keys(workspaceData));
+
         const workspaces = [];
         
         ['backend', 'frontend', 'service', 'database', 'shared'].forEach(section => {
@@ -60,6 +63,8 @@ function getWorkspacesWithScripts(res) {
                         } catch(e) {
                             console.error(`Error reading package.json for ${ws.name}`, e);
                         }
+                    } else {
+                        console.warn(`Package.json not found at ${pkgPath}`);
                     }
                     
                     workspaces.push({
@@ -73,10 +78,11 @@ function getWorkspacesWithScripts(res) {
             }
         });
         
+        console.log("Found workspaces:", workspaces.length);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ workspaces }));
     } catch (e) {
-        console.error(e);
+        console.error("Error in getWorkspacesWithScripts:", e);
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Failed to load workspace data' }));
     }
@@ -163,4 +169,4 @@ function saveTurboJson(res, pipeline) {
     }
 }
 
-module.exports = { handlePipelineRequest };
+module.exports = { handleDeployScriptRequest };

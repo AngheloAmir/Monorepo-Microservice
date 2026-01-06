@@ -1,4 +1,4 @@
-window.PipelineEditor = {
+window.TurboDeployScript = {
     workspaces: [],
     currentWs: null,
 

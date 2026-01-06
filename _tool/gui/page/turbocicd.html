@@ -4,8 +4,9 @@
         <button onclick="window.TurboCICDPage.switchTab('ci')" id="tab-ci" class="px-6 py-3 text-sm font-bold border-b-2 border-blue-500 text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-2">
             <i class="fas fa-server"></i> CI Providers
         </button>
-        <button onclick="window.TurboCICDPage.switchTab('pipeline')" id="tab-pipeline" class="px-6 py-3 text-sm font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-700 transition-colors flex items-center gap-2">
-            <i class="fas fa-code-branch"></i> Pipeline Editor
+        <button onclick="window.TurboCICDPage.switchTab('deployscript')" id="tab-deployscript" class="px-6 py-3 text-sm font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-700 transition-colors flex items-center gap-2">
+            <i class="fas fa-code-branch"></i> Deploy Script Editor
+        </button>
         <button onclick="window.TurboCICDPage.switchTab('flow')" id="tab-flow" class="px-6 py-3 text-sm font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-700 transition-colors flex items-center gap-2">
             <i class="fas fa-project-diagram"></i> Flow Editor
         </button>
@@ -17,8 +18,8 @@
         <!-- Tab 1: CI Providers -->
         <div id="view-ci" class="absolute inset-0 p-4 overflow-y-auto"></div>
 
-        <!-- Tab 2: Pipeline Editor -->
-        <div id="view-pipeline" class="hidden absolute inset-0 flex"></div>
+        <!-- Tab 2: Deploy Script Editor -->
+        <div id="view-deployscript" class="hidden absolute inset-0 flex"></div>
 
         <!-- Tab 3: Flow Editor -->
         <div id="view-flow" class="hidden absolute inset-0 flex"></div>
@@ -31,7 +32,7 @@
             if (!window.componentCache) window.componentCache = {};
             
             await this.loadComponent('view-ci', '/gui/components/TurboCI.html');
-            await this.loadComponent('view-pipeline', '/gui/components/PipelineEditor.html');
+            await this.loadComponent('view-deployscript', '/gui/components/TurboDeployScript.html');
             await this.loadComponent('view-flow', '/gui/components/TurboFlow.html');
             
             // Set default tab
@@ -58,7 +59,7 @@
         },
 
         switchTab: function(tab) {
-            const tabs = ['ci', 'pipeline', 'flow'];
+            const tabs = ['ci', 'deployscript', 'flow'];
             
             tabs.forEach(t => {
                 const btn = document.getElementById(`tab-${t}`);
@@ -71,7 +72,7 @@
                     
                     // Init Logic
                     if (t === 'ci' && window.TurboCI?.init) window.TurboCI.init();
-                    if (t === 'pipeline' && window.PipelineEditor?.init) window.PipelineEditor.init();
+                    if (t === 'deployscript' && window.TurboDeployScript?.init) window.TurboDeployScript.init();
                     if (t === 'flow' && window.TurboFlow?.init) window.TurboFlow.init();
                     
                 } else {
