@@ -7,6 +7,18 @@ window.TabTerminal = {
 
         if (window.tabTerminalContainer) {
             targetContainer.appendChild(window.tabTerminalContainer);
+            
+            // Fix: Ensure container is visible when re-mounting
+            window.tabTerminalContainer.classList.remove('hidden');
+
+            // Fix: Re-select active tab to ensure content is rendered correctly
+            if (window.tabTerminalActiveId) {
+                this.selectTab(window.tabTerminalActiveId);
+            } else {
+                 // Ensure empty state is visible if no tabs
+                 const emptyState = document.getElementById('terminal-empty-state');
+                 if(emptyState) emptyState.classList.remove('hidden');
+            }
             return;
         }
         
@@ -180,20 +192,22 @@ window.TabTerminal = {
     },
 
     initSocket: function() {
-        if (window.repoSocket) return;
+        if (!window.repoSocket) {
+            // Initialize Socket.io connection only if not exists
+            window.repoSocket = io();
+            
+            window.repoSocket.on('connect', () => {
+                 // Re-join channels on reconnect
+                if (window.tabTerminalItems) {
+                    Object.keys(window.tabTerminalItems).forEach(id => {
+                        window.repoSocket.emit('join-log', id);
+                    });
+                }
+            });
+        }
         
-        // Initialize Socket.io connection
-        window.repoSocket = io();
-        
-        window.repoSocket.on('connect', () => {
-             // Re-join channels on reconnect
-            if (window.tabTerminalItems) {
-                Object.keys(window.tabTerminalItems).forEach(id => {
-                    window.repoSocket.emit('join-log', id);
-                });
-            }
-        });
-
+        // Always ensure we listen to 'log', removing old one to avoid duplicates
+        window.repoSocket.off('log');
         window.repoSocket.on('log', (data) => {
              if (data && data.id && data.text) {
                  this.writeOnTerminal(data.id, data.text);
