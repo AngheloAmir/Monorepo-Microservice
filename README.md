@@ -64,3 +64,17 @@ For a detailed guide on implementing and importing these modules, please read th
 # Example: Migrating the database from the shared folder
 npm run db:migrate -w @monorepo/models
 ```
+
+# FEATURES and INTERFACES
+
+## See list of running services and memory usage
+![Architecture](_tool/asset/home1.jpg)
+
+## Run and stop services at will
+![Architecture](_tool/asset/workspace1.jpg)
+
+## Utilize Turborepo.js to run commands on multiple services
+![Architecture](_tool/asset/turborepo1.jpg)
+
+## Built-in CRUD simple tester interface for your Backed Services
+![Architecture](_tool/asset/crud1.jpg)
