@@ -3,9 +3,18 @@ window.TurboDatabase = {
     currentRunId: null,
     socket: null,
     isRunning: false,
-    
+    dbUrl: '', 
+
     init: function() {
         console.log('TurboDatabase initializing...');
+        
+        // Load stored URL
+        const storedUrl = localStorage.getItem('turbo_db_url');
+        if(storedUrl) {
+            this.dbUrl = storedUrl;
+            const input = document.getElementById('db-url-input');
+            if(input) input.value = storedUrl;
+        }
         
         const container = document.getElementById('turbo-db-console-container');
         if (container) {
@@ -64,6 +73,23 @@ window.TurboDatabase = {
         this.appendLog('\n> Done.\n', true);
     },
 
+    saveUrl: function(val) {
+        this.dbUrl = val;
+        localStorage.setItem('turbo_db_url', val);
+    },
+
+    toggleVisibility: function() {
+        const input = document.getElementById('db-url-input');
+        const icon = document.getElementById('db-url-eye');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.className = 'fas fa-eye-slash';
+        } else {
+            input.type = 'password';
+            icon.className = 'fas fa-eye';
+        }
+    },
+
     run: async function(task) {
         if(this.isRunning) return;
         this.executeRequest({ action: task });
@@ -81,14 +107,22 @@ window.TurboDatabase = {
         }
 
         try {
+            const payloadRequest = {
+                directory: 'shared/models',
+                basecmd: 'npm',
+                cmd: ['run', payload.action]
+            };
+
+            if (this.dbUrl && this.dbUrl.trim() !== '') {
+                payloadRequest.extraEnv = {
+                    DATABASE_URL: this.dbUrl.trim()
+                };
+            }
+
             const res = await fetch('/api/runcmd', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    directory: 'shared/models',
-                    basecmd: 'npm',
-                    cmd: ['run', payload.action]
-                })
+                body: JSON.stringify(payloadRequest)
             });
             const data = await res.json();
             

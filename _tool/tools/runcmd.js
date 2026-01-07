@@ -18,7 +18,7 @@ function runCmdHandler(req, res) {
     });
 }
 
-function executeCommand(res, { directory, basecmd, cmd }) {
+function executeCommand(res, { directory, basecmd, cmd, extraEnv = {} }) {
     if (!directory || !basecmd) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Missing directory or command' }));
@@ -66,6 +66,7 @@ function executeCommand(res, { directory, basecmd, cmd }) {
     // Prepare Environment
     const env = { 
         ...process.env, 
+        ...extraEnv,
         // TERM: 'dumb', // This disables colors
         FORCE_COLOR: '1', // This forces 16-color ANSI output
         NPM_CONFIG_AUDIT: 'false',
