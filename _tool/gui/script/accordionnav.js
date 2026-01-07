@@ -62,7 +62,7 @@ window.AccordionNav = {
             // Render Items
             if (category.items) {
                 category.items.forEach((item, itemIndex) => {
-                    const el = this.createItemElement(item, catIndex, itemIndex);
+                    const el = this.createItemElement(item, category, catIndex, itemIndex);
                     // Insert before the last child (Add Route button)
                     if (content.lastElementChild) {
                         content.insertBefore(el, content.lastElementChild);
@@ -101,7 +101,7 @@ window.AccordionNav = {
         container.appendChild(manageBtn);
     },
 
-    createItemElement: function(item, catIndex, itemIndex) {
+    createItemElement: function(item, category, catIndex, itemIndex) {
         const el = document.createElement('div');
         
         // Base classes
@@ -133,7 +133,7 @@ window.AccordionNav = {
              el.classList.add('bg-blue-600/20', 'text-blue-200', 'border-blue-500/30', 'shadow-sm');
 
              if (window.CrudTest && window.CrudTest.selectItem) {
-                 window.CrudTest.selectItem(item);
+                 window.CrudTest.selectItem(item, category);
              }
         };
         

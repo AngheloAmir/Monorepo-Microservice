@@ -46,16 +46,9 @@ window.CrudTest = {
         }
 
         // Initialize Root URL
-        const rootInput = document.getElementById('crud-root-url');
-        if (rootInput) {
-            rootInput.value = window.crudState.rootUrl || localStorage.getItem('crud-root-url') || 'http://localhost:3000';
-            rootInput.addEventListener('input', () => {
-                const val = rootInput.value;
-                localStorage.setItem('crud-root-url', val);
-                window.crudState.rootUrl = val;
-                this.updateUrlDisplay();
-            });
-        }
+        // Initialize Root URL Toggle
+        this.initUrlToggle();
+        
         
         // Initialize Params Input
         const paramInput = document.getElementById('crud-param-input');
@@ -79,6 +72,37 @@ window.CrudTest = {
         // Restore Selection if exists
         if (window.crudState.currentItem) {
             this.restoreSelection(window.crudState.currentItem);
+        }
+    },
+
+    initUrlToggle: function() {
+        const btnDev = document.getElementById('crud-btn-dev');
+        const btnProd = document.getElementById('crud-btn-prod');
+        
+        const updateState = () => {
+            if (window.crudUseProd) {
+                // Prod Active
+                btnDev.className = 'px-3 py-1 text-[10px] font-bold uppercase rounded transition-all text-gray-500 hover:text-gray-300';
+                btnProd.className = 'px-3 py-1 text-[10px] font-bold uppercase rounded transition-all bg-purple-600 text-white shadow-lg';
+            } else {
+                // Dev Active
+                btnDev.className = 'px-3 py-1 text-[10px] font-bold uppercase rounded transition-all bg-blue-600 text-white shadow-lg';
+                btnProd.className = 'px-3 py-1 text-[10px] font-bold uppercase rounded transition-all text-gray-500 hover:text-gray-300';
+            }
+            this.updateUrlDisplay();
+        };
+
+        if (btnDev && btnProd) {
+            btnDev.onclick = () => {
+                window.crudUseProd = false;
+                updateState();
+            };
+            btnProd.onclick = () => {
+                window.crudUseProd = true;
+                updateState();
+            };
+            // Init state
+            updateState();
         }
     },
 
@@ -170,13 +194,22 @@ window.CrudTest = {
         }
     },
 
-    selectItem: async function(item) {
+    selectItem: async function(item, category) {
         if (!this.headerEditor || !this.bodyEditor) {
              await this.init();
         }
         if (!this.headerEditor || !this.bodyEditor) {
              console.error("Failed to initialize editors");
              return;
+        }
+
+        // Update URLs based on Category
+        if (category) {
+            window.crudDevUrl = category.devurl || 'http://localhost:3200';
+            window.crudProdUrl = category.produrl || 'http://localhost:3200';
+            // Force re-evaluation of toggle state visual if needed? 
+            // The toggle button visual acts on 'window.crudUseProd' which remains.
+            // But we might want to refresh the URL display immediately.
         }
 
         // Save new item to state
@@ -236,7 +269,7 @@ window.CrudTest = {
 
     updateUrlDisplay: function() {
         if (!window.crudState.currentItem) return;
-        const root = document.getElementById('crud-root-url').value;
+        const root = window.crudUseProd ? window.crudProdUrl : window.crudDevUrl;
         const params = window.crudState.paramValue || '';
         const routeEl = document.getElementById('crud-info-route');
         if(routeEl) routeEl.textContent = `${root}${window.crudState.currentItem.route}${params}`;
@@ -246,7 +279,7 @@ window.CrudTest = {
         const item = window.crudState.currentItem;
         if (!item) return;
 
-        const root = document.getElementById('crud-root-url').value;
+        const root = window.crudUseProd ? window.crudProdUrl : window.crudDevUrl;
         const params = window.crudState.paramValue || '';
         const url = `${root}${item.route}${params}`;
         const methodLabel = item.methods || 'GET';

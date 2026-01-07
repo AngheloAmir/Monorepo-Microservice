@@ -27,9 +27,13 @@
         <!-- Placeholder for now -->
         <!-- Root URL Header (Persistent) -->
         <div class="h-11 bg-gray-800 border-b border-gray-700 flex items-center px-4 gap-4 z-20 shadow-md">
-            <div class="flex items-center gap-2">
-                <span class="text-[14px] font-bold text-gray-500 uppercase tracking-wider">Root URL:</span>
-                <input type="text" id="crud-root-url" class="bg-gray-900 border border-gray-700 rounded px-2 py-0.5 text-[14px] text-blue-400 font-mono w-64 focus:outline-none focus:border-blue-500" placeholder="http://localhost:3200">
+            <div class="flex items-center gap-1 bg-gray-900 rounded-lg p-1 border border-gray-700">
+                <button id="crud-btn-dev" class="px-3 py-1 text-[10px] font-bold uppercase rounded transition-all bg-blue-600 text-white shadow-lg">
+                    Dev URL
+                </button>
+                <button id="crud-btn-prod" class="px-3 py-1 text-[10px] font-bold uppercase rounded transition-all text-gray-500 hover:text-gray-300">
+                    Prod URL
+                </button>
             </div>
             
             <div class="h-8 w-px bg-gray-700"></div>

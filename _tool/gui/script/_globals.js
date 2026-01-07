@@ -14,14 +14,16 @@ window.tabTerminalContainer = null;
 
 // CRUD Tester variables
 window.crudTemplates = {}; // Cache HTML strings
+window.crudDevUrl = 'http://localhost:3200';
+window.crudProdUrl = 'https://production-url-placeholder.com';
+window.crudUseProd = false;
+
 window.crudState = {       // Persistent state
     currentItem: null,
     headerValue: '{\n  "Content-Type": "application/json",\n  "Accept": "application/json",\n  "Authorization": "Bearer token",\n  "x-refresh-token": "refresh-token",\n  "X-CSRF-Token": "csrf-token-placeholder",\n  "Cache-Control": "no-cache"\n}',
     bodyValue: '{}',
     outputValue: '',
     suggestValue: '',
-    rootUrl: localStorage.getItem('crud-root-url') || 'http://localhost:3200',
-    paramValue: '',
     paramValue: '',
     expandedCategories: new Set() // Store indices of open categories
 };

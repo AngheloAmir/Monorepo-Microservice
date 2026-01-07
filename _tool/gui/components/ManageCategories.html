@@ -9,18 +9,23 @@
         </div>
         
         <!-- Content -->
-        <div class="flex-1 p-4 overflow-y-auto custom-scrollbar flex flex-col gap-4">
+        <div class="flex-1 p-4 overflow-y-auto custom-scrollbar flex flex-col gap-6">
             
             <!-- Add New -->
-            <div class="flex gap-2">
-                <input type="text" id="new-cat-name" placeholder="New Category Name" class="flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
-                <button onclick="window.ManageCategories.add()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded text-sm transition-colors">
-                    <i class="fas fa-plus mr-1"></i> Add
+            <div class="flex flex-col gap-2 bg-gray-800/30 p-3 rounded border border-dashed border-gray-700">
+                <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Add New Category</div>
+                <input type="text" id="new-cat-name" placeholder="Category Name" class="bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
+                <div class="flex gap-2">
+                    <input type="text" id="new-cat-dev" placeholder="Dev URL (e.g. http://localhost:3000)" class="flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-2 text-xs text-blue-200 focus:border-blue-500 outline-none font-mono">
+                    <input type="text" id="new-cat-prod" placeholder="Prod URL" class="flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-2 text-xs text-purple-200 focus:border-purple-500 outline-none font-mono">
+                </div>
+                <button onclick="window.ManageCategories.add()" class="mt-1 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded text-sm transition-colors font-bold w-full">
+                    <i class="fas fa-plus mr-1"></i> Create Category
                 </button>
             </div>
 
             <!-- List -->
-            <div id="manage-cat-list" class="flex flex-col gap-2">
+            <div id="manage-cat-list" class="flex flex-col gap-3">
                 <!-- Injected via JS -->
             </div>
 
@@ -29,25 +34,57 @@
 </div>
 
 <template id="manage-cat-item-template">
-    <div class="cat-item flex items-center justify-between bg-gray-800/50 border border-gray-800 rounded p-2 hover:border-gray-700 transition-colors group">
-        <div class="flex items-center gap-2 flex-1">
-            <i class="fas fa-folder text-gray-500 text-xs"></i>
-            <span class="cat-name text-sm text-gray-300 font-medium">Category Name</span>
-            <input type="text" class="cat-edit-input hidden flex-1 bg-gray-900 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-blue-500 outline-none">
+    <div class="cat-item flex flex-col gap-2 bg-gray-800/50 border border-gray-800 rounded p-3 hover:border-gray-700 transition-colors group">
+        <!-- View Mode -->
+        <div class="view-mode w-full">
+            <div class="flex items-center justify-between mb-3">
+                 <div class="flex items-center gap-2">
+                    <i class="fas fa-folder text-gray-500 text-xs"></i>
+                    <span class="cat-name text-sm text-white font-bold tracking-tight">Category Name</span>
+                 </div>
+                 <div class="flex items-center gap-1 opacity-50 group-hover:opacity-100 transition-opacity">
+                    <button class="btn-edit text-blue-400 hover:text-blue-300 p-1.5 rounded hover:bg-blue-500/10 transition-colors" title="Edit">
+                        <i class="fas fa-pen text-xs"></i>
+                    </button>
+                    <button class="btn-delete text-red-400 hover:text-red-300 p-1.5 rounded hover:bg-red-500/10 transition-colors" title="Delete">
+                        <i class="fas fa-trash text-xs"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-[10px]">
+                <div class="flex flex-col gap-1 overflow-hidden">
+                    <span class="text-gray-500 uppercase font-bold text-[9px]">Dev URL</span>
+                    <span class="cat-dev-text font-mono text-blue-300 truncate bg-blue-900/10 px-2 py-1 rounded border border-blue-900/30 select-all">...</span>
+                </div>
+                <div class="flex flex-col gap-1 overflow-hidden">
+                    <span class="text-gray-500 uppercase font-bold text-[9px]">Prod URL</span>
+                    <span class="cat-prod-text font-mono text-purple-300 truncate bg-purple-900/10 px-2 py-1 rounded border border-purple-900/30 select-all">...</span>
+                </div>
+            </div>
         </div>
-        <div class="flex items-center gap-1 opacity-50 group-hover:opacity-100 transition-opacity">
-            <button class="btn-rename text-blue-400 hover:text-blue-300 p-1.5 rounded hover:bg-blue-500/10" title="Rename">
-                <i class="fas fa-pen text-xs"></i>
-            </button>
-            <button class="btn-save hidden text-green-400 hover:text-green-300 p-1.5 rounded hover:bg-green-500/10" title="Save">
-                <i class="fas fa-check text-xs"></i>
-            </button>
-            <button class="btn-cancel hidden text-gray-400 hover:text-gray-300 p-1.5 rounded hover:bg-gray-500/10" title="Cancel">
-                <i class="fas fa-times text-xs"></i>
-            </button>
-            <button class="btn-delete text-red-400 hover:text-red-300 p-1.5 rounded hover:bg-red-500/10" title="Delete">
-                <i class="fas fa-trash text-xs"></i>
-            </button>
+
+        <!-- Edit Mode (Hidden) -->
+        <div class="edit-mode hidden w-full flex-col gap-3 animate-fade-in">
+             <div class="flex flex-col gap-1">
+                 <label class="text-[9px] uppercase font-bold text-gray-500">Name</label>
+                 <input type="text" class="edit-name bg-gray-900 border border-gray-600 rounded px-2 py-1.5 text-sm text-white focus:border-blue-500 outline-none" placeholder="Category Name">
+             </div>
+             
+             <div class="grid grid-cols-2 gap-3">
+                <div class="flex flex-col gap-1">
+                    <label class="text-[9px] uppercase font-bold text-gray-500">Dev URL</label>
+                    <input type="text" class="edit-dev bg-gray-900 border border-gray-600 rounded px-2 py-1.5 text-xs text-blue-200 focus:border-blue-500 outline-none font-mono" placeholder="Dev URL">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-[9px] uppercase font-bold text-gray-500">Prod URL</label>
+                    <input type="text" class="edit-prod bg-gray-900 border border-gray-600 rounded px-2 py-1.5 text-xs text-purple-200 focus:border-purple-500 outline-none font-mono" placeholder="Prod URL">
+                </div>
+             </div>
+             
+             <div class="flex items-center justify-end gap-2 mt-1 border-t border-gray-700/50 pt-2">
+                <button class="btn-cancel text-xs text-gray-400 hover:text-white px-3 py-1.5 rounded hover:bg-gray-700 transition-colors">Cancel</button>
+                <button class="btn-save bg-green-600 hover:bg-green-500 text-white px-4 py-1.5 rounded text-xs font-bold transition-colors shadow-lg shadow-green-900/20">Save Changes</button>
+             </div>
         </div>
     </div>
 </template>

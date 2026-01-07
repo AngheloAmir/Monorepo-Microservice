@@ -19,11 +19,17 @@ const saveCrudData = (req, res) => {
             // 2. Modify data
             // 2. Modify data
             if (action === 'add_category') {
-                currentData.push({ category: itemData.category, items: [] });
-            } else if (action === 'rename_category') {
-                 const { newName } = JSON.parse(body);
+                currentData.push({ 
+                    category: itemData.category, 
+                    devurl: itemData.devurl || 'http://localhost:3200', 
+                    produrl: itemData.produrl || 'http://localhost:3200',
+                    items: [] 
+                });
+            } else if (action === 'update_category') {
                  if (currentData[categoryIndex]) {
-                     currentData[categoryIndex].category = newName;
+                     currentData[categoryIndex].category = itemData.category;
+                     currentData[categoryIndex].devurl = itemData.devurl;
+                     currentData[categoryIndex].produrl = itemData.produrl;
                  }
             } else if (action === 'delete_category') {
                  if (currentData[categoryIndex]) {

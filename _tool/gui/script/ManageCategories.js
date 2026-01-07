@@ -35,54 +35,68 @@ window.ManageCategories = {
         
         container.innerHTML = '';
         
-        // Get data from global nav or fetch fresh? 
-        // Using global nav data is faster, but we should probably fetch fresh to be safe?
-        // Let's rely on AccordionNav.data for now + index
+        // Get data from global nav
         const data = window.AccordionNav && window.AccordionNav.data ? window.AccordionNav.data : [];
 
         data.forEach((cat, index) => {
             const clone = template.content.cloneNode(true);
             const item = clone.querySelector('.cat-item');
             
-            const nameEl = item.querySelector('.cat-name');
-            const inputEl = item.querySelector('.cat-edit-input');
-            const renameBtn = item.querySelector('.btn-rename');
-            const saveBtn = item.querySelector('.btn-save');
-            const cancelBtn = item.querySelector('.btn-cancel');
-            const deleteBtn = item.querySelector('.btn-delete');
-
-            nameEl.textContent = cat.category;
+            // Elements
+            const viewMode = item.querySelector('.view-mode');
+            const editMode = item.querySelector('.edit-mode');
             
-            // Rename Logic
-            renameBtn.onclick = () => {
-                nameEl.classList.add('hidden');
-                renameBtn.classList.add('hidden');
-                deleteBtn.classList.add('hidden');
+            // View Elements
+            const nameEl = item.querySelector('.cat-name');
+            const devEl  = item.querySelector('.cat-dev-text');
+            const prodEl = item.querySelector('.cat-prod-text');
+            
+            // Edit Elements
+            const editName = item.querySelector('.edit-name');
+            const editDev  = item.querySelector('.edit-dev');
+            const editProd = item.querySelector('.edit-prod');
+            
+            // Buttons
+            const editBtn   = item.querySelector('.btn-edit');
+            const deleteBtn = item.querySelector('.btn-delete');
+            const saveBtn   = item.querySelector('.btn-save');
+            const cancelBtn = item.querySelector('.btn-cancel');
+
+            // Initialize View
+            nameEl.textContent = cat.category;
+            devEl.textContent  = cat.devurl || 'http://localhost:3200';
+            prodEl.textContent = cat.produrl || 'http://localhost:3200';
+            
+            // Edit Logic
+            editBtn.onclick = () => {
+                viewMode.classList.add('hidden');
+                editMode.classList.remove('hidden');
+                editMode.classList.add('flex');
                 
-                inputEl.value = cat.category;
-                inputEl.classList.remove('hidden');
-                inputEl.focus();
-                
-                saveBtn.classList.remove('hidden');
-                cancelBtn.classList.remove('hidden');
+                editName.value = cat.category;
+                editDev.value  = cat.devurl || 'http://localhost:3200';
+                editProd.value = cat.produrl || 'http://localhost:3200';
             };
 
             const cancelEdit = () => {
-                nameEl.classList.remove('hidden');
-                renameBtn.classList.remove('hidden');
-                deleteBtn.classList.remove('hidden');
-                
-                inputEl.classList.add('hidden');
-                saveBtn.classList.add('hidden');
-                cancelBtn.classList.add('hidden');
+                viewMode.classList.remove('hidden');
+                editMode.classList.add('hidden');
+                editMode.classList.remove('flex');
             };
             
             cancelBtn.onclick = cancelEdit;
 
             saveBtn.onclick = async () => {
-                const newName = inputEl.value.trim();
-                if (newName && newName !== cat.category) {
-                    await this.updateCategory(index, newName);
+                const newName = editName.value.trim();
+                const newDev  = editDev.value.trim();
+                const newProd = editProd.value.trim();
+                
+                if (newName) {
+                    await this.updateCategory(index, {
+                        category: newName,
+                        devurl: newDev,
+                        produrl: newProd
+                    });
                 } else {
                     cancelEdit();
                 }
@@ -105,8 +119,14 @@ window.ManageCategories = {
     },
 
     add: async function() {
-        const input = document.getElementById('new-cat-name');
-        const name = input.value.trim();
+        const nameInput = document.getElementById('new-cat-name');
+        const devInput  = document.getElementById('new-cat-dev');
+        const prodInput = document.getElementById('new-cat-prod');
+        
+        const name = nameInput.value.trim();
+        const dev  = devInput.value.trim();
+        const prod = prodInput.value.trim();
+
         if (!name) return;
 
         try {
@@ -115,12 +135,18 @@ window.ManageCategories = {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     action: 'add_category',
-                    itemData: { category: name }
+                    itemData: { 
+                        category: name,
+                        devurl: dev || 'http://localhost:3200',
+                        produrl: prod || 'http://localhost:3200'
+                    }
                 })
             });
             const result = await res.json();
             if (result.success) {
-                input.value = '';
+                nameInput.value = '';
+                devInput.value = '';
+                prodInput.value = '';
                 await this.refresh();
             } else {
                 await window.openAlertModal('Error', result.error, 'error');
@@ -131,15 +157,15 @@ window.ManageCategories = {
         }
     },
 
-    updateCategory: async function(index, newName) {
+    updateCategory: async function(index, itemData) {
         try {
             const res = await fetch('/api/crudedit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    action: 'rename_category',
+                    action: 'update_category',
                     categoryIndex: index,
-                    newName: newName
+                    itemData: itemData
                 })
             });
             const result = await res.json();

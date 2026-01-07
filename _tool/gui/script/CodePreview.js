@@ -50,7 +50,7 @@ window.CodePreview = {
         const item = window.crudState.currentItem;
         if (!item) return isHtml ? '<span class="text-gray-500">// No endpoint selected</span>' : '// No endpoint selected';
 
-        const root = document.getElementById('crud-root-url').value || '';
+        const root = window.crudUseProd ? window.crudProdUrl : window.crudDevUrl;
         const params = window.crudState.paramValue || '';
         const url = `${root}${item.route}${params}`;
         
