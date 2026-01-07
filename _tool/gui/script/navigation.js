@@ -3,7 +3,7 @@ window.Navigation = {
         { id: 'home',       label: 'Home', icon: 'fa-home', component: 'home' },
         { id: 'workspace',  label: 'Workspace', icon: 'fa fa-cube', component: 'workspace' },
         { id: 'turborepo',  label: 'Turborepo', icon: 'fa-solid fa-truck-fast', component: 'turborepo' },
-        { id: 'turbocicd',  label: 'Turbo CI/CD', icon: 'fa-server',              component: 'turbocicd' },
+        { id: 'turbocicd',  label: 'Turbo CI/CD (BETA)', icon: 'fa-server',              component: 'turbocicd' },
         
         { id: 'crudtester', label: 'CRUD Tester', icon: 'fa-microscope', component: 'crudtester' },
 

@@ -11,6 +11,11 @@
                 class="px-4 py-1.5 rounded-md text-sm font-medium transition-all text-gray-400 hover:text-white flex items-center gap-2">
                 <i class="fas fa-project-diagram"></i> Dependency Graph
             </button>
+            <div class="w-px bg-gray-700 mx-1"></div>
+            <button onclick="window.turboPage.showTutorial()" 
+                class="px-4 py-1.5 rounded-md text-sm font-medium transition-all text-blue-400 hover:text-blue-300 hover:bg-gray-700/50 flex items-center gap-2">
+                <i class="fas fa-book"></i> Vercel Monorepo Tutorial
+            </button>
         </div>
         
         <!-- Info (Right) -->
@@ -41,6 +46,7 @@
     </div>
 </div>
 
+<script src="/gui/script/modal/htmlmodal.js"></script>
 <script>
     window.turboPage = {
         init: async function() {
@@ -98,6 +104,129 @@
                     window.TurboGraph.init();
                 }
             }
+        },
+
+        showTutorial: async function() {
+            const tutorialContent = `
+                <div class="space-y-8">
+                    <!-- Intro -->
+                    <div class="bg-gray-900/50 p-5 rounded-xl border border-gray-700">
+                        <h4 class="text-white font-bold text-lg mb-2">1. Understanding the Concept</h4>
+                        <p class="text-gray-300 text-sm leading-relaxed">In a Monorepo, you have one git repository but multiple deployed applications. You don't upload files manually; you push to GitHub, and Vercel pulls the code.</p>
+                    </div>
+
+                    <!-- Step 1 -->
+                    <div>
+                        <h4 class="text-blue-400 font-bold text-lg mb-3">Step 1: Push to GitHub</h4>
+                        <div class="bg-black p-4 rounded-lg border border-gray-800 text-sm font-mono text-green-400 mb-2 shadow-inner">
+                            git add .<br>git commit -m "update"<br>git push
+                        </div>
+                        <p class="text-xs text-gray-500">This is your "Upload" trigger.</p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div>
+                        <h4 class="text-blue-400 font-bold text-lg mb-3">Step 2: Create Separate Projects</h4>
+                        <p class="mb-3 text-sm text-gray-300">On Vercel, create a <b>New Project</b> for each app folder you want to deploy.</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-gray-800/40 p-4 rounded-lg border border-gray-700">
+                                <h5 class="font-bold text-white text-sm mb-2"><i class="fas fa-server mr-2"></i>Backend API</h5>
+                                <div class="text-xs grid gap-2">
+                                    <div class="bg-gray-900 p-2 rounded"><span class="text-gray-500">Root:</span> backend/nodejs</div>
+                                    <div class="bg-gray-900 p-2 rounded"><span class="text-gray-500">Cmd:</span> npx turbo run build --filter=nodejs</div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gray-800/40 p-4 rounded-lg border border-gray-700">
+                                <h5 class="font-bold text-white text-sm mb-2"><i class="fas fa-store mr-2"></i>Frontend Shop</h5>
+                                <div class="text-xs grid gap-2">
+                                    <div class="bg-gray-900 p-2 rounded"><span class="text-gray-500">Root:</span> frontend/food-shop</div>
+                                    <div class="bg-gray-900 p-2 rounded"><span class="text-gray-500">Cmd:</span> npx turbo run build --filter=food-shop</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div>
+                        <h4 class="text-blue-400 font-bold text-lg mb-3">Step 3: The "Ignore" Switch</h4>
+                        <p class="mb-2 text-sm text-gray-300">Prevent unnecessary builds. In Vercel Project Settings > <b>Git</b> > <b>Ignored Build Step</b>:</p>
+                        <div class="bg-black p-3 rounded-lg border border-gray-800 text-sm font-mono text-yellow-400 inline-block px-4">
+                            npx turbo-ignore
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Remote Caching -->
+                    <div class="border-t border-gray-700 pt-6">
+                        <h4 class="text-purple-400 font-bold text-lg mb-3"><i class="fas fa-bolt mr-2"></i>Step 4: Remote Caching (The Speed Hack)</h4>
+                        
+                        <div class="bg-purple-900/10 border border-purple-500/30 p-4 rounded-xl space-y-3">
+                            <p class="text-sm text-gray-300">
+                                <b class="text-white">Normal Vercel:</b> Every time you deploy, it creates a new server, installs everything, and runs <code>build</code> from scratch. (Slow 🐢)
+                            </p>
+                            <p class="text-sm text-gray-300">
+                                <b class="text-white">Turborepo Vercel:</b> It checks these steps:
+                            </p>
+                            <ol class="list-decimal list-inside text-sm text-gray-400 ml-2 space-y-1">
+                                <li>Vercel asks: <i>"Has anyone built this exact code before?"</i></li>
+                                <li>If YOU built it locally (or a previous deploy did), the <b>Hash</b> matches.</li>
+                                <li><b>Vercel SKIPS the build!</b> 🚀</li>
+                                <li>It strictly <b>downloads/copies</b> the <code>dist</code> folder from the Remote Cache.</li>
+                            </ol>
+                        </div>
+
+                        <div class="mt-4">
+                            <p class="text-xs text-gray-400 mb-2 uppercase tracking-wide font-bold">How to enable Local -> Cloud caching:</p>
+                            <div class="bg-black p-3 rounded-lg border border-gray-800 text-sm font-mono text-purple-300">
+                                npx turbo login<br>
+                                npx turbo link
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">Run this once in your terminal to connect your laptop to your Vercel team cache.</p>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-700 pt-6">
+                        <div class="bg-purple-900/10 border border-purple-500/30 p-4 rounded-xl space-y-4">
+                            <div>
+                                <h5 class="text-white font-bold text-sm mb-1">Q: "When does the 'dist' folder upload?"</h5>
+                                <p class="text-sm text-gray-300">A: It uploads <b>WHILE</b> you are building on your laptop!</p>
+                            </div>
+
+                            <ul class="space-y-3">
+                                <li class="bg-gray-900/50 p-3 rounded-lg flex gap-3">
+                                    <span class="bg-gray-800 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">1</span>
+                                    <div class="text-sm">
+                                        <p class="text-gray-200 font-semibold">You Setup (Once)</p>
+                                        <code class="text-xs bg-black px-1 py-0.5 rounded text-purple-300 mt-1 block w-max">npx turbo link</code>
+                                    </div>
+                                </li>
+                                <li class="bg-gray-900/50 p-3 rounded-lg flex gap-3">
+                                    <span class="bg-gray-800 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">2</span>
+                                    <div class="text-sm">
+                                        <p class="text-gray-200 font-semibold">The "Hidden Upload"</p>
+                                        <p class="text-gray-400 text-xs mt-1">When you click <b>Build</b> (or run <code class="bg-black px-1 rounded">turbo run build</code>), Turbo compiles your files AND silently uploads the result to Vercel's Cloud Cache.</p>
+                                    </div>
+                                </li>
+                                <li class="bg-gray-900/50 p-3 rounded-lg flex gap-3">
+                                    <span class="bg-gray-800 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">3</span>
+                                    <div class="text-sm">
+                                        <p class="text-gray-200 font-semibold">The "Magic Deploy"</p>
+                                        <p class="text-gray-400 text-xs mt-1">Then you <code class="bg-black px-1 rounded">git push</code>. Vercel sees the commit, checks the cloud, finds your uploaded files, and just <b>copies</b> them. Instant deploy! 🚀</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                    <div class="bg-green-500/10 border border-green-500/20 p-4 rounded-lg text-center">
+                        <p class="text-green-400 font-bold text-sm">Now you have a professional CI/CD pipeline! 🎉</p>
+                    </div>
+                </div>
+            `;
+
+            await window.openHtmlModal('Deploying Monorepo to Vercel', tutorialContent, 'Got it, thanks!');
         }
     };
 
