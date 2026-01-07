@@ -40,14 +40,14 @@ function getWorkspacesWithScripts(res) {
     const workspaceRoot = path.resolve(__dirname, '../../');
     const tooldataPath = path.resolve(__dirname, '../tooldata/Workspace.js');
     
-    console.log("Loading workspaces from:", tooldataPath);
+
 
     try {
         if (require.cache[require.resolve(tooldataPath)]) {
             delete require.cache[require.resolve(tooldataPath)];
         }
         const workspaceData = require(tooldataPath);
-        console.log("Workspace Data Keys:", Object.keys(workspaceData));
+
 
         const workspaces = [];
         
@@ -78,7 +78,7 @@ function getWorkspacesWithScripts(res) {
             }
         });
         
-        console.log("Found workspaces:", workspaces.length);
+
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ workspaces }));
     } catch (e) {
