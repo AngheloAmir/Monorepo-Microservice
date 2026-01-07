@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "stop": "npx -y kill-port 3002",
     "clean": "rm -rf dist node_modules",
-    "deploy": "vercel deploy --prod"
+    "deploy": ""
   },
   "keywords": [],
   "author": "",

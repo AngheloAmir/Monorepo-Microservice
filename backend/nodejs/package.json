@@ -10,15 +10,15 @@
     "docker": "docker build -t node-service . && docker run -p 8000:8000 node-service",
     "stop": "npx -y kill-port 8080",
     "dev": "nodemon",
-    "test": "adasdasdas"
+    "test": "vitest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "main": "src/index.ts",
   "dependencies": {
-    "@monorepo/config": "*",
     "@monorepo/api": "*",
+    "@monorepo/config": "*",
     "chalk": "^4.1.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -34,8 +34,11 @@
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.10.2",
+    "@types/supertest": "^6.0.3",
     "nodemon": "^3.1.11",
+    "supertest": "^7.2.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
   }
 }
