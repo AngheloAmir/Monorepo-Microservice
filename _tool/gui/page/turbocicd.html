@@ -1,4 +1,5 @@
 <div class="h-full flex flex-col font-sans">
+    <script src="/gui/script/modal/htmlmodal.js"></script>
     <!-- Tabs Header -->
     <div class="flex border-b border-gray-800 bg-gray-950 px-6 pt-4 text-white">
         <button onclick="window.TurboCICDPage.switchTab('ci')" id="tab-ci" class="px-6 py-3 text-sm font-bold border-b-2 border-blue-500 text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-2">
@@ -9,6 +10,10 @@
         </button>
         <button onclick="window.TurboCICDPage.switchTab('flow')" id="tab-flow" class="px-6 py-3 text-sm font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-700 transition-colors flex items-center gap-2">
             <i class="fas fa-project-diagram"></i> Flow Editor
+        </button>
+        <div class="flex-1"></div>
+        <button onclick="window.TurboCICDPage.showIntro()" class="px-6 py-3 text-sm font-bold border-b-2 border-transparent text-purple-400 hover:text-purple-300 hover:border-purple-500/50 transition-colors flex items-center gap-2">
+            <i class="fas fa-graduation-cap"></i> Introduction to CI
         </button>
     </div>
 
@@ -55,6 +60,169 @@
                     console.error("Failed to load component", url, e);
                     el.innerHTML = `<div class="p-4 text-red-500">Error loading component</div>`;
                 }
+            }
+        },
+
+        showIntro: async function() {
+            const content = `
+ <div class="max-w-4xl mx-auto space-y-12 font-sans antialiased text-gray-200 p-4">
+  
+  <header class="bg-gradient-to-br from-blue-900/40 to-indigo-900/40 border border-blue-500/20 rounded-2xl p-8">
+    <div class="flex items-center gap-5">
+      <div class="bg-blue-500/20 p-4 rounded-2xl border border-blue-500/30">
+        <i class="fas fa-network-wired text-3xl text-blue-400"></i>
+      </div>
+      <div>
+        <h1 class="text-3xl font-bold text-white tracking-tight">Turborepo & GitLab CI</h1>
+        <p class="text-blue-200/80 mt-1 text-lg">Implementing distributed caching in your pipeline</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-gray-800/40 border border-gray-700 p-6 rounded-xl">
+      <h3 class="text-blue-400 font-bold mb-2 uppercase text-xs tracking-widest">The Engine</h3>
+      <h4 class="text-xl font-bold text-white mb-3">What is Turborepo?</h4>
+      <p class="text-gray-400 leading-relaxed text-sm">
+        Turborepo is a build system for monorepos that ensures you never run the same task twice. It uses <strong>fingerprinting</strong> (hashing) to determine if code has changed.
+      </p>
+    </div>
+    <div class="bg-gray-800/40 border border-gray-700 p-6 rounded-xl">
+      <h3 class="text-purple-400 font-bold mb-2 uppercase text-xs tracking-widest">The Storage</h3>
+      <h4 class="text-xl font-bold text-white mb-3">Remote Caching</h4>
+      <p class="text-gray-400 leading-relaxed text-sm">
+        GitLab runners are ephemeral. Without <strong>Remote Cache</strong>, every pipeline starts from zero. Connecting to Vercel allows runners to download existing builds instantly.
+      </p>
+    </div>
+  </section>
+
+  <section class="space-y-6">
+    <div class="flex items-center justify-between px-2">
+      <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+        <i class="fab fa-gitlab text-orange-500 text-xl"></i>
+        GitLab CI Integration
+      </h2>
+      <span class="text-xs font-mono bg-gray-700 px-2 py-1 rounded text-gray-400">.gitlab-ci.yml</span>
+    </div>
+
+    <div class="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
+      <div class="bg-blue-900/20 border-b border-blue-500/20 p-4 flex gap-3 items-start">
+        <i class="fas fa-key text-blue-400 mt-1"></i>
+        <p class="text-xs text-blue-200/70">
+          <strong>Prerequisite:</strong> Add <code>TURBO_TOKEN</code> and <code>TURBO_TEAM</code> to your GitLab Project <strong>Settings > CI/CD > Variables</strong>.
+        </p>
+      </div>
+
+      <pre class="p-6 text-sm font-mono text-gray-300 overflow-x-auto leading-relaxed">
+<span class="text-gray-500"># Define the build stage</span>
+build_task:
+  stage: build
+  image: node:20-slim
+  variables:
+    <span class="text-indigo-400">TURBO_TOKEN:</span> $TURBO_TOKEN
+    <span class="text-indigo-400">TURBO_TEAM:</span> $TURBO_TEAM
+  script:
+    - npm install -g pnpm
+    - pnpm install
+    <span class="text-green-400">- pnpm turbo run build --remote-only</span>
+  artifacts:
+    paths:
+      - "**/dist/**"
+      - "**/.next/**"</pre>
+    </div>
+
+    <p class="text-sm text-gray-400 italic px-2">
+      * Using <code>--remote-only</code> ensures the runner doesn't waste time looking for local filesystem caches that don't exist in a fresh Docker container.
+    </p>
+  </section>
+
+  
+  <section class="space-y-6">
+    <h2 class="text-2xl font-bold text-white flex items-center gap-3 px-2">
+      <i class="fas fa-project-diagram text-indigo-400 text-xl"></i>
+      How GitLab & Turbo Communicate
+    </h2>
+
+    <div class="grid grid-cols-1 gap-4">
+      <div class="flex gap-6 p-6 bg-gray-800/30 border border-gray-700 rounded-xl">
+        <div class="flex-shrink-0 w-10 h-10 bg-blue-500/10 border border-blue-500/40 rounded-full flex items-center justify-center text-blue-400 font-bold">1</div>
+        <div>
+          <h4 class="text-white font-bold text-lg">Hash Calculation</h4>
+          <p class="text-gray-400 text-sm mt-1">GitLab triggers the job. Turbo hashes your source files. If the hash matches a previous build, step 2 begins.</p>
+        </div>
+      </div>
+
+      <div class="flex gap-6 p-6 bg-gray-800/30 border border-gray-700 rounded-xl">
+        <div class="flex-shrink-0 w-10 h-10 bg-yellow-500/10 border border-yellow-500/40 rounded-full flex items-center justify-center text-yellow-400 font-bold">2</div>
+        <div>
+          <h4 class="text-white font-bold text-lg">Remote Hit Detection</h4>
+          <p class="text-gray-400 text-sm mt-1">Turbo sends the hash to Vercel. If found, the <code>dist/</code> folder is downloaded. Build time: <strong>~2 seconds</strong>.</p>
+        </div>
+      </div>
+
+      <div class="flex gap-6 p-6 bg-gray-800/30 border border-gray-700 rounded-xl">
+        <div class="flex-shrink-0 w-10 h-10 bg-purple-500/10 border border-purple-500/40 rounded-full flex items-center justify-center text-purple-400 font-bold">3</div>
+        <div>
+          <h4 class="text-white font-bold text-lg">Auto-Upload</h4>
+          <p class="text-gray-400 text-sm mt-1">If the code is new (Cache Miss), the build runs, and Turbo automatically pushes the result to the Remote Cache for the next runner.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-indigo-900/10 border border-indigo-500/20 rounded-2xl p-8 text-center">
+    <h3 class="text-xl font-bold text-white mb-4">The Multi-CI Distributed Network</h3>
+    <div class="flex flex-col md:flex-row justify-center items-center gap-8 font-mono text-sm">
+      <div class="px-5 py-3 bg-gray-800 border border-gray-600 rounded-lg text-gray-300">GitLab Runner</div>
+      <i class="fas fa-exchange-alt text-indigo-400"></i>
+      <div class="px-8 py-5 bg-indigo-600/20 border-2 border-indigo-500 rounded-2xl text-indigo-300 font-bold">
+        REMOTE CACHE
+      </div>
+      <i class="fas fa-exchange-alt text-indigo-400"></i>
+      <div class="px-5 py-3 bg-gray-800 border border-gray-600 rounded-lg text-gray-300">Local Dev</div>
+    </div>
+    <p class="text-gray-400 text-sm mt-8">
+      Since the cache is global, a build triggered by a developer on their laptop can be reused by the GitLab CI runner 5 minutes later.
+    </p>
+  </section>
+
+  <section class="bg-gray-800/20 border border-gray-700 rounded-xl overflow-hidden">
+    <table class="w-full text-left text-sm">
+      <thead class="bg-gray-800/60 text-gray-300 font-bold">
+        <tr>
+          <th class="p-4">Feature</th>
+          <th class="p-4">Standard GitLab CI</th>
+          <th class="p-4 text-blue-400">GitLab + Turbo Remote</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-700">
+        <tr>
+          <td class="p-4 font-semibold text-white">Cold Build Time</td>
+          <td class="p-4 text-gray-400">5 - 15 minutes</td>
+          <td class="p-4 text-gray-200">2 - 30 seconds</td>
+        </tr>
+        <tr>
+          <td class="p-4 font-semibold text-white">Runner Cost</td>
+          <td class="p-4 text-gray-400">High (Minutes billed)</td>
+          <td class="p-4 text-gray-200">Low (Seconds billed)</td>
+        </tr>
+        <tr>
+          <td class="p-4 font-semibold text-white">Setup Complexity</td>
+          <td class="p-4 text-gray-400">Low</td>
+          <td class="p-4 text-gray-200">Medium (Env Vars needed)</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</div>
+            `;
+            
+            if (window.openHtmlModal) {
+                await window.openHtmlModal('Introduction to CI/CD & Caching', content, 'Got it!');
+            } else {
+                console.error('HtmlModal script not loaded properly');
+                alert('Modal script not loaded!');
             }
         },
 

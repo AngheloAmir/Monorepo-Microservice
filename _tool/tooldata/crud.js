@@ -1,8 +1,8 @@
 const crud = [
     {
         "category": "Internal CRUD Test",
-        "devurl":  "http://localhost:3200",
-        "produrl": "http://localhost:3200",
+        "devurl": "http://localhost:3200",
+        "produrl": "http://superhost:3200",
         "items": [
             {
                 "label": "Ping the Tool Server",
