@@ -7,6 +7,10 @@
                 class="px-4 py-1.5 rounded-md text-sm font-bold transition-all text-white bg-gray-700 shadow-sm flex items-center gap-2">
                 <i class="fas fa-sliders-h"></i> Control
             </button>
+            <button onclick="window.turboPage.switchTab('database')" id="tab-database"
+                class="px-4 py-1.5 rounded-md text-sm font-medium transition-all text-gray-400 hover:text-white flex items-center gap-2">
+                <i class="fas fa-database"></i> Database
+            </button>
             <button onclick="window.turboPage.switchTab('graph')" id="tab-graph"
                 class="px-4 py-1.5 rounded-md text-sm font-medium transition-all text-gray-400 hover:text-white flex items-center gap-2">
                 <i class="fas fa-project-diagram"></i> Dependency Graph
@@ -39,6 +43,11 @@
              <!-- Injected TurboControl.html -->
         </div>
 
+        <!-- Database Tab -->
+        <div id="view-database" class="absolute inset-0 p-6 hidden">
+             <!-- Injected TurboDatabase.html -->
+        </div>
+
         <!-- Graph Tab -->
         <div id="view-graph" class="absolute inset-0 p-6 hidden">
              <!-- Injected TurboGraph.html -->
@@ -52,6 +61,7 @@
         init: async function() {
             console.log('TurboPage initializing...');
             await this.loadComponent('view-control', '/gui/components/TurboControl.html');
+            await this.loadComponent('view-database', '/gui/components/TurboDatabase.html');
             await this.loadComponent('view-graph', '/gui/components/TurboGraph.html');
             
             this.switchTab('control'); // Set default
@@ -72,38 +82,31 @@
         },
 
         switchTab: function(tab) {
-            const controlBtn = document.getElementById('tab-control');
-            const graphBtn = document.getElementById('tab-graph');
-            const controlView = document.getElementById('view-control');
-            const graphView = document.getElementById('view-graph');
-
-            if (tab === 'control') {
-                controlBtn.classList.add('bg-gray-700', 'text-white', 'shadow-sm');
-                controlBtn.classList.remove('text-gray-400', 'hover:text-white');
+            const tabs = ['control', 'database', 'graph'];
+            
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                const view = document.getElementById(`view-${t}`);
                 
-                graphBtn.classList.remove('bg-gray-700', 'text-white', 'shadow-sm');
-                graphBtn.classList.add('text-gray-400', 'hover:text-white');
-
-                controlView.classList.remove('hidden');
-                graphView.classList.add('hidden');
-                
-                if(window.TurboControl && window.TurboControl.init) {
-                    window.TurboControl.init();
+                if (t === tab) {
+                    // Active
+                     btn.classList.add('bg-gray-700', 'text-white', 'shadow-sm');
+                     btn.classList.remove('text-gray-400', 'hover:text-white');
+                     view.classList.remove('hidden');
+                     
+                     // Init specific logic
+                     const capTab = t.charAt(0).toUpperCase() + t.slice(1);
+                     const objName = `Turbo${capTab}`; // TurboControl, TurboDatabase, TurboGraph
+                     if (window[objName] && window[objName].init) {
+                         window[objName].init();
+                     }
+                } else {
+                    // Inactive
+                     btn.classList.remove('bg-gray-700', 'text-white', 'shadow-sm');
+                     btn.classList.add('text-gray-400', 'hover:text-white');
+                     view.classList.add('hidden');
                 }
-            } else {
-                graphBtn.classList.add('bg-gray-700', 'text-white', 'shadow-sm');
-                graphBtn.classList.remove('text-gray-400', 'hover:text-white');
-                
-                controlBtn.classList.remove('bg-gray-700', 'text-white', 'shadow-sm');
-                controlBtn.classList.add('text-gray-400', 'hover:text-white');
-
-                graphView.classList.remove('hidden');
-                controlView.classList.add('hidden');
-                
-                if(window.TurboGraph && window.TurboGraph.init) {
-                    window.TurboGraph.init();
-                }
-            }
+            });
         },
 
         showTutorial: async function() {

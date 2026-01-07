@@ -1,0 +1,67 @@
+<div class="flex flex-col lg:flex-row gap-6 h-full">
+    <!-- Left Column: Actions -->
+    <div class="w-full lg:w-1/3 flex flex-none flex-col gap-4">
+         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Migrate -->
+            <div class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 hover:border-blue-500/50 hover:bg-gray-800/60 transition-all group cursor-pointer flex items-center gap-4"
+                onclick="window.TurboDatabase.run('db:migrate')">
+                <div class="p-3 bg-blue-500/10 rounded-lg text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors flex-shrink-0">
+                    <i class="fas fa-database text-xl w-6 h-6 flex items-center justify-center"></i>
+                </div>
+                <div class="flex flex-col">
+                    <h3 class="font-bold text-gray-200 group-hover:text-blue-400 transition-colors">Migrate</h3>
+                    <p class="text-xs text-gray-500">Run migrations</p>
+                </div>
+            </div>
+
+            <!-- Push -->
+            <div class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 hover:border-emerald-500/50 hover:bg-gray-800/60 transition-all group cursor-pointer flex items-center gap-4"
+                onclick="window.TurboDatabase.run('db:push')">
+                <div class="p-3 bg-emerald-500/10 rounded-lg text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-colors flex-shrink-0">
+                    <i class="fas fa-cloud-upload-alt text-xl w-6 h-6 flex items-center justify-center"></i>
+                </div>
+                <div class="flex flex-col">
+                    <h3 class="font-bold text-gray-200 group-hover:text-emerald-400 transition-colors">Push</h3>
+                    <p class="text-xs text-gray-500">Push schema to DB</p>
+                </div>
+            </div>
+
+            <!-- Generate -->
+            <div class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 hover:border-purple-500/50 hover:bg-gray-800/60 transition-all group cursor-pointer flex items-center gap-4"
+                onclick="window.TurboDatabase.run('db:generate')">
+                <div class="p-3 bg-purple-500/10 rounded-lg text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-colors flex-shrink-0">
+                   <i class="fas fa-cogs text-xl w-6 h-6 flex items-center justify-center"></i>
+                </div>
+                <div class="flex flex-col">
+                    <h3 class="font-bold text-gray-200 group-hover:text-purple-400 transition-colors">Generate</h3>
+                     <p class="text-xs text-gray-500">Generate Client</p>
+                </div>
+            </div>
+
+            <!-- Studio -->
+            <div class="bg-gray-800/40 border border-gray-700/50 rounded-xl p-4 hover:border-pink-500/50 hover:bg-gray-800/60 transition-all group cursor-pointer flex items-center gap-4"
+                onclick="window.TurboDatabase.run('db:studio')">
+                <div class="p-3 bg-pink-500/10 rounded-lg text-pink-400 group-hover:bg-pink-500 group-hover:text-white transition-colors flex-shrink-0">
+                    <i class="fas fa-table text-xl w-6 h-6 flex items-center justify-center"></i>
+                </div>
+                <div class="flex flex-col">
+                    <h3 class="font-bold text-gray-200 group-hover:text-pink-400 transition-colors">Studio</h3>
+                    <p class="text-xs text-gray-500">Open Prisma Studio</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+     <div class="w-full h-full bg-gray-900 border border-gray-700 flex flex-col overflow-hidden">
+        <div class="bg-gray-800 px-4 py-2 border-b border-gray-700">
+            <span class="text-xs font-mono text-gray-400">DATABASE TERMINAL OUTPUT</span>
+        </div>
+        <div id="turbo-db-console-container" class="flex-1 w-full h-full">
+            <div class="h-full w-full p-6 bg-gray-800/30 flex">
+             Initializing DB Console...
+            </div>
+        </div>
+    </div>
+
+</div>
